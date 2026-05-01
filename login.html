@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TheSwanPro - Login</title>
+    <link rel="icon" type="image/png" href="assets/swan_pro_icon.png" />
+
+    <!-- Tailwind CSS (REQUIRED for Basecoat component layouts) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- Basecoat CSS (Design tokens + component styling) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/basecoat.cdn.min.css"
+    />
+
+    <!-- Basecoat Core JS (required for all interactive parts) -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/all.min.js"
+      defer
+    ></script>
+
+    <!-- Basecoat Component Registry -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/basecoat.min.js"
+      defer
+    ></script>
+
+    <!-- Dropdown Menu Component -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/dropdown-menu.min.js"
+      defer
+    ></script>
+
+    <link rel="stylesheet" href="theme.css" />
+  </head>
+
+  <body class="min-h-screen bg-white">
+    <div
+      class="grid grid-cols-1 [@media(min-width:900px)]:grid-cols-[45%_55%] min-h-screen"
+    >
+      <!-- LEFT SIDE -->
+      <div class="flex flex-col overflow-y-auto overflow-x-hidden">
+        <div class="absolute top-6 left-6 z-10">
+          <img
+            class="w-50"
+            src="assets/swan_pro_logo.png"
+            alt="swan pro logo"
+          />
+        </div>
+
+        <!-- FORM AREA -->
+        <div class="flex flex-1 justify-center items-center">
+          <div
+            class="card w-full max-w-md py-10 px-6 bg-white rounded-xl border-none shadow-none gap-8"
+          >
+            <header class="text-center">
+              <h2 class="text-2xl font-bold mb-1">Login to your account</h2>
+              <p class="text-gray-500 text-sm">
+                Enter your details below to login to your account
+              </p>
+            </header>
+
+            <section>
+              <form class="form" method="post" runat="server">
+                <div class="grid gap-6">
+                  <div class="grid gap-2">
+                    <label for="demo-card-form-username">Username</label>
+                    <input
+                      id="demo-card-form-username"
+                      class="input"
+                      placeholder="m@example.com"
+                      type="text"
+                      aria-invalid=""
+                    />
+                  </div>
+
+                  <div class="grid gap-2">
+                    <div class="flex items-center gap-2">
+                      <label for="demo-card-form-password">Password</label>
+                      <a
+                        href="#"
+                        class="ml-auto text-sm underline-offset-4 hover:underline"
+                      >
+                        Forgot your password?
+                      </a>
+                    </div>
+
+                    <div class="relative">
+                      <input
+                        id="demo-card-form-password"
+                        class="input pr-9"
+                        placeholder=""
+                        type="password"
+                        aria-invalid="false"
+                      />
+                      <div
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground [&>svg]:size-4"
+                        data-tooltip="Password must be at least 8 characters long."
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#666666"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 16v-4" />
+                          <path d="M12 8h.01" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  <footer class="flex flex-col items-center gap-3 mt-2">
+                    <button
+                      type="submit"
+                      class="btn w-full"
+                      id="login-btn"
+                      onclick="
+                        this.outerHTML =
+                          '<button class=\'btn w-full\' disabled style=\'background:var(--ring);color:#fff;opacity:1;cursor:not-allowed;display:flex;align-items:center;justify-content:center;gap:0.5rem;\'><svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' class=\'animate-spin\'><path d=\'M12 2v4\'/><path d=\'m16.2 7.8 2.9-2.9\'/><path d=\'M18 12h4\'/><path d=\'m16.2 16.2 2.9 2.9\'/><path d=\'M12 18v4\'/><path d=\'m4.9 19.1 2.9-2.9\'/><path d=\'M2 12h4\'/><path d=\'m4.9 4.9 2.9 2.9\'/></svg>Loading...</button>';
+                        return false;
+                      "
+                    >
+                      Login
+                    </button>
+
+                    <div
+                      class="hidden flex justify-center items-center text-sm text-red-600 gap-1.5"
+                    >
+                      <svg
+                        class="mt-0.5"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4" />
+                        <path d="M12 8h.01" />
+                      </svg>
+                      Invalid email address
+                    </div>
+
+                    <p class="text-xs text-gray-500 text-center leading-5 mt-2">
+                      Powered by
+                      <a
+                        href="#"
+                        style="color: var(--primary)"
+                        class="underline"
+                        >TheSwanPro</a
+                      >
+                    </p>
+                  </footer>
+                </div>
+              </form>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDE -->
+      <div
+        class="hidden [@media(min-width:900px)]:block relative w-full h-full"
+      >
+        <img
+          src="assets/login_image.png"
+          alt="Login visual"
+          class="absolute inset-0 w-full h-full object-cover"
+        />
+      </div>
+    </div>
+  </body>
+</html>
