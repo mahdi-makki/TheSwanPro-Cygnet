@@ -1250,7 +1250,7 @@
             <div id="status-select" class="select">
               <button
                 type="button"
-                class="btn-outline w-44"
+                class="btn-outline w-40"
                 id="status-select-trigger"
                 aria-haspopup="listbox"
                 aria-expanded="false"
@@ -1347,18 +1347,18 @@
             </div>
           </div>
 
-          <!-- Destination filter -->
+          <!-- Insurance Company filter -->
           <div>
             <div id="dest-select" class="select">
               <button
                 type="button"
-                class="btn-outline w-38"
+                class="btn-outline w-51"
                 id="dest-select-trigger"
                 aria-haspopup="listbox"
                 aria-expanded="false"
                 aria-controls="dest-select-listbox"
               >
-                <span class="truncate">All destinations</span>
+                <span class="truncate">All insurers</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -1386,28 +1386,34 @@
                     aria-selected="true"
                     onclick="selectDest('all', this)"
                   >
-                    <span>All destinations</span>
+                    <span>All Insurers</span>
                   </div>
                   <div
                     role="option"
-                    data-value="germany"
-                    onclick="selectDest('germany', this)"
+                    data-value="axa"
+                    onclick="selectDest('axa', this)"
                   >
-                    <span>Germany</span>
+                    <span>AXA Travel Insurance</span>
                   </div>
                   <div
                     role="option"
-                    data-value="brazil"
-                    onclick="selectDest('brazil', this)"
+                    data-value="allianz"
+                    onclick="selectDest('allianz', this)"
                   >
-                    <span>Brazil</span>
+                    <span>Allianz Global Assistance</span>
+                  </div>
+                  <div
+                    role="option"
+                    data-value="zurich"
+                    onclick="selectDest('zurich', this)"
+                  >
+                    <span>Zurich Insurance Group</span>
                   </div>
                 </div>
               </div>
               <input type="hidden" id="dest-filter" value="all" />
             </div>
           </div>
-
 
           <!-- Date range picker (Flatpickr) -->
           <div>
@@ -1416,7 +1422,7 @@
                 id="date-range-picker"
                 type="text"
                 class="input pl-9 cursor-pointer"
-                style="min-width: 14rem"
+                style="min-width: 15rem"
                 placeholder="Pick a date range…"
                 readonly
               />
@@ -2933,7 +2939,6 @@
           mode: "range",
           showMonths: 2,
           dateFormat: "d M Y",
-          defaultDate: ["2026-01-30", "2026-04-30"],
           rangeSeparator: " – ",
           onChange: function () {
             filterRows();
@@ -2958,7 +2963,10 @@
 
         rows.forEach(function (row) {
           const statusMatch = status === "all" || row.dataset.status === status;
-          const destMatch = dest === "all" || row.dataset.search.includes(dest);
+          const insuranceText = row.cells[8]
+            ? row.cells[8].textContent.trim().toLowerCase()
+            : "";
+          const destMatch = dest === "all" || insuranceText.includes(dest);
           const searchMatch = !query || row.dataset.search.includes(query);
 
           var dateMatch = true;
@@ -3000,7 +3008,7 @@
         if (sd)
           sd.innerHTML = '<span class="sdot sdot-all"></span>All statuses';
         var dd = document.querySelector("#dest-select-trigger .truncate");
-        if (dd) dd.textContent = "All destinations";
+        if (dd) dd.textContent = "All insurers";
         // reset ticks to default options
         var sAll = document.querySelector(
           "#status-select-listbox [data-value='all']",
