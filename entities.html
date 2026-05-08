@@ -1,0 +1,1873 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TheSwanPro - Entities</title>
+    <link rel="icon" type="image/png" href="assets/swan_pro_icon.png" />
+
+    <!-- Tailwind CSS (REQUIRED for Basecoat component layouts) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- Basecoat CSS (Design tokens + component styling) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/basecoat.cdn.min.css"
+    />
+
+    <!-- Basecoat Core JS (required for all interactive parts) -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/all.min.js"
+      defer
+    ></script>
+
+    <!-- Basecoat Component Registry -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/basecoat.min.js"
+      defer
+    ></script>
+
+    <!-- Dropdown Menu Component -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/dropdown-menu.min.js"
+      defer
+    ></script>
+
+    <link rel="stylesheet" href="theme.css" />
+
+    <style>
+      /* ── Global scrollbar — matches sidebar .scrollbar class ── */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+      }
+      *::-webkit-scrollbar {
+        width: var(--scrollbar-width);
+      }
+      *::-webkit-scrollbar-track {
+        background: var(--scrollbar-track);
+      }
+      *::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb);
+        border-radius: var(--scrollbar-radius);
+      }
+
+      /* ── Collapse hidden Basecoat popovers — prevent layout inflation ── */
+      [data-popover][aria-hidden="true"] {
+        height: 0 !important;
+        min-height: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        overflow: hidden !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+
+      /* ── Metric card icon badge ── */
+      .ct-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 9999px;
+        border: 1px solid var(--border);
+        color: var(--muted-foreground);
+        background: transparent;
+        flex-shrink: 0;
+      }
+
+      /* ── Entity card ── */
+      .entity-card {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgb(0 0 0 / 0.05);
+        transition: box-shadow 150ms ease;
+        display: flex;
+        flex-direction: column;
+      }
+      .entity-card:hover {
+        box-shadow: 0 4px 16px rgb(0 0 0 / 0.09);
+      }
+      .entity-card-footer {
+        background: #ffffff;
+        border-top: 1px solid var(--border);
+        padding: 0.7rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      /* ── Entity list row ── */
+      .entity-row {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.875rem 1.25rem;
+        transition: background 120ms ease;
+      }
+      .entity-row:hover {
+        background: oklch(0.38 0.23 268 / 0.035);
+      }
+
+      /* ── View toggle active state ── */
+      .view-btn.active {
+        background: var(--secondary);
+        color: var(--foreground);
+      }
+
+      /* ── Row action trigger — no hover response ── */
+      .row-action-trigger {
+        cursor: default !important;
+        color: var(--muted-foreground);
+      }
+      .row-action-trigger:hover,
+      .row-action-trigger:focus {
+        background: transparent !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+        outline: none !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <aside
+      class="sidebar bg-transparent bg-transparent z-100"
+      data-side="left"
+      aria-hidden="false"
+    >
+      <nav aria-label="Sidebar navigation">
+        <header class="px-4 py-4">
+          <img
+            class="w-48"
+            src="assets/swan_pro_logo.png"
+            alt="TheSwanPro Logo"
+          />
+        </header>
+
+        <section
+          class="scrollbar main-links [&_a]:bg-transparent [&_a]:font-normal [&_a]:py-3 [&_a:hover]:bg-[var(--secondary)] [&_summary:hover]:bg-[var(--secondary)] [&_summary]:py-2.5"
+        >
+          <!-- Main Navigation -->
+          <div role="group" aria-labelledby="group-nav">
+            <h3 id="group-nav">Main Navigation</h3>
+            <ul>
+              <li>
+                <a href="dashboard.html">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                  </svg>
+                  <span>Home</span>
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M13 5h8" />
+                    <path d="M13 12h8" />
+                    <path d="M13 19h8" />
+                    <path d="m3 17 2 2 4-4" />
+                    <rect x="3" y="4" width="6" height="6" rx="1" />
+                  </svg>
+                  <span>Tasks</span>
+                  <span
+                    class="badge-destructive ml-auto text-[11px] px- py-0.5 font-bold"
+                    >3</span
+                  >
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                    <line x1="16" x2="16" y1="2" y2="6" />
+                    <line x1="8" x2="8" y1="2" y2="6" />
+                    <line x1="3" x2="21" y1="10" y2="10" />
+                  </svg>
+                  <span>Calendar</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Contracts -->
+          <div role="group" aria-labelledby="group-contracts">
+            <h3 id="group-contracts">Contracts</h3>
+            <ul>
+              <li>
+                <details id="submenu-agreements">
+                  <summary aria-controls="submenu-agreements-content">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M17 6.1H3" />
+                      <path d="M21 12.1H3" />
+                      <path d="M15.1 18H3" />
+                    </svg>
+                    Agreements
+                  </summary>
+                  <ul id="submenu-agreements-content">
+                    <li>
+                      <a href="#"><span>All Agreements</span></a>
+                    </li>
+                    <li>
+                      <a href="#"><span>Create New</span></a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+              <li>
+                <details id="submenu-entities" open>
+                  <summary aria-controls="submenu-entities-content">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
+                      <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+                      <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
+                      <path d="M10 6h4" />
+                      <path d="M10 10h4" />
+                      <path d="M10 14h4" />
+                      <path d="M10 18h4" />
+                    </svg>
+                    Entities
+                  </summary>
+                  <ul id="submenu-entities-content">
+                    <li>
+                      <a href="entities.html" aria-current="page"
+                        ><span>All Entities</span></a
+                      >
+                    </li>
+                    <li>
+                      <a href="#"><span>Create New</span></a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Declarations -->
+          <div role="group" aria-labelledby="group-travel">
+            <h3 id="group-travel">Declarations</h3>
+            <ul>
+              <li>
+                <details id="submenu-travel">
+                  <summary aria-controls="submenu-travel-content">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                      />
+                      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                    </svg>
+                    Travel Certificate
+                  </summary>
+                  <ul id="submenu-travel-content">
+                    <li>
+                      <a href="travel_certificate.html"
+                        ><span>All Certificates</span></a
+                      >
+                    </li>
+                    <li>
+                      <a href="#"><span>Create New</span></a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Reports -->
+          <div role="group" aria-labelledby="group-reports">
+            <h3 id="group-reports">Reports</h3>
+            <ul>
+              <li>
+                <a href="#">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M12 16v5" />
+                    <path d="M16 14v7" />
+                    <path d="M20 10v11" />
+                    <path
+                      d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15"
+                    />
+                    <path d="M4 18v3" />
+                    <path d="M8 14v7" />
+                  </svg>
+                  <span>Technical</span>
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <line x1="12" x2="12" y1="2" y2="22" />
+                    <path
+                      d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                    />
+                  </svg>
+                  <span>Financial</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <footer>
+          <div id="demo-dropdown-menu" class="dropdown-menu">
+            <button
+              type="button"
+              id="demo-dropdown-menu-trigger"
+              aria-haspopup="menu"
+              aria-controls="demo-dropdown-menu-menu"
+              aria-expanded="false"
+              class="w-full flex items-center gap-3 rounded-lg px-2 py-2 text-left cursor-pointer hover:bg-gray-50"
+            >
+              <div
+                class="w-9 h-9 rounded-lg shrink-0 bg-gray-200 text-gray-700 flex items-center justify-center text-sm font-semibold"
+              >
+                ZM
+              </div>
+              <div class="flex flex-col min-w-0">
+                <span class="font-medium text-sm truncate">Zain Makki</span>
+                <span class="text-xs text-gray-500 truncate">@sima_admin</span>
+              </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="ml-auto h-4 w-4"
+              >
+                <path d="m7 15 5 5 5-5" />
+                <path d="m7 9 5-5 5 5" />
+              </svg>
+            </button>
+
+            <div
+              id="demo-dropdown-menu-popover"
+              data-popover
+              aria-hidden="true"
+              class="min-w-56"
+              data-side="top"
+            >
+              <div
+                role="menu"
+                id="demo-dropdown-menu-menu"
+                aria-labelledby="demo-dropdown-menu-trigger"
+              >
+                <div role="group" aria-labelledby="account-options">
+                  <div role="heading" id="account-options">My Account</div>
+                  <a href="#"><div role="menuitem">Profile</div></a>
+                  <div role="menuitem">Settings</div>
+                </div>
+                <hr role="separator" />
+                <div role="menuitem">GitHub</div>
+                <div role="menuitem" aria-disabled="true">API Documents</div>
+                <hr role="separator" />
+                <a href="login.html">
+                  <div role="menuitem" class="text-red-500 hover:!bg-red-50">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="stroke-red-500"
+                    >
+                      <path d="m16 17 5-5-5-5" />
+                      <path d="M21 12H9" />
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    </svg>
+                    Logout
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </nav>
+    </aside>
+
+    <main>
+      <!-- ─── Top Navigation Header ─────────────────────────────────────── -->
+      <header
+        class="sticky top-0 z-50 bg-white flex items-center gap-3 p-3 border-b border-gray-200"
+      >
+        <button
+          type="button"
+          onclick="document.dispatchEvent(new CustomEvent('basecoat:sidebar'))"
+          class="btn-ghost"
+          data-tooltip="Toggle sidebar"
+          data-side="bottom"
+          data-align="start"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect width="18" height="18" x="3" y="3" rx="2" />
+            <path d="M15 3v18" />
+          </svg>
+        </button>
+
+        <div class="w-px h-4 bg-gray-200 mr-3"></div>
+
+        <ol
+          class="text-muted-foreground flex flex-wrap items-center gap-1.5 text-sm break-words sm:gap-2.5"
+        >
+          <li class="inline-flex items-center gap-1.5">
+            <a href="#" class="hover:text-foreground transition-colors">Home</a>
+          </li>
+          <li>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3.5"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </li>
+          <li class="inline-flex items-center gap-1.5">
+            <a href="#" class="hover:text-foreground transition-colors"
+              >Contracts</a
+            >
+          </li>
+          <li>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3.5"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </li>
+          <li class="inline-flex items-center gap-1.5">
+            <span class="text-foreground font-semibold">Entities</span>
+          </li>
+        </ol>
+
+        <!-- SEARCH BAR -->
+        <div id="header-search-wrap" class="relative ml-auto w-72">
+          <input
+            type="text"
+            class="input pl-9"
+            placeholder="Search..."
+            onkeydown="
+              if (event.key === 'Enter') {
+                const w = document.getElementById('header-search-wrap');
+                w.innerHTML =
+                  '<input type=\'text\' class=\'input pr-9\' placeholder=\'Searching...\' disabled /><div class=\'absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground [&>svg]:size-4 opacity-50\'><svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' class=\'animate-spin\'><path d=\'M21 12a9 9 0 1 1-6.219-8.56\'/></svg></div>';
+              }
+            "
+          />
+          <div
+            class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground [&>svg]:size-4"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- LANGUAGE TOGGLE -->
+        <div id="header-lang-menu" class="dropdown-menu">
+          <button
+            type="button"
+            id="header-lang-menu-trigger"
+            aria-haspopup="menu"
+            aria-controls="header-lang-menu-menu"
+            aria-expanded="false"
+            class="btn-ghost flex items-center gap-1.5"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-4"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+              <path d="M2 12h20" />
+            </svg>
+            <span id="header-lang-label" class="text-sm font-medium">EN</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div
+            id="header-lang-menu-popover"
+            data-popover
+            aria-hidden="true"
+            data-align="end"
+            class="min-w-20"
+          >
+            <div
+              role="menu"
+              id="header-lang-menu-menu"
+              aria-labelledby="header-lang-menu-trigger"
+            >
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'EN';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                English
+              </div>
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'AR';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                Arabic
+              </div>
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'FR';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                French
+              </div>
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'TR';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                Turkish
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEW ENTITY -->
+        <button
+          type="button"
+          class="btn"
+          onclick="document.getElementById('dialog-new-entity').showModal()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+          New Entity
+        </button>
+      </header>
+
+      <!-- ─── Page Content ──────────────────────────────────────────────── -->
+      <div class="px-8 pt-8 pb-10 space-y-6">
+        <!-- ── Page Header ── -->
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <h1 class="text-3xl font-bold tracking-tight">Entities</h1>
+            <p class="text-muted-foreground mt-1.5">
+              Manage all registered insurance entities and their linked
+              agreements.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              class="btn-icon-outline"
+              data-tooltip="Export PDF"
+              data-side="bottom"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-4"
+              >
+                <path
+                  d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                />
+                <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                <path d="M10 9H8" />
+                <path d="M16 13H8" />
+                <path d="M16 17H8" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="btn-icon-outline"
+              data-tooltip="Export Excel"
+              data-side="bottom"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-4"
+              >
+                <rect width="18" height="18" x="3" y="3" rx="2" />
+                <path d="M3 9h18" />
+                <path d="M3 15h18" />
+                <path d="M9 3v18" />
+                <path d="M15 3v18" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="btn-icon-outline"
+              data-tooltip="Print"
+              data-side="bottom"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-4"
+              >
+                <polyline points="6 9 6 2 18 2 18 9" />
+                <path
+                  d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+                />
+                <rect width="12" height="8" x="6" y="14" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ── Metric Cards ── -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+          <!-- Total -->
+          <div class="card p-4 flex flex-col gap-3">
+            <div class="flex items-start justify-between">
+              <p class="text-sm font-medium text-muted-foreground">
+                Total Entities
+              </p>
+              <span class="ct-badge">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
+                  <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+                  <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
+                  <path d="M10 6h4" />
+                  <path d="M10 10h4" />
+                  <path d="M10 14h4" />
+                  <path d="M10 18h4" />
+                </svg>
+              </span>
+            </div>
+            <div>
+              <p class="text-3xl font-bold tracking-tight">42</p>
+              <p class="text-xs mt-1" style="color: #16a34a">
+                +3 from last month
+              </p>
+            </div>
+          </div>
+
+          <!-- Countries -->
+          <div class="card p-4 flex flex-col gap-3">
+            <div class="flex items-start justify-between">
+              <p class="text-sm font-medium text-muted-foreground">Countries</p>
+              <span class="ct-badge">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                  <path d="M2 12h20" />
+                </svg>
+              </span>
+            </div>
+            <div>
+              <p class="text-3xl font-bold tracking-tight">12</p>
+              <p class="text-xs mt-1" style="color: #16a34a">+2 new regions</p>
+            </div>
+          </div>
+
+          <!-- Total Agreements -->
+          <div class="card p-4 flex flex-col gap-3">
+            <div class="flex items-start justify-between">
+              <p class="text-sm font-medium text-muted-foreground">Total Agreements</p>
+              <span class="ct-badge">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M17 6.1H3"/><path d="M21 12.1H3"/><path d="M15.1 18H3"/>
+                </svg>
+              </span>
+            </div>
+            <div>
+              <p class="text-3xl font-bold tracking-tight">186</p>
+              <p class="text-xs mt-1 text-muted-foreground">across all entities</p>
+            </div>
+          </div>
+
+          <!-- New This Month -->
+          <div class="card p-4 flex flex-col gap-3">
+            <div class="flex items-start justify-between">
+              <p class="text-sm font-medium text-muted-foreground">
+                New This Month
+              </p>
+              <span class="ct-badge">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14" />
+                  <path d="M12 5v14" />
+                </svg>
+              </span>
+            </div>
+            <div>
+              <p class="text-3xl font-bold tracking-tight">3</p>
+              <p class="text-xs mt-1 text-muted-foreground">
+                Since May 1, 2026
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Filter Bar ── -->
+        <div class="flex items-center gap-3 flex-wrap">
+          <!-- Search -->
+          <div class="relative min-w-52 flex-1 max-w-xs">
+            <input
+              type="text"
+              id="entity-search"
+              class="input pl-9 h-9 text-sm w-full"
+              placeholder="Search by name or code…"
+              oninput="applyFilters()"
+            />
+            <div
+              class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground [&>svg]:size-4"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Country filter — Basecoat searchable select -->
+          <div id="ent-country-sel" class="select">
+            <button
+              type="button"
+              class="btn-outline w-44"
+              id="ent-country-sel-trigger"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="ent-country-sel-listbox"
+            >
+              <span id="ent-country-sel-label" class="truncate"
+                >All Countries</span
+              >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-muted-foreground opacity-50 shrink-0 size-4"
+              >
+                <path d="m7 15 5 5 5-5" />
+                <path d="m7 9 5-5 5 5" />
+              </svg>
+            </button>
+            <div id="ent-country-sel-popover" data-popover aria-hidden="true">
+              <header>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+                <input
+                  type="text"
+                  id="ent-country-search"
+                  placeholder="Search countries..."
+                  autocomplete="off"
+                  spellcheck="false"
+                  aria-autocomplete="list"
+                  role="combobox"
+                  aria-expanded="false"
+                  aria-controls="ent-country-sel-listbox"
+                  aria-labelledby="ent-country-sel-trigger"
+                  oninput="
+                    filterCountryOptions('ent-country-sel-listbox', this.value)
+                  "
+                />
+              </header>
+              <div
+                role="listbox"
+                id="ent-country-sel-listbox"
+                aria-labelledby="ent-country-sel-trigger"
+              >
+                <div
+                  role="option"
+                  data-value=""
+                  aria-selected="true"
+                  onclick="selectCountryFilter('', 'All Countries', this)"
+                >
+                  All Countries
+                </div>
+                <div
+                  role="option"
+                  data-value="Bahrain"
+                  onclick="selectCountryFilter('Bahrain', 'Bahrain', this)"
+                >
+                  Bahrain
+                </div>
+                <div
+                  role="option"
+                  data-value="Egypt"
+                  onclick="selectCountryFilter('Egypt', 'Egypt', this)"
+                >
+                  Egypt
+                </div>
+                <div
+                  role="option"
+                  data-value="France"
+                  onclick="selectCountryFilter('France', 'France', this)"
+                >
+                  France
+                </div>
+                <div
+                  role="option"
+                  data-value="Germany"
+                  onclick="selectCountryFilter('Germany', 'Germany', this)"
+                >
+                  Germany
+                </div>
+                <div
+                  role="option"
+                  data-value="Jordan"
+                  onclick="selectCountryFilter('Jordan', 'Jordan', this)"
+                >
+                  Jordan
+                </div>
+                <div
+                  role="option"
+                  data-value="Kuwait"
+                  onclick="selectCountryFilter('Kuwait', 'Kuwait', this)"
+                >
+                  Kuwait
+                </div>
+                <div
+                  role="option"
+                  data-value="Lebanon"
+                  onclick="selectCountryFilter('Lebanon', 'Lebanon', this)"
+                >
+                  Lebanon
+                </div>
+                <div
+                  role="option"
+                  data-value="Morocco"
+                  onclick="selectCountryFilter('Morocco', 'Morocco', this)"
+                >
+                  Morocco
+                </div>
+                <div
+                  role="option"
+                  data-value="Oman"
+                  onclick="selectCountryFilter('Oman', 'Oman', this)"
+                >
+                  Oman
+                </div>
+                <div
+                  role="option"
+                  data-value="Qatar"
+                  onclick="selectCountryFilter('Qatar', 'Qatar', this)"
+                >
+                  Qatar
+                </div>
+                <div
+                  role="option"
+                  data-value="Saudi Arabia"
+                  onclick="
+                    selectCountryFilter('Saudi Arabia', 'Saudi Arabia', this)
+                  "
+                >
+                  Saudi Arabia
+                </div>
+                <div
+                  role="option"
+                  data-value="Tunisia"
+                  onclick="selectCountryFilter('Tunisia', 'Tunisia', this)"
+                >
+                  Tunisia
+                </div>
+                <div
+                  role="option"
+                  data-value="Turkey"
+                  onclick="selectCountryFilter('Turkey', 'Turkey', this)"
+                >
+                  Turkey
+                </div>
+                <div
+                  role="option"
+                  data-value="United Arab Emirates"
+                  onclick="
+                    selectCountryFilter('United Arab Emirates', 'UAE', this)
+                  "
+                >
+                  United Arab Emirates
+                </div>
+              </div>
+            </div>
+            <input type="hidden" id="entity-country-hidden" value="" />
+          </div>
+
+          <!-- View Toggle -->
+          <div
+            class="ml-auto flex items-center gap-0.5 border border-[var(--border)] rounded-md p-0.5"
+          >
+            <button
+              id="view-grid-btn"
+              class="view-btn active btn-ghost !h-7 !w-7 !rounded-[calc(var(--radius)-2px)] !p-0 flex items-center justify-center"
+              onclick="setView('grid')"
+              data-tooltip="Grid view"
+              data-side="bottom"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect width="7" height="7" x="3" y="3" rx="1" />
+                <rect width="7" height="7" x="14" y="3" rx="1" />
+                <rect width="7" height="7" x="14" y="14" rx="1" />
+                <rect width="7" height="7" x="3" y="14" rx="1" />
+              </svg>
+            </button>
+            <button
+              id="view-list-btn"
+              class="view-btn btn-ghost !h-7 !w-7 !rounded-[calc(var(--radius)-2px)] !p-0 flex items-center justify-center"
+              onclick="setView('list')"
+              data-tooltip="List view"
+              data-side="bottom"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="8" x2="21" y1="6" y2="6" />
+                <line x1="8" x2="21" y1="12" y2="12" />
+                <line x1="8" x2="21" y1="18" y2="18" />
+                <line x1="3" x2="3.01" y1="6" y2="6" />
+                <line x1="3" x2="3.01" y1="12" y2="12" />
+                <line x1="3" x2="3.01" y1="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ── Entities Container ── -->
+        <div
+          id="entities-container"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+        ></div>
+
+        <!-- ── Empty State ── -->
+        <div
+          id="entities-empty"
+          class="hidden flex flex-col items-center justify-center py-20 gap-3 text-muted-foreground"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="40"
+            height="40"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="opacity-30"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <p class="text-sm font-medium">No entities match your filters.</p>
+          <button class="btn-ghost text-xs" onclick="clearFilters()">
+            Clear filters
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- ─── New Entity Dialog ───────────────────────────────────────────── -->
+    <dialog
+      id="dialog-new-entity"
+      class="dialog w-full sm:max-w-[460px]"
+      aria-labelledby="dialog-new-entity-title"
+      aria-describedby="dialog-new-entity-desc"
+      onclick="if (event.target === this) this.close();"
+    >
+      <div>
+        <header>
+          <h2 id="dialog-new-entity-title">New Entity</h2>
+          <p id="dialog-new-entity-desc">
+            Fill in the details below to register a new insurance entity.
+          </p>
+        </header>
+
+        <section>
+          <form class="form grid gap-4" onsubmit="return false;">
+            <!-- Entity Code -->
+            <div class="grid gap-2">
+              <label for="new-entity-code">Entity Code</label>
+              <input
+                type="text"
+                id="new-entity-code"
+                class="input font-mono"
+                placeholder="e.g. ENT-013"
+                autofocus
+              />
+            </div>
+
+            <!-- Entity Name -->
+            <div class="grid gap-2">
+              <label for="new-entity-name">Entity Name</label>
+              <input
+                type="text"
+                id="new-entity-name"
+                class="input"
+                placeholder="e.g. Gulf Shield Re"
+              />
+            </div>
+
+            <!-- Entity Country -->
+            <div class="grid gap-2">
+              <label id="dlg-country-label">Country</label>
+              <div id="dlg-country-sel" class="select">
+                <button
+                  type="button"
+                  class="btn-outline w-full"
+                  id="dlg-country-sel-trigger"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-controls="dlg-country-sel-listbox"
+                  aria-labelledby="dlg-country-label dlg-country-sel-trigger"
+                >
+                  <span
+                    id="dlg-country-sel-label"
+                    class="truncate text-muted-foreground"
+                    >Select a country…</span
+                  >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-muted-foreground opacity-50 shrink-0 size-4"
+                  >
+                    <path d="m7 15 5 5 5-5" />
+                    <path d="m7 9 5-5 5 5" />
+                  </svg>
+                </button>
+                <div
+                  id="dlg-country-sel-popover"
+                  data-popover
+                  aria-hidden="true"
+                >
+                  <header>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="11" cy="11" r="8" />
+                      <path d="m21 21-4.3-4.3" />
+                    </svg>
+                    <input
+                      type="text"
+                      id="dlg-country-search"
+                      placeholder="Search countries..."
+                      autocomplete="off"
+                      spellcheck="false"
+                      aria-autocomplete="list"
+                      role="combobox"
+                      aria-expanded="false"
+                      aria-controls="dlg-country-sel-listbox"
+                      aria-labelledby="dlg-country-sel-trigger"
+                      oninput="
+                        filterCountryOptions(
+                          'dlg-country-sel-listbox',
+                          this.value,
+                        )
+                      "
+                    />
+                  </header>
+                  <div
+                    role="listbox"
+                    id="dlg-country-sel-listbox"
+                    aria-labelledby="dlg-country-sel-trigger"
+                  >
+                    <div
+                      role="option"
+                      data-value="Bahrain"
+                      onclick="selectDialogCountry('Bahrain', this)"
+                    >
+                      Bahrain
+                    </div>
+                    <div
+                      role="option"
+                      data-value="Egypt"
+                      onclick="selectDialogCountry('Egypt', this)"
+                    >
+                      Egypt
+                    </div>
+                    <div
+                      role="option"
+                      data-value="France"
+                      onclick="selectDialogCountry('France', this)"
+                    >
+                      France
+                    </div>
+                    <div
+                      role="option"
+                      data-value="Germany"
+                      onclick="selectDialogCountry('Germany', this)"
+                    >
+                      Germany
+                    </div>
+                    <div
+                      role="option"
+                      data-value="Jordan"
+                      onclick="selectDialogCountry('Jordan', this)"
+                    >
+                      Jordan
+                    </div>
+                    <div
+                      role="option"
+                      data-value="Kuwait"
+                      onclick="selectDialogCountry('Kuwait', this)"
+                    >
+                      Kuwait
+                    </div>
+                    <div
+                      role="option"
+                      data-value="Lebanon"
+                      onclick="selectDialogCountry('Lebanon', this)"
+                    >
+                      Lebanon
+                    </div>
+                    <div
+                      role="option"
+                      data-value="Morocco"
+                      onclick="selectDialogCountry('Morocco', this)"
+                    >
+                      Morocco
+                    </div>
+                    <div
+                      role="option"
+                      data-value="Oman"
+                      onclick="selectDialogCountry('Oman', this)"
+                    >
+                      Oman
+                    </div>
+                    <div
+                      role="option"
+                      data-value="Qatar"
+                      onclick="selectDialogCountry('Qatar', this)"
+                    >
+                      Qatar
+                    </div>
+                    <div
+                      role="option"
+                      data-value="Saudi Arabia"
+                      onclick="selectDialogCountry('Saudi Arabia', this)"
+                    >
+                      Saudi Arabia
+                    </div>
+                    <div
+                      role="option"
+                      data-value="Tunisia"
+                      onclick="selectDialogCountry('Tunisia', this)"
+                    >
+                      Tunisia
+                    </div>
+                    <div
+                      role="option"
+                      data-value="Turkey"
+                      onclick="selectDialogCountry('Turkey', this)"
+                    >
+                      Turkey
+                    </div>
+                    <div
+                      role="option"
+                      data-value="United Arab Emirates"
+                      onclick="
+                        selectDialogCountry('United Arab Emirates', this)
+                      "
+                    >
+                      United Arab Emirates
+                    </div>
+                  </div>
+                </div>
+                <input type="hidden" id="dlg-country-hidden" value="" />
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <footer>
+          <button class="btn-outline" onclick="this.closest('dialog').close()">
+            Cancel
+          </button>
+          <button class="btn" onclick="this.closest('dialog').close()">
+            Create Entity
+          </button>
+        </footer>
+
+        <!-- Close X -->
+        <button
+          type="button"
+          aria-label="Close dialog"
+          onclick="this.closest('dialog').close()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+    </dialog>
+
+    <script>
+      /* ─── Data ─────────────────────────────────────────────────────────── */
+      const ENTITIES = [
+        {
+          id: 1,
+          code: "ENT-001",
+          name: "Al Muthanna Insurance Co.",
+          country: "Saudi Arabia",
+          flag: "🇸🇦",
+          phone: "+966 11 234 5678",
+          agreements: 42,
+        },
+        {
+          id: 2,
+          code: "ENT-002",
+          name: "Gulf Shield Re",
+          country: "United Arab Emirates",
+          flag: "🇦🇪",
+          phone: "+971 4 887 3200",
+          agreements: 18,
+        },
+        {
+          id: 3,
+          code: "ENT-003",
+          name: "Orient Takaful",
+          country: "Kuwait",
+          flag: "🇰🇼",
+          phone: "+965 2244 8800",
+          agreements: 31,
+        },
+        {
+          id: 4,
+          code: "ENT-004",
+          name: "Méditerranée Assurance",
+          country: "France",
+          flag: "🇫🇷",
+          phone: "+33 1 44 82 00 00",
+          agreements: 7,
+        },
+        {
+          id: 5,
+          code: "ENT-005",
+          name: "SwanPro Direct",
+          country: "Bahrain",
+          flag: "🇧🇭",
+          phone: "+973 1756 0000",
+          agreements: 15,
+        },
+        {
+          id: 6,
+          code: "ENT-006",
+          name: "Atlas Cover Ltd",
+          country: "Morocco",
+          flag: "🇲🇦",
+          phone: "+212 522 481 900",
+          agreements: 9,
+        },
+        {
+          id: 7,
+          code: "ENT-007",
+          name: "Crescent Re",
+          country: "Turkey",
+          flag: "🇹🇷",
+          phone: "+90 212 385 5500",
+          agreements: 24,
+        },
+        {
+          id: 8,
+          code: "ENT-008",
+          name: "Nordic Bridge Insurance",
+          country: "Germany",
+          flag: "🇩🇪",
+          phone: "+49 30 2093 0000",
+          agreements: 5,
+        },
+        {
+          id: 9,
+          code: "ENT-009",
+          name: "Nile Valley Assurance",
+          country: "Egypt",
+          flag: "🇪🇬",
+          phone: "+20 2 2574 1234",
+          agreements: 13,
+        },
+        {
+          id: 10,
+          code: "ENT-010",
+          name: "Bosphorus Insurance Group",
+          country: "Turkey",
+          flag: "🇹🇷",
+          phone: "+90 212 444 7700",
+          agreements: 11,
+        },
+        {
+          id: 11,
+          code: "ENT-011",
+          name: "Crescent Life Qatar",
+          country: "Qatar",
+          flag: "🇶🇦",
+          phone: "+974 4411 2233",
+          agreements: 8,
+        },
+        {
+          id: 12,
+          code: "ENT-012",
+          name: "Sahel Re Holdings",
+          country: "Morocco",
+          flag: "🇲🇦",
+          phone: "+212 537 760 800",
+          agreements: 3,
+        },
+      ];
+
+      let currentView = "grid";
+
+      /* ─── Country filter select ─────────────────────────────────────────── */
+      function selectCountryFilter(value, label, el) {
+        document.getElementById("entity-country-hidden").value = value;
+        document.getElementById("ent-country-sel-label").textContent = label;
+        document
+          .querySelectorAll('#ent-country-sel-listbox [role="option"]')
+          .forEach((o) => o.removeAttribute("aria-selected"));
+        el.setAttribute("aria-selected", "true");
+        const popover = document.getElementById("ent-country-sel-popover");
+        const trigger = document.getElementById("ent-country-sel-trigger");
+        popover.setAttribute("aria-hidden", "true");
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.focus();
+        document.getElementById("ent-country-search").value = "";
+        filterCountryOptions("ent-country-sel-listbox", "");
+        applyFilters();
+      }
+
+      /* ─── Dialog country select ──────────────────────────────────────────── */
+      function selectDialogCountry(value, el) {
+        document.getElementById("dlg-country-hidden").value = value;
+        const lbl = document.getElementById("dlg-country-sel-label");
+        lbl.textContent = value;
+        lbl.classList.remove("text-muted-foreground");
+        document
+          .querySelectorAll('#dlg-country-sel-listbox [role="option"]')
+          .forEach((o) => o.removeAttribute("aria-selected"));
+        el.setAttribute("aria-selected", "true");
+        const popover = document.getElementById("dlg-country-sel-popover");
+        const trigger = document.getElementById("dlg-country-sel-trigger");
+        popover.setAttribute("aria-hidden", "true");
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.focus();
+        document.getElementById("dlg-country-search").value = "";
+        filterCountryOptions("dlg-country-sel-listbox", "");
+      }
+
+      /* ─── Search filter for country listbox ─────────────────────────────── */
+      function filterCountryOptions(listboxId, query) {
+        const q = query.toLowerCase().trim();
+        document
+          .querySelectorAll(`#${listboxId} [role="option"]`)
+          .forEach((opt) => {
+            opt.style.display =
+              !q || opt.textContent.toLowerCase().includes(q) ? "" : "none";
+          });
+      }
+
+      /* ─── Get initials from entity name ────────────────────────────────── */
+      function initials(name) {
+        return name
+          .split(" ")
+          .slice(0, 2)
+          .map((w) => w[0])
+          .join("")
+          .toUpperCase();
+      }
+
+      /* ─── Build a grid card ─────────────────────────────────────────────── */
+      function buildCard(e) {
+        return `
+          <div class="entity-card">
+
+            <!-- Body -->
+            <div style="padding:1.25rem 1.25rem 1.125rem;display:flex;flex-direction:column;gap:0.9rem;flex:1">
+
+              <!-- Code row + action -->
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <span style="font-family:monospace;font-size:0.68rem;font-weight:600;letter-spacing:0.07em;color:var(--muted-foreground);background:var(--secondary);border-radius:9999px;padding:0.2rem 0.65rem">${e.code}</span>
+                <div class="dropdown-menu" id="card-menu-${e.id}">
+                  <button
+                    type="button"
+                    class="btn-icon-ghost row-action-trigger"
+                    id="card-menu-${e.id}-trigger"
+                    aria-haspopup="menu"
+                    aria-controls="card-menu-${e.id}-menu"
+                    aria-expanded="false"
+                    aria-label="Entity actions"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
+                    </svg>
+                  </button>
+                  <div id="card-menu-${e.id}-popover" data-popover aria-hidden="true" data-align="end">
+                    <div role="menu" id="card-menu-${e.id}-menu" aria-labelledby="card-menu-${e.id}-trigger">
+                      <a href="#">
+                        <div role="menuitem">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+                          </svg>
+                          View Entity
+                        </div>
+                      </a>
+                      <a href="#">
+                        <div role="menuitem" class="text-red-500 hover:!bg-red-50">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-red-500">
+                            <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                          </svg>
+                          Delete
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Name -->
+              <h3 style="font-size:1.125rem;font-weight:700;line-height:1.25;color:var(--foreground);margin:0">${e.name}</h3>
+
+              <!-- Country + phone -->
+              <div style="display:flex;flex-direction:column;gap:0.35rem">
+                <span style="display:flex;align-items:center;gap:0.5rem;font-size:0.8125rem;color:var(--muted-foreground)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:0.55"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                  <span>${e.country}</span>
+                </span>
+                <span style="display:flex;align-items:center;gap:0.5rem;font-size:0.8125rem;color:var(--muted-foreground)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:0.55"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.82 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.77 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.93a16 16 0 0 0 6.16 6.16l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  <span>${e.phone}</span>
+                </span>
+              </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="entity-card-footer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted-foreground);opacity:0.6;flex-shrink:0"><path d="M17 6.1H3"/><path d="M21 12.1H3"/><path d="M15.1 18H3"/></svg>
+              <span style="font-size:0.9375rem;font-weight:700;color:var(--foreground)">${e.agreements}</span>
+              <span style="font-size:0.8rem;color:var(--muted-foreground)">Agreements</span>
+            </div>
+
+          </div>`;
+      }
+
+      /* ─── Build a list row ──────────────────────────────────────────────── */
+      function buildRow(e) {
+        return `
+          <div class="entity-row">
+            <span style="font-family:monospace;font-size:0.6875rem;font-weight:600;letter-spacing:0.07em;color:var(--muted-foreground);flex-shrink:0;min-width:5.5rem">${e.code}</span>
+            <p style="font-size:0.9rem;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--foreground)">${e.name}</p>
+            <p style="font-size:0.8125rem;color:var(--muted-foreground);min-width:11rem;display:flex;align-items:center;gap:0.4rem;flex-shrink:0">
+              ${e.country}
+            </p>
+            <p style="font-size:0.8125rem;color:var(--muted-foreground);min-width:9rem;flex-shrink:0">${e.phone}</p>
+            <p style="font-size:0.8125rem;color:var(--muted-foreground);min-width:6rem;text-align:right;flex-shrink:0"><span style="font-weight:700;color:var(--foreground)">${e.agreements}</span> agreements</p>
+            <div class="dropdown-menu" id="row-menu-${e.id}">
+              <button
+                type="button"
+                class="btn-icon-ghost row-action-trigger"
+                id="row-menu-${e.id}-trigger"
+                aria-haspopup="menu"
+                aria-controls="row-menu-${e.id}-menu"
+                aria-expanded="false"
+                aria-label="Entity actions"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
+                </svg>
+              </button>
+              <div id="row-menu-${e.id}-popover" data-popover aria-hidden="true" data-align="end">
+                <div role="menu" id="row-menu-${e.id}-menu" aria-labelledby="row-menu-${e.id}-trigger">
+                  <a href="#">
+                    <div role="menuitem">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+                      </svg>
+                      View Entity
+                    </div>
+                  </a>
+                  <a href="#">
+                    <div role="menuitem">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                      </svg>
+                      Edit
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>`;
+      }
+
+      /* ─── Render ────────────────────────────────────────────────────────── */
+      function render(list) {
+        const container = document.getElementById("entities-container");
+        const empty = document.getElementById("entities-empty");
+        if (list.length === 0) {
+          container.innerHTML = "";
+          empty.classList.remove("hidden");
+          return;
+        }
+
+        empty.classList.add("hidden");
+
+        if (currentView === "grid") {
+          container.className =
+            "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4";
+          container.innerHTML = list.map(buildCard).join("");
+        } else {
+          container.className = "flex flex-col gap-2";
+          container.innerHTML = list.map(buildRow).join("");
+        }
+      }
+
+      /* ─── Apply filters ─────────────────────────────────────────────────── */
+      function applyFilters() {
+        const q = document
+          .getElementById("entity-search")
+          .value.toLowerCase()
+          .trim();
+        const country = document.getElementById("entity-country-hidden").value;
+
+        const filtered = ENTITIES.filter((e) => {
+          const matchQ =
+            !q ||
+            e.name.toLowerCase().includes(q) ||
+            e.code.toLowerCase().includes(q);
+          const matchCountry = !country || e.country === country;
+          return matchQ && matchCountry;
+        });
+
+        render(filtered);
+      }
+
+      /* ─── View toggle ───────────────────────────────────────────────────── */
+      function setView(v) {
+        currentView = v;
+        document
+          .getElementById("view-grid-btn")
+          .classList.toggle("active", v === "grid");
+        document
+          .getElementById("view-list-btn")
+          .classList.toggle("active", v === "list");
+        applyFilters();
+      }
+
+      /* ─── Clear filters ─────────────────────────────────────────────────── */
+      function clearFilters() {
+        document.getElementById("entity-search").value = "";
+        selectCountryFilter(
+          "",
+          "All Countries",
+          document.querySelector('#ent-country-sel-listbox [data-value=""]'),
+        );
+      }
+
+      /* ─── Init ──────────────────────────────────────────────────────────── */
+      render(ENTITIES);
+    </script>
+  </body>
+</html>

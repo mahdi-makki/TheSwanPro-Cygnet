@@ -440,7 +440,7 @@
             <h3 id="group-nav">Main Navigation</h3>
             <ul>
               <li>
-                <a href="#">
+                <a href="dashboard.html">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -513,6 +513,77 @@
             <h3 id="group-contracts">Contracts</h3>
             <ul>
               <li>
+                <details id="submenu-agreements">
+                  <summary aria-controls="submenu-agreements-content">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M17 6.1H3" />
+                      <path d="M21 12.1H3" />
+                      <path d="M15.1 18H3" />
+                    </svg>
+                    Agreements
+                  </summary>
+                  <ul id="submenu-agreements-content">
+                    <li>
+                      <a href="#"><span>All Agreements</span></a>
+                    </li>
+                    <li>
+                      <a href="#"><span>Create New</span></a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+              <li>
+                <details id="submenu-entities">
+                  <summary aria-controls="submenu-entities-content">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
+                      <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+                      <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
+                      <path d="M10 6h4" />
+                      <path d="M10 10h4" />
+                      <path d="M10 14h4" />
+                      <path d="M10 18h4" />
+                    </svg>
+                    Entities
+                  </summary>
+                  <ul id="submenu-entities-content">
+                    <li>
+                      <a href="entities.html"><span>All Entities</span></a>
+                    </li>
+                    <li>
+                      <a href="#"><span>Create New</span></a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Declarations -->
+          <div role="group" aria-labelledby="group-travel">
+            <h3 id="group-travel">Declarations</h3>
+            <ul>
+              <li>
                 <details id="submenu-travel" open>
                   <summary aria-controls="submenu-travel-content">
                     <svg
@@ -535,7 +606,9 @@
                   </summary>
                   <ul id="submenu-travel-content">
                     <li>
-                      <a href="#"><span>All Certificates</span></a>
+                      <a href="travel_certificate.html" aria-current="page"
+                        ><span>All Certificates</span></a
+                      >
                     </li>
                     <li>
                       <a href="#"><span>Create New</span></a>
@@ -738,7 +811,7 @@
           </li>
           <li class="inline-flex items-center gap-1.5">
             <a href="#" class="hover:text-foreground transition-colors"
-              >Contracts</a
+              >Declarations</a
             >
           </li>
           <li>
@@ -907,8 +980,6 @@
             </div>
           </div>
         </div>
-
-        <div class="w-px h-6 bg-gray-200"></div>
 
         <!-- NEW CERTIFICATE -->
         <button
