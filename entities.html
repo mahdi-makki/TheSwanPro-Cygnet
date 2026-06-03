@@ -108,7 +108,7 @@
         display: flex;
         align-items: center;
         gap: 1rem;
-        padding: 0.875rem 1.25rem;
+        padding: 0.5rem 1.25rem;
         transition: background 120ms ease;
       }
       .entity-row:hover {
@@ -119,6 +119,35 @@
       .view-btn.active {
         background: var(--secondary);
         color: var(--foreground);
+      }
+
+      /* ── New entity dialog width override ── */
+      #dialog-new-entity > * {
+        max-width: 900px !important;
+        width: min(900px, calc(100vw - 2rem)) !important;
+      }
+
+      /* ── Entities table cell padding — matches travel certificate ── */
+      #entities-table th {
+        padding-top: 0.6rem;
+        padding-bottom: 0.6rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        font-size: 0.8125rem;
+        letter-spacing: 0.02em;
+      }
+      #entities-table td {
+        padding-top: 0.7rem;
+        padding-bottom: 0.7rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      #entities-table tbody tr {
+        border-bottom: 1px solid var(--border);
+        transition: background 120ms ease;
+      }
+      #entities-table tbody tr:hover {
+        background-color: oklch(0.38 0.23 268 / 0.035);
       }
 
       /* ── Row action trigger — no hover response ── */
@@ -725,7 +754,7 @@
       </header>
 
       <!-- ─── Page Content ──────────────────────────────────────────────── -->
-      <div class="px-8 pt-8 pb-10 space-y-6">
+      <div class="px-8 pt-8 pb-0 space-y-3">
         <!-- ── Page Header ── -->
         <div class="flex items-center justify-between gap-4">
           <div>
@@ -947,7 +976,7 @@
         </div>
 
         <!-- ── Filter Bar ── -->
-        <div class="flex items-center gap-3 flex-wrap">
+        <div class="flex items-center gap-3 flex-wrap mt-10">
           <!-- Search -->
           <div class="relative min-w-52 flex-1 max-w-xs">
             <input
@@ -1158,101 +1187,131 @@
             <input type="hidden" id="entity-country-hidden" value="" />
           </div>
 
-          <!-- View Toggle -->
-          <div
-            class="ml-auto flex items-center gap-0.5 border border-[var(--border)] rounded-md p-0.5"
-          >
-            <button
-              id="view-grid-btn"
-              class="view-btn active btn-ghost !h-7 !w-7 !rounded-[calc(var(--radius)-2px)] !p-0 flex items-center justify-center"
-              onclick="setView('grid')"
-              data-tooltip="Grid view"
-              data-side="bottom"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+          <!-- Reset + View Toggle -->
+          <div class="ml-auto flex items-center gap-2">
+            <button type="button" class="btn-outline" onclick="clearFilters()">Reset filters</button>
+            <div class="flex items-center gap-0.5 border border-[var(--border)] rounded-md p-0.5">
+              <button
+                id="view-table-btn"
+                class="view-btn active btn-ghost !h-7 !w-7 !rounded-[calc(var(--radius)-2px)] !p-0 flex items-center justify-center"
+                onclick="setView('table')"
+                data-tooltip="Table view"
+                data-side="bottom"
               >
-                <rect width="7" height="7" x="3" y="3" rx="1" />
-                <rect width="7" height="7" x="14" y="3" rx="1" />
-                <rect width="7" height="7" x="14" y="14" rx="1" />
-                <rect width="7" height="7" x="3" y="14" rx="1" />
-              </svg>
-            </button>
-            <button
-              id="view-list-btn"
-              class="view-btn btn-ghost !h-7 !w-7 !rounded-[calc(var(--radius)-2px)] !p-0 flex items-center justify-center"
-              onclick="setView('list')"
-              data-tooltip="List view"
-              data-side="bottom"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="18" height="18" x="3" y="3" rx="2"/>
+                  <path d="M3 9h18"/><path d="M9 21V9"/>
+                </svg>
+              </button>
+              <button
+                id="view-list-btn"
+                class="view-btn btn-ghost !h-7 !w-7 !rounded-[calc(var(--radius)-2px)] !p-0 flex items-center justify-center"
+                onclick="setView('list')"
+                data-tooltip="List view"
+                data-side="bottom"
               >
-                <line x1="8" x2="21" y1="6" y2="6" />
-                <line x1="8" x2="21" y1="12" y2="12" />
-                <line x1="8" x2="21" y1="18" y2="18" />
-                <line x1="3" x2="3.01" y1="6" y2="6" />
-                <line x1="3" x2="3.01" y1="12" y2="12" />
-                <line x1="3" x2="3.01" y1="18" y2="18" />
-              </svg>
-            </button>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="8" x2="21" y1="6" y2="6"/>
+                  <line x1="8" x2="21" y1="12" y2="12"/>
+                  <line x1="8" x2="21" y1="18" y2="18"/>
+                  <line x1="3" x2="3.01" y1="6" y2="6"/>
+                  <line x1="3" x2="3.01" y1="12" y2="12"/>
+                  <line x1="3" x2="3.01" y1="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- ── Entities Container ── -->
-        <div
-          id="entities-container"
-          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
-        ></div>
+        <!-- ── Table View ── -->
+        <div id="entities-table-wrap" class="overflow-x-auto border border-[var(--border)] rounded-lg">
+          <table class="table w-full" id="entities-table">
+            <thead>
+              <tr>
+                <th class="whitespace-nowrap">Code</th>
+                <th>Entity Name</th>
+                <th>Country</th>
+                <th>Phone</th>
+                <th class="text-right whitespace-nowrap">Agreements</th>
+                <th class="w-10"></th>
+              </tr>
+            </thead>
+            <tbody id="entities-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- ── List View ── -->
+        <div id="entities-list-wrap" class="hidden flex flex-col gap-2" id="entities-list"></div>
 
         <!-- ── Empty State ── -->
-        <div
-          id="entities-empty"
-          class="hidden flex flex-col items-center justify-center py-20 gap-3 text-muted-foreground"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="40"
-            height="40"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="opacity-30"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.3-4.3" />
+        <div id="entities-empty" class="hidden flex flex-col items-center justify-center py-16 gap-3 text-muted-foreground">
+          <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="opacity-30">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
           </svg>
           <p class="text-sm font-medium">No entities match your filters.</p>
-          <button class="btn-ghost text-xs" onclick="clearFilters()">
-            Clear filters
-          </button>
+          <button class="btn-ghost text-xs" onclick="clearFilters()">Clear filters</button>
+        </div>
+
+        <!-- ── Table Footer ── -->
+        <div class="flex items-center justify-between gap-4 flex-wrap py-1 !mt-0">
+
+          <!-- Left: row count -->
+          <p class="text-sm text-muted-foreground">
+            0 of <span id="entities-count">0</span> row(s) selected.
+          </p>
+
+          <!-- Right: rows per page + page nav -->
+          <div class="flex items-center gap-5">
+
+            <!-- Rows per page -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-muted-foreground whitespace-nowrap">Rows per page</span>
+              <div id="ent-rows-select" class="select">
+                <button type="button" class="btn-outline w-20" id="ent-rows-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="ent-rows-select-listbox">
+                  <span class="truncate">10</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground opacity-50 shrink-0 size-4"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div id="ent-rows-select-popover" data-popover aria-hidden="true" data-side="top">
+                  <div role="listbox" id="ent-rows-select-listbox" aria-labelledby="ent-rows-select-trigger">
+                    <div role="option" data-value="10" onclick="selectEntRowsPerPage(10, this)"><span>10</span></div>
+                    <div role="option" data-value="25" onclick="selectEntRowsPerPage(25, this)"><span>25</span></div>
+                    <div role="option" data-value="50" onclick="selectEntRowsPerPage(50, this)"><span>50</span></div>
+                    <div role="option" data-value="100" onclick="selectEntRowsPerPage(100, this)"><span>100</span></div>
+                  </div>
+                </div>
+                <input type="hidden" id="ent-rows-per-page" value="10" />
+              </div>
+            </div>
+
+            <!-- Page indicator -->
+            <span id="ent-page-indicator" class="text-sm text-muted-foreground whitespace-nowrap">Page 1 of 2</span>
+
+            <!-- Page nav -->
+            <div class="flex items-center gap-0.5">
+              <button type="button" class="btn-icon-ghost" aria-label="First page" onclick="entGoToPage(1)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></svg>
+              </button>
+              <button type="button" class="btn-icon-ghost" aria-label="Previous page" onclick="entGoToPage(entCurrentPage - 1)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <button type="button" class="btn-icon-ghost" aria-label="Next page" onclick="entGoToPage(entCurrentPage + 1)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+              <button type="button" class="btn-icon-ghost" aria-label="Last page" onclick="entGoToPage(entTotalPages)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 17 5-5-5-5"/><path d="m13 17 5-5-5-5"/></svg>
+              </button>
+            </div>
+
+          </div>
         </div>
       </div>
+      <div class="pb-4"></div>
     </main>
 
     <!-- ─── New Entity Dialog ───────────────────────────────────────────── -->
     <dialog
       id="dialog-new-entity"
-      class="dialog w-full sm:max-w-[460px]"
+      class="dialog w-full"
       aria-labelledby="dialog-new-entity-title"
       aria-describedby="dialog-new-entity-desc"
       onclick="if (event.target === this) this.close();"
@@ -1266,213 +1325,140 @@
         </header>
 
         <section>
-          <form class="form grid gap-4" onsubmit="return false;">
-            <!-- Entity Code -->
-            <div class="grid gap-2">
-              <label for="new-entity-code">Entity Code</label>
-              <input
-                type="text"
-                id="new-entity-code"
-                class="input font-mono"
-                placeholder="e.g. ENT-013"
-                autofocus
-              />
-            </div>
+          <form class="form grid gap-6" onsubmit="return false;">
 
-            <!-- Entity Name -->
-            <div class="grid gap-2">
-              <label for="new-entity-name">Entity Name</label>
-              <input
-                type="text"
-                id="new-entity-name"
-                class="input"
-                placeholder="e.g. Gulf Shield Re"
-              />
-            </div>
-
-            <!-- Entity Country -->
-            <div class="grid gap-2">
-              <label id="dlg-country-label">Country</label>
-              <div id="dlg-country-sel" class="select">
-                <button
-                  type="button"
-                  class="btn-outline w-full"
-                  id="dlg-country-sel-trigger"
-                  aria-haspopup="listbox"
-                  aria-expanded="false"
-                  aria-controls="dlg-country-sel-listbox"
-                  aria-labelledby="dlg-country-label dlg-country-sel-trigger"
-                >
-                  <span
-                    id="dlg-country-sel-label"
-                    class="truncate text-muted-foreground"
-                    >Select a country…</span
-                  >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="text-muted-foreground opacity-50 shrink-0 size-4"
-                  >
-                    <path d="m7 15 5 5 5-5" />
-                    <path d="m7 9 5-5 5 5" />
-                  </svg>
-                </button>
-                <div
-                  id="dlg-country-sel-popover"
-                  data-popover
-                  aria-hidden="true"
-                >
-                  <header>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <circle cx="11" cy="11" r="8" />
-                      <path d="m21 21-4.3-4.3" />
-                    </svg>
-                    <input
-                      type="text"
-                      id="dlg-country-search"
-                      placeholder="Search countries..."
-                      autocomplete="off"
-                      spellcheck="false"
-                      aria-autocomplete="list"
-                      role="combobox"
-                      aria-expanded="false"
-                      aria-controls="dlg-country-sel-listbox"
-                      aria-labelledby="dlg-country-sel-trigger"
-                      oninput="
-                        filterCountryOptions(
-                          'dlg-country-sel-listbox',
-                          this.value,
-                        )
-                      "
-                    />
-                  </header>
-                  <div
-                    role="listbox"
-                    id="dlg-country-sel-listbox"
-                    aria-labelledby="dlg-country-sel-trigger"
-                  >
-                    <div
-                      role="option"
-                      data-value="Bahrain"
-                      onclick="selectDialogCountry('Bahrain', this)"
-                    >
-                      Bahrain
-                    </div>
-                    <div
-                      role="option"
-                      data-value="Egypt"
-                      onclick="selectDialogCountry('Egypt', this)"
-                    >
-                      Egypt
-                    </div>
-                    <div
-                      role="option"
-                      data-value="France"
-                      onclick="selectDialogCountry('France', this)"
-                    >
-                      France
-                    </div>
-                    <div
-                      role="option"
-                      data-value="Germany"
-                      onclick="selectDialogCountry('Germany', this)"
-                    >
-                      Germany
-                    </div>
-                    <div
-                      role="option"
-                      data-value="Jordan"
-                      onclick="selectDialogCountry('Jordan', this)"
-                    >
-                      Jordan
-                    </div>
-                    <div
-                      role="option"
-                      data-value="Kuwait"
-                      onclick="selectDialogCountry('Kuwait', this)"
-                    >
-                      Kuwait
-                    </div>
-                    <div
-                      role="option"
-                      data-value="Lebanon"
-                      onclick="selectDialogCountry('Lebanon', this)"
-                    >
-                      Lebanon
-                    </div>
-                    <div
-                      role="option"
-                      data-value="Morocco"
-                      onclick="selectDialogCountry('Morocco', this)"
-                    >
-                      Morocco
-                    </div>
-                    <div
-                      role="option"
-                      data-value="Oman"
-                      onclick="selectDialogCountry('Oman', this)"
-                    >
-                      Oman
-                    </div>
-                    <div
-                      role="option"
-                      data-value="Qatar"
-                      onclick="selectDialogCountry('Qatar', this)"
-                    >
-                      Qatar
-                    </div>
-                    <div
-                      role="option"
-                      data-value="Saudi Arabia"
-                      onclick="selectDialogCountry('Saudi Arabia', this)"
-                    >
-                      Saudi Arabia
-                    </div>
-                    <div
-                      role="option"
-                      data-value="Tunisia"
-                      onclick="selectDialogCountry('Tunisia', this)"
-                    >
-                      Tunisia
-                    </div>
-                    <div
-                      role="option"
-                      data-value="Turkey"
-                      onclick="selectDialogCountry('Turkey', this)"
-                    >
-                      Turkey
-                    </div>
-                    <div
-                      role="option"
-                      data-value="United Arab Emirates"
-                      onclick="
-                        selectDialogCountry('United Arab Emirates', this)
-                      "
-                    >
-                      United Arab Emirates
+            <!-- Row 1: Code | Name | Type -->
+            <div class="grid grid-cols-3 gap-5">
+              <div class="grid gap-2">
+                <label for="new-entity-code">Code <span class="text-red-500 font-normal">*</span></label>
+                <input type="text" id="new-entity-code" class="input font-mono" placeholder="ENT-013" autofocus />
+              </div>
+              <div class="grid gap-2">
+                <label for="new-entity-name">Entity Name <span class="text-red-500 font-normal">*</span></label>
+                <input type="text" id="new-entity-name" class="input" placeholder="e.g. Gulf Shield Re" />
+              </div>
+              <div class="grid gap-2">
+                <label id="dlg-type-label">Type <span class="text-red-500 font-normal">*</span></label>
+                <div id="dlg-type-sel" class="select">
+                  <button type="button" class="btn-outline w-full" id="dlg-type-sel-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="dlg-type-sel-listbox" aria-labelledby="dlg-type-label dlg-type-sel-trigger">
+                    <span id="dlg-type-sel-label" class="truncate text-muted-foreground">Select…</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground opacity-50 shrink-0 size-4"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                  </button>
+                  <div id="dlg-type-sel-popover" data-popover aria-hidden="true">
+                    <div role="listbox" id="dlg-type-sel-listbox" aria-labelledby="dlg-type-sel-trigger">
+                      <div role="option" data-value="Insurance Company" onclick="selectDialogType(this.dataset.value, this)">Insurance Company</div>
+                      <div role="option" data-value="Reinsurance Company" onclick="selectDialogType(this.dataset.value, this)">Reinsurance Company</div>
+                      <div role="option" data-value="Broker" onclick="selectDialogType(this.dataset.value, this)">Broker</div>
+                      <div role="option" data-value="Agent" onclick="selectDialogType(this.dataset.value, this)">Agent</div>
+                      <div role="option" data-value="Captive" onclick="selectDialogType(this.dataset.value, this)">Captive</div>
+                      <div role="option" data-value="Lloyd's Syndicate" onclick="selectDialogType(this.dataset.value, this)">Lloyd's Syndicate</div>
+                      <div role="option" data-value="Other" onclick="selectDialogType(this.dataset.value, this)">Other</div>
                     </div>
                   </div>
+                  <input type="hidden" id="dlg-type-hidden" value="" />
                 </div>
-                <input type="hidden" id="dlg-country-hidden" value="" />
               </div>
             </div>
+
+            <!-- Row 2: Country | Contact Name | Contact Role -->
+            <div class="grid grid-cols-3 gap-5">
+              <div class="grid gap-2">
+                <label id="dlg-country-label">Country <span class="text-red-500 font-normal">*</span></label>
+                <div id="dlg-country-sel" class="select">
+                  <button type="button" class="btn-outline w-full" id="dlg-country-sel-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="dlg-country-sel-listbox" aria-labelledby="dlg-country-label dlg-country-sel-trigger">
+                    <span id="dlg-country-sel-label" class="truncate text-muted-foreground">Select…</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground opacity-50 shrink-0 size-4"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                  </button>
+                  <div id="dlg-country-sel-popover" data-popover aria-hidden="true">
+                    <header>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                      <input type="text" id="dlg-country-search" placeholder="Search countries..." autocomplete="off" spellcheck="false" aria-autocomplete="list" role="combobox" aria-expanded="false" aria-controls="dlg-country-sel-listbox" aria-labelledby="dlg-country-sel-trigger" oninput="filterCountryOptions('dlg-country-sel-listbox', this.value)" />
+                    </header>
+                    <div role="listbox" id="dlg-country-sel-listbox" aria-labelledby="dlg-country-sel-trigger">
+                      <div role="option" data-value="Bahrain" onclick="selectDialogCountry('Bahrain', this)">Bahrain</div>
+                      <div role="option" data-value="Egypt" onclick="selectDialogCountry('Egypt', this)">Egypt</div>
+                      <div role="option" data-value="France" onclick="selectDialogCountry('France', this)">France</div>
+                      <div role="option" data-value="Germany" onclick="selectDialogCountry('Germany', this)">Germany</div>
+                      <div role="option" data-value="Jordan" onclick="selectDialogCountry('Jordan', this)">Jordan</div>
+                      <div role="option" data-value="Kuwait" onclick="selectDialogCountry('Kuwait', this)">Kuwait</div>
+                      <div role="option" data-value="Lebanon" onclick="selectDialogCountry('Lebanon', this)">Lebanon</div>
+                      <div role="option" data-value="Morocco" onclick="selectDialogCountry('Morocco', this)">Morocco</div>
+                      <div role="option" data-value="Oman" onclick="selectDialogCountry('Oman', this)">Oman</div>
+                      <div role="option" data-value="Qatar" onclick="selectDialogCountry('Qatar', this)">Qatar</div>
+                      <div role="option" data-value="Saudi Arabia" onclick="selectDialogCountry('Saudi Arabia', this)">Saudi Arabia</div>
+                      <div role="option" data-value="Tunisia" onclick="selectDialogCountry('Tunisia', this)">Tunisia</div>
+                      <div role="option" data-value="Turkey" onclick="selectDialogCountry('Turkey', this)">Turkey</div>
+                      <div role="option" data-value="United Arab Emirates" onclick="selectDialogCountry('United Arab Emirates', this)">United Arab Emirates</div>
+                    </div>
+                  </div>
+                  <input type="hidden" id="dlg-country-hidden" value="" />
+                </div>
+              </div>
+              <div class="grid gap-2">
+                <label for="new-contact-name">Contact Name <span class="text-red-500 font-normal">*</span></label>
+                <input type="text" id="new-contact-name" class="input" placeholder="e.g. Khalid Al-Amri" />
+              </div>
+              <div class="grid gap-2">
+                <label for="new-contact-role">Contact Role <span class="text-red-500 font-normal">*</span></label>
+                <input type="text" id="new-contact-role" class="input" placeholder="e.g. CEO" />
+              </div>
+            </div>
+
+            <!-- Row 3: Phone | Mobile | Email -->
+            <div class="grid grid-cols-3 gap-5">
+              <div class="grid gap-2">
+                <label for="new-contact-phone">Contact Phone <span class="text-red-500 font-normal">*</span></label>
+                <input type="tel" id="new-contact-phone" class="input" placeholder="+966 11 234 5678" />
+              </div>
+              <div class="grid gap-2">
+                <label for="new-contact-mobile">Contact Mobile</label>
+                <input type="tel" id="new-contact-mobile" class="input" placeholder="+966 50 123 4567" />
+              </div>
+              <div class="grid gap-2">
+                <label for="new-contact-email">Email</label>
+                <input type="email" id="new-contact-email" class="input" placeholder="name@company.com" />
+              </div>
+            </div>
+
+            <!-- ── Optional fields ── -->
+            <div class="border-t border-[var(--border)] pt-6 grid gap-6">
+
+              <!-- License | Reg Date | Tax ID -->
+              <div class="grid grid-cols-3 gap-5">
+                <div class="grid gap-2">
+                  <label for="new-entity-license">License Number</label>
+                  <input type="text" id="new-entity-license" class="input font-mono" placeholder="SA-IC-2024-1001" />
+                </div>
+                <div class="grid gap-2">
+                  <label for="new-entity-reg-date">Registration Date</label>
+                  <input type="date" id="new-entity-reg-date" class="input" />
+                </div>
+                <div class="grid gap-2">
+                  <label for="new-entity-tax-id">Tax ID</label>
+                  <input type="text" id="new-entity-tax-id" class="input font-mono" placeholder="300-542-8810" />
+                </div>
+              </div>
+
+              <!-- Currency | Website -->
+              <div class="grid grid-cols-3 gap-5">
+                <div class="grid gap-2">
+                  <label for="new-entity-currency">Currency</label>
+                  <input type="text" id="new-entity-currency" class="input" placeholder="SAR, USD, EUR…" />
+                </div>
+                <div class="grid gap-2 col-span-2">
+                  <label for="new-entity-website">Website</label>
+                  <input type="text" id="new-entity-website" class="input" placeholder="www.company.com" />
+                </div>
+              </div>
+
+              <!-- Address -->
+              <div class="grid gap-2">
+                <label for="new-entity-address">Registered Address</label>
+                <input type="text" id="new-entity-address" class="input" placeholder="Street, City, Zip, Country" />
+              </div>
+
+            </div>
+
           </form>
         </section>
 
@@ -1622,8 +1608,6 @@
         },
       ];
 
-      let currentView = "grid";
-
       /* ─── Country filter select ─────────────────────────────────────────── */
       function selectCountryFilter(value, label, el) {
         document.getElementById("entity-country-hidden").value = value;
@@ -1640,6 +1624,23 @@
         document.getElementById("ent-country-search").value = "";
         filterCountryOptions("ent-country-sel-listbox", "");
         applyFilters();
+      }
+
+      /* ─── Dialog entity type select ─────────────────────────────────────── */
+      function selectDialogType(value, el) {
+        document.getElementById("dlg-type-hidden").value = value;
+        const lbl = document.getElementById("dlg-type-sel-label");
+        lbl.textContent = value;
+        lbl.classList.remove("text-muted-foreground");
+        document
+          .querySelectorAll('#dlg-type-sel-listbox [role="option"]')
+          .forEach((o) => o.removeAttribute("aria-selected"));
+        el.setAttribute("aria-selected", "true");
+        const popover = document.getElementById("dlg-type-sel-popover");
+        const trigger = document.getElementById("dlg-type-sel-trigger");
+        popover.setAttribute("aria-hidden", "true");
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.focus();
       }
 
       /* ─── Dialog country select ──────────────────────────────────────────── */
@@ -1672,194 +1673,115 @@
           });
       }
 
-      /* ─── Get initials from entity name ────────────────────────────────── */
-      function initials(name) {
-        return name
-          .split(" ")
-          .slice(0, 2)
-          .map((w) => w[0])
-          .join("")
-          .toUpperCase();
-      }
+      let currentView = "table";
 
-      /* ─── Build a grid card ─────────────────────────────────────────────── */
-      function buildCard(e) {
+      /* ─── Action menu HTML (shared) ─────────────────────────────────────── */
+      function actionMenu(id) {
         return `
-          <div class="entity-card">
-
-            <!-- Body -->
-            <div style="padding:1.25rem 1.25rem 1.125rem;display:flex;flex-direction:column;gap:0.9rem;flex:1">
-
-              <!-- Code row + action -->
-              <div style="display:flex;align-items:center;justify-content:space-between">
-                <span style="font-family:monospace;font-size:0.68rem;font-weight:600;letter-spacing:0.07em;color:var(--muted-foreground);background:var(--secondary);border-radius:9999px;padding:0.2rem 0.65rem">${e.code}</span>
-                <div class="dropdown-menu" id="card-menu-${e.id}">
-                  <button
-                    type="button"
-                    class="btn-icon-ghost row-action-trigger"
-                    id="card-menu-${e.id}-trigger"
-                    aria-haspopup="menu"
-                    aria-controls="card-menu-${e.id}-menu"
-                    aria-expanded="false"
-                    aria-label="Entity actions"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
-                    </svg>
-                  </button>
-                  <div id="card-menu-${e.id}-popover" data-popover aria-hidden="true" data-align="end">
-                    <div role="menu" id="card-menu-${e.id}-menu" aria-labelledby="card-menu-${e.id}-trigger">
-                      <a href="#">
-                        <div role="menuitem">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
-                          </svg>
-                          View Entity
-                        </div>
-                      </a>
-                      <a href="#">
-                        <div role="menuitem" class="text-red-500 hover:!bg-red-50">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-red-500">
-                            <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                          </svg>
-                          Delete
-                        </div>
-                      </a>
-                    </div>
-                  </div>
-                </div>
+          <div class="dropdown-menu flex justify-end" id="row-menu-${id}">
+            <button type="button" class="btn-icon-ghost row-action-trigger" id="row-menu-${id}-trigger" aria-haspopup="menu" aria-controls="row-menu-${id}-menu" aria-expanded="false" aria-label="Entity actions">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
+              </svg>
+            </button>
+            <div id="row-menu-${id}-popover" data-popover aria-hidden="true" data-align="end">
+              <div role="menu" id="row-menu-${id}-menu" aria-labelledby="row-menu-${id}-trigger">
+                <a href="sample_entity.html"><div role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  View Entity
+                </div></a>
+                <a href="#"><div role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  Edit
+                </div></a>
+                <hr role="separator" />
+                <a href="#"><div role="menuitem" class="text-red-500 hover:!bg-red-50">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-red-500"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                  Delete
+                </div></a>
               </div>
-
-              <!-- Name -->
-              <h3 style="font-size:1.125rem;font-weight:700;line-height:1.25;color:var(--foreground);margin:0">${e.name}</h3>
-
-              <!-- Country + phone -->
-              <div style="display:flex;flex-direction:column;gap:0.35rem">
-                <span style="display:flex;align-items:center;gap:0.5rem;font-size:0.8125rem;color:var(--muted-foreground)">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:0.55"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-                  <span>${e.country}</span>
-                </span>
-                <span style="display:flex;align-items:center;gap:0.5rem;font-size:0.8125rem;color:var(--muted-foreground)">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:0.55"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.82 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.77 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.93a16 16 0 0 0 6.16 6.16l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                  <span>${e.phone}</span>
-                </span>
-              </div>
-
             </div>
-
-            <!-- Footer -->
-            <div class="entity-card-footer">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted-foreground);opacity:0.6;flex-shrink:0"><path d="M17 6.1H3"/><path d="M21 12.1H3"/><path d="M15.1 18H3"/></svg>
-              <span style="font-size:0.9375rem;font-weight:700;color:var(--foreground)">${e.agreements}</span>
-              <span style="font-size:0.8rem;color:var(--muted-foreground)">Agreements</span>
-            </div>
-
           </div>`;
       }
 
+      /* ─── Build a table row ─────────────────────────────────────────────── */
+      function buildTableRow(e) {
+        return `
+          <tr>
+            <td class="font-mono text-sm font-medium text-primary whitespace-nowrap">${e.code}</td>
+            <td class="text-sm font-semibold">${e.name}</td>
+            <td class="text-sm text-muted-foreground whitespace-nowrap">${e.country}</td>
+            <td class="text-sm text-muted-foreground whitespace-nowrap">${e.phone}</td>
+            <td class="text-sm text-right whitespace-nowrap font-semibold">${e.agreements}</td>
+            <td>${actionMenu(e.id)}</td>
+          </tr>`;
+      }
+
       /* ─── Build a list row ──────────────────────────────────────────────── */
-      function buildRow(e) {
+      function buildListRow(e) {
+        const base = "font-size:0.875rem;font-weight:400;color:var(--foreground)";
         return `
           <div class="entity-row">
-            <span style="font-family:monospace;font-size:0.6875rem;font-weight:600;letter-spacing:0.07em;color:var(--muted-foreground);flex-shrink:0;min-width:5.5rem">${e.code}</span>
-            <p style="font-size:0.9rem;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--foreground)">${e.name}</p>
-            <p style="font-size:0.8125rem;color:var(--muted-foreground);min-width:11rem;display:flex;align-items:center;gap:0.4rem;flex-shrink:0">
-              ${e.country}
-            </p>
-            <p style="font-size:0.8125rem;color:var(--muted-foreground);min-width:9rem;flex-shrink:0">${e.phone}</p>
-            <p style="font-size:0.8125rem;color:var(--muted-foreground);min-width:6rem;text-align:right;flex-shrink:0"><span style="font-weight:700;color:var(--foreground)">${e.agreements}</span> agreements</p>
-            <div class="dropdown-menu" id="row-menu-${e.id}">
-              <button
-                type="button"
-                class="btn-icon-ghost row-action-trigger"
-                id="row-menu-${e.id}-trigger"
-                aria-haspopup="menu"
-                aria-controls="row-menu-${e.id}-menu"
-                aria-expanded="false"
-                aria-label="Entity actions"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
-                </svg>
-              </button>
-              <div id="row-menu-${e.id}-popover" data-popover aria-hidden="true" data-align="end">
-                <div role="menu" id="row-menu-${e.id}-menu" aria-labelledby="row-menu-${e.id}-trigger">
-                  <a href="#">
-                    <div role="menuitem">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
-                      </svg>
-                      View Entity
-                    </div>
-                  </a>
-                  <a href="#">
-                    <div role="menuitem">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                      </svg>
-                      Edit
-                    </div>
-                  </a>
-                </div>
-              </div>
-            </div>
+            <span class="font-mono text-sm font-medium text-primary whitespace-nowrap" style="flex-shrink:0;min-width:5.5rem">${e.code}</span>
+            <p style="${base};font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.name}</p>
+            <p style="${base};min-width:11rem;flex-shrink:0">${e.country}</p>
+            <p style="${base};min-width:9rem;flex-shrink:0">${e.phone}</p>
+            <p style="${base};font-weight:600;white-space:nowrap;flex-shrink:0">${e.agreements} agreements</p>
+            ${actionMenu('l' + e.id)}
           </div>`;
       }
 
       /* ─── Render ────────────────────────────────────────────────────────── */
       function render(list) {
-        const container = document.getElementById("entities-container");
-        const empty = document.getElementById("entities-empty");
+        const tableWrap = document.getElementById("entities-table-wrap");
+        const listWrap  = document.getElementById("entities-list-wrap");
+        const empty     = document.getElementById("entities-empty");
+        const count     = document.getElementById("entities-count");
+
         if (list.length === 0) {
-          container.innerHTML = "";
+          document.getElementById("entities-tbody").innerHTML = "";
+          listWrap.innerHTML = "";
+          tableWrap.classList.add("hidden");
+          listWrap.classList.add("hidden");
           empty.classList.remove("hidden");
+          count.textContent = "0";
           return;
         }
 
         empty.classList.add("hidden");
+        count.textContent = list.length;
 
-        if (currentView === "grid") {
-          container.className =
-            "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4";
-          container.innerHTML = list.map(buildCard).join("");
+        if (currentView === "table") {
+          document.getElementById("entities-tbody").innerHTML = list.map(buildTableRow).join("");
+          tableWrap.classList.remove("hidden");
+          listWrap.classList.add("hidden");
         } else {
-          container.className = "flex flex-col gap-2";
-          container.innerHTML = list.map(buildRow).join("");
+          listWrap.innerHTML = list.map(buildListRow).join("");
+          listWrap.classList.remove("hidden");
+          tableWrap.classList.add("hidden");
         }
-      }
-
-      /* ─── Apply filters ─────────────────────────────────────────────────── */
-      function applyFilters() {
-        const q = document
-          .getElementById("entity-search")
-          .value.toLowerCase()
-          .trim();
-        const country = document.getElementById("entity-country-hidden").value;
-
-        const filtered = ENTITIES.filter((e) => {
-          const matchQ =
-            !q ||
-            e.name.toLowerCase().includes(q) ||
-            e.code.toLowerCase().includes(q);
-          const matchCountry = !country || e.country === country;
-          return matchQ && matchCountry;
-        });
-
-        render(filtered);
       }
 
       /* ─── View toggle ───────────────────────────────────────────────────── */
       function setView(v) {
         currentView = v;
-        document
-          .getElementById("view-grid-btn")
-          .classList.toggle("active", v === "grid");
-        document
-          .getElementById("view-list-btn")
-          .classList.toggle("active", v === "list");
+        document.getElementById("view-table-btn").classList.toggle("active", v === "table");
+        document.getElementById("view-list-btn").classList.toggle("active", v === "list");
         applyFilters();
+      }
+
+      /* ─── Apply filters ─────────────────────────────────────────────────── */
+      function applyFilters() {
+        const q = document.getElementById("entity-search").value.toLowerCase().trim();
+        const country = document.getElementById("entity-country-hidden").value;
+
+        const filtered = ENTITIES.filter((e) => {
+          const matchQ = !q || e.name.toLowerCase().includes(q) || e.code.toLowerCase().includes(q);
+          const matchCountry = !country || e.country === country;
+          return matchQ && matchCountry;
+        });
+
+        render(filtered);
       }
 
       /* ─── Clear filters ─────────────────────────────────────────────────── */
@@ -1870,6 +1792,70 @@
           "All Countries",
           document.querySelector('#ent-country-sel-listbox [data-value=""]'),
         );
+      }
+
+      /* ─── Pagination state ─────────────────────────────────────────────── */
+      let entCurrentPage = 1;
+      let entRowsPerPage = 10;
+      let entTotalPages  = 1;
+      let entFilteredList = ENTITIES;
+
+      function selectEntRowsPerPage(n, el) {
+        entRowsPerPage = n;
+        document.getElementById("ent-rows-select-trigger").querySelector("span").textContent = n;
+        document.querySelectorAll("#ent-rows-select-listbox [role='option']").forEach(o => o.removeAttribute("aria-selected"));
+        el.setAttribute("aria-selected", "true");
+        document.getElementById("ent-rows-select-popover").setAttribute("aria-hidden", "true");
+        document.getElementById("ent-rows-select-trigger").setAttribute("aria-expanded", "false");
+        entGoToPage(1);
+      }
+
+      function entGoToPage(page) {
+        entTotalPages = Math.max(1, Math.ceil(entFilteredList.length / entRowsPerPage));
+        entCurrentPage = Math.max(1, Math.min(page, entTotalPages));
+        document.getElementById("ent-page-indicator").textContent =
+          "Page " + entCurrentPage + " of " + entTotalPages;
+        const slice = entFilteredList.slice(
+          (entCurrentPage - 1) * entRowsPerPage,
+          entCurrentPage * entRowsPerPage
+        );
+        renderPage(slice);
+      }
+
+      /* override render to also handle pagination */
+      const _renderBase = render;
+      render = function(list) {
+        entFilteredList = list;
+        entCurrentPage  = 1;
+        entGoToPage(1);
+        document.getElementById("entities-count").textContent = list.length;
+      };
+
+      function renderPage(list) {
+        const tableWrap = document.getElementById("entities-table-wrap");
+        const listWrap  = document.getElementById("entities-list-wrap");
+        const empty     = document.getElementById("entities-empty");
+
+        if (entFilteredList.length === 0) {
+          document.getElementById("entities-tbody").innerHTML = "";
+          listWrap.innerHTML = "";
+          tableWrap.classList.add("hidden");
+          listWrap.classList.add("hidden");
+          empty.classList.remove("hidden");
+          return;
+        }
+
+        empty.classList.add("hidden");
+
+        if (currentView === "table") {
+          document.getElementById("entities-tbody").innerHTML = list.map(buildTableRow).join("");
+          tableWrap.classList.remove("hidden");
+          listWrap.classList.add("hidden");
+        } else {
+          listWrap.innerHTML = list.map(buildListRow).join("");
+          listWrap.classList.remove("hidden");
+          tableWrap.classList.add("hidden");
+        }
       }
 
       /* ─── Init ──────────────────────────────────────────────────────────── */
