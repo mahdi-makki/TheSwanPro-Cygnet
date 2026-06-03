@@ -1,0 +1,2522 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TheSwanPro - Al Muthanna Insurance Co.</title>
+    <link rel="icon" type="image/png" href="assets/swan_pro_icon.png" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/basecoat.cdn.min.css"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/all.min.js"
+      defer
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/basecoat.min.js"
+      defer
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/dropdown-menu.min.js"
+      defer
+    ></script>
+    <link rel="stylesheet" href="theme.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <style>
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+      }
+      *::-webkit-scrollbar {
+        width: var(--scrollbar-width);
+      }
+      *::-webkit-scrollbar-track {
+        background: var(--scrollbar-track);
+      }
+      *::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb);
+        border-radius: var(--scrollbar-radius);
+      }
+
+      [data-popover][aria-hidden="true"] {
+        height: 0 !important;
+        min-height: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        overflow: hidden !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+
+      /* ── Tabs ── */
+      .tab-bar {
+        display: flex;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 1.5rem;
+      }
+      .tab-btn {
+        padding: 0.6rem 1.1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--muted-foreground);
+        border: none;
+        border-bottom: 2px solid transparent;
+        background: none;
+        cursor: pointer;
+        margin-bottom: -1px;
+        transition:
+          color 120ms,
+          border-color 120ms;
+      }
+      .tab-btn:hover {
+        color: var(--foreground);
+      }
+      .tab-btn.active {
+        color: var(--primary);
+        border-bottom-color: var(--primary);
+        font-weight: 600;
+      }
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.active {
+        display: block;
+      }
+
+      /* ── Info field pair ── */
+      .info-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+      .info-label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted-foreground);
+      }
+      .info-value {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--foreground);
+      }
+
+      /* ── Status dot + text — no background ── */
+      .status-active {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #16a34a;
+      }
+      .status-active::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 9999px;
+        background: #16a34a;
+        flex-shrink: 0;
+      }
+      .status-pending {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #b45309;
+      }
+      .status-pending::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 9999px;
+        background: #d97706;
+        flex-shrink: 0;
+      }
+      .status-expired {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--muted-foreground);
+      }
+
+      /* ── Contact card ── */
+      .contact-card {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .contact-avatar {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 9999px;
+        background: var(--muted);
+        color: var(--foreground);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: 700;
+        border: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      /* ── Agreement table ── */
+      .agr-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .agr-table th {
+        text-align: left;
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted-foreground);
+        padding: 0.6rem 1rem;
+        background: var(--muted);
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+      }
+      .agr-table th:first-child {
+        border-radius: 0.5rem 0 0 0;
+      }
+      .agr-table th:last-child {
+        border-radius: 0 0.5rem 0 0;
+      }
+      .agr-table td {
+        font-size: 0.8375rem;
+        color: var(--foreground);
+        padding: 0.7rem 1rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+      }
+      .agr-table tr:last-child td {
+        border-bottom: none;
+      }
+      .agr-table tr:hover td {
+        background: oklch(0.38 0.23 268 / 0.025);
+      }
+
+      /* ── Status dots ── */
+      .sdot {
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+      .sdot-all {
+        background: #9ca3af;
+      }
+      .sdot-active {
+        background: #16a34a;
+      }
+      .sdot-pending {
+        background: #b45309;
+      }
+      .sdot-expired {
+        background: #6b7280;
+      }
+
+      /* ── Agreement status badges ── */
+      .agr-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        border-radius: 9999px;
+        padding: 0.2rem 0.65rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        line-height: 1.25rem;
+        border: 1px solid #e5e7eb;
+        background: transparent;
+        color: #6b7280;
+        white-space: nowrap;
+      }
+
+      /* ── Sort button ── */
+      .sort-btn {
+        cursor: default;
+        background: transparent;
+        border: none;
+        padding: 0;
+        font-weight: 600;
+        font-size: inherit;
+        color: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .sort-btn:hover,
+      .sort-btn:focus {
+        background: transparent;
+        outline: none;
+        color: inherit;
+      }
+
+      /* ── Agreements table ── */
+      #agr-table th {
+        padding: 0.875rem 1rem;
+        font-size: 0.8125rem;
+        letter-spacing: 0.02em;
+      }
+      #agr-table td {
+        padding: 1rem;
+      }
+      #agr-table tbody tr {
+        border-bottom: 1px solid var(--border);
+        transition: background 120ms ease;
+      }
+      #agr-table tbody tr:hover {
+        background-color: oklch(0.38 0.23 268 / 0.035);
+      }
+
+      /* ── Flatpickr ── */
+      .flatpickr-calendar {
+        font-family: inherit;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: 0 8px 24px rgb(0 0 0/0.09);
+        padding: 1rem 1.25rem;
+        width: 580px;
+      }
+      .flatpickr-calendar.arrowTop:before,
+      .flatpickr-calendar.arrowTop:after {
+        display: none;
+      }
+      .flatpickr-months {
+        display: flex !important;
+        align-items: center !important;
+        margin-bottom: 0.625rem;
+      }
+      .flatpickr-month {
+        flex: 1;
+        height: auto !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .flatpickr-current-month {
+        position: static !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.3rem;
+        padding: 0 !important;
+        width: auto !important;
+        height: auto !important;
+        font-size: 0.875rem;
+        color: var(--foreground);
+      }
+      .flatpickr-monthDropdown-months {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        color: var(--foreground) !important;
+        pointer-events: none;
+        cursor: default;
+      }
+      .numInputWrapper {
+        border: none !important;
+        display: inline-flex !important;
+        align-items: center;
+        width: auto !important;
+        padding: 0 !important;
+      }
+      .numInputWrapper span.arrowUp,
+      .numInputWrapper span.arrowDown {
+        display: none !important;
+      }
+      input.cur-year {
+        width: 3rem !important;
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        color: var(--foreground) !important;
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        pointer-events: none;
+        cursor: default;
+        -moz-appearance: textfield !important;
+        appearance: textfield !important;
+      }
+      input.cur-year::-webkit-outer-spin-button,
+      input.cur-year::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+      .flatpickr-prev-month,
+      .flatpickr-next-month {
+        position: relative !important;
+        top: auto !important;
+        width: 1.75rem !important;
+        height: 1.75rem !important;
+        border: 1px solid var(--border) !important;
+        border-radius: calc(var(--radius) - 2px) !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      .flatpickr-day.selected,
+      .flatpickr-day.startRange,
+      .flatpickr-day.endRange {
+        background: var(--primary) !important;
+        border-color: var(--primary) !important;
+        color: #fff !important;
+      }
+      .flatpickr-day.inRange {
+        background: oklch(0.38 0.23 268/0.12) !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+      }
+
+      /* ── Row action trigger ── */
+      .row-action-trigger {
+        cursor: default !important;
+        color: var(--muted-foreground);
+      }
+      .row-action-trigger:hover,
+      .row-action-trigger:focus {
+        background: transparent !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+        outline: none !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ─── Sidebar ─────────────────────────────────────────────────────── -->
+    <aside
+      class="sidebar bg-transparent z-100"
+      data-side="left"
+      aria-hidden="false"
+    >
+      <nav aria-label="Sidebar navigation">
+        <header class="px-4 py-4">
+          <img
+            class="w-48"
+            src="assets/swan_pro_logo.png"
+            alt="TheSwanPro Logo"
+          />
+        </header>
+
+        <section
+          class="scrollbar main-links [&_a]:bg-transparent [&_a]:font-normal [&_a]:py-3 [&_a:hover]:bg-[var(--secondary)] [&_summary:hover]:bg-[var(--secondary)] [&_summary]:py-2.5"
+        >
+          <div role="group" aria-labelledby="group-nav">
+            <h3 id="group-nav">Main Navigation</h3>
+            <ul>
+              <li>
+                <a href="dashboard.html">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                  </svg>
+                  <span>Home</span>
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M13 5h8" />
+                    <path d="M13 12h8" />
+                    <path d="M13 19h8" />
+                    <path d="m3 17 2 2 4-4" />
+                    <rect x="3" y="4" width="6" height="6" rx="1" />
+                  </svg>
+                  <span>Tasks</span>
+                  <span
+                    class="badge-destructive ml-auto text-[11px] px- py-0.5 font-bold"
+                    >3</span
+                  >
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                    <line x1="16" x2="16" y1="2" y2="6" />
+                    <line x1="8" x2="8" y1="2" y2="6" />
+                    <line x1="3" x2="21" y1="10" y2="10" />
+                  </svg>
+                  <span>Calendar</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div role="group" aria-labelledby="group-contracts">
+            <h3 id="group-contracts">Contracts</h3>
+            <ul>
+              <li>
+                <details id="submenu-agreements">
+                  <summary aria-controls="submenu-agreements-content">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M17 6.1H3" />
+                      <path d="M21 12.1H3" />
+                      <path d="M15.1 18H3" />
+                    </svg>
+                    Agreements
+                  </summary>
+                  <ul id="submenu-agreements-content">
+                    <li>
+                      <a href="#"><span>All Agreements</span></a>
+                    </li>
+                    <li>
+                      <a href="#"><span>Create New</span></a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+              <li>
+                <details id="submenu-entities" open>
+                  <summary aria-controls="submenu-entities-content">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
+                      <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+                      <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
+                      <path d="M10 6h4" />
+                      <path d="M10 10h4" />
+                      <path d="M10 14h4" />
+                      <path d="M10 18h4" />
+                    </svg>
+                    Entities
+                  </summary>
+                  <ul id="submenu-entities-content">
+                    <li>
+                      <a href="entities.html"><span>All Entities</span></a>
+                    </li>
+                    <li>
+                      <a href="#"><span>Create New</span></a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+            </ul>
+          </div>
+
+          <div role="group" aria-labelledby="group-travel">
+            <h3 id="group-travel">Declarations</h3>
+            <ul>
+              <li>
+                <details id="submenu-travel">
+                  <summary aria-controls="submenu-travel-content">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                      />
+                      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                    </svg>
+                    Travel Certificate
+                  </summary>
+                  <ul id="submenu-travel-content">
+                    <li>
+                      <a href="travel_certificate.html"
+                        ><span>All Certificates</span></a
+                      >
+                    </li>
+                    <li>
+                      <a href="#"><span>Create New</span></a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+            </ul>
+          </div>
+
+          <div role="group" aria-labelledby="group-reports">
+            <h3 id="group-reports">Reports</h3>
+            <ul>
+              <li>
+                <a href="#">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M12 16v5" />
+                    <path d="M16 14v7" />
+                    <path d="M20 10v11" />
+                    <path
+                      d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15"
+                    />
+                    <path d="M4 18v3" />
+                    <path d="M8 14v7" />
+                  </svg>
+                  <span>Technical</span>
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <line x1="12" x2="12" y1="2" y2="22" />
+                    <path
+                      d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                    />
+                  </svg>
+                  <span>Financial</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <footer>
+          <div id="demo-dropdown-menu" class="dropdown-menu">
+            <button
+              type="button"
+              id="demo-dropdown-menu-trigger"
+              aria-haspopup="menu"
+              aria-controls="demo-dropdown-menu-menu"
+              aria-expanded="false"
+              class="w-full flex items-center gap-3 rounded-lg px-2 py-2 text-left cursor-pointer hover:bg-gray-50"
+            >
+              <div
+                class="w-9 h-9 rounded-lg shrink-0 bg-gray-200 text-gray-700 flex items-center justify-center text-sm font-semibold"
+              >
+                ZM
+              </div>
+              <div class="flex flex-col min-w-0">
+                <span class="font-medium text-sm truncate">Zain Makki</span>
+                <span class="text-xs text-gray-500 truncate">@sima_admin</span>
+              </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="ml-auto h-4 w-4"
+              >
+                <path d="m7 15 5 5 5-5" />
+                <path d="m7 9 5-5 5 5" />
+              </svg>
+            </button>
+            <div
+              id="demo-dropdown-menu-popover"
+              data-popover
+              aria-hidden="true"
+              class="min-w-56"
+              data-side="top"
+            >
+              <div
+                role="menu"
+                id="demo-dropdown-menu-menu"
+                aria-labelledby="demo-dropdown-menu-trigger"
+              >
+                <div role="group" aria-labelledby="account-options">
+                  <div role="heading" id="account-options">My Account</div>
+                  <a href="#"><div role="menuitem">Profile</div></a>
+                  <div role="menuitem">Settings</div>
+                </div>
+                <hr role="separator" />
+                <div role="menuitem">GitHub</div>
+                <div role="menuitem" aria-disabled="true">API Documents</div>
+                <hr role="separator" />
+                <a href="login.html">
+                  <div role="menuitem" class="text-red-500 hover:!bg-red-50">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="stroke-red-500"
+                    >
+                      <path d="m16 17 5-5-5-5" />
+                      <path d="M21 12H9" />
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    </svg>
+                    Logout
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </nav>
+    </aside>
+
+    <!-- ─── Main ──────────────────────────────────────────────────────────── -->
+    <main>
+      <!-- Top Header -->
+      <header
+        class="sticky top-0 z-50 bg-white flex items-center gap-3 p-3 border-b border-gray-200"
+      >
+        <button
+          type="button"
+          onclick="document.dispatchEvent(new CustomEvent('basecoat:sidebar'))"
+          class="btn-ghost"
+          data-tooltip="Toggle sidebar"
+          data-side="bottom"
+          data-align="start"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect width="18" height="18" x="3" y="3" rx="2" />
+            <path d="M15 3v18" />
+          </svg>
+        </button>
+
+        <div class="w-px h-4 bg-gray-200 mr-3"></div>
+
+        <ol
+          class="text-muted-foreground flex flex-wrap items-center gap-1.5 text-sm break-words sm:gap-2.5"
+        >
+          <li class="inline-flex items-center gap-1.5">
+            <a href="#" class="hover:text-foreground transition-colors">Home</a>
+          </li>
+          <li>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3.5"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </li>
+          <li class="inline-flex items-center gap-1.5">
+            <a href="#" class="hover:text-foreground transition-colors"
+              >Contracts</a
+            >
+          </li>
+          <li>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3.5"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </li>
+          <li class="inline-flex items-center gap-1.5">
+            <a
+              href="entities.html"
+              class="hover:text-foreground transition-colors"
+              >Entities</a
+            >
+          </li>
+          <li>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3.5"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </li>
+          <li class="inline-flex items-center gap-1.5">
+            <span class="text-foreground font-semibold"
+              >Al Muthanna Insurance Co.</span
+            >
+          </li>
+        </ol>
+
+        <!-- Search -->
+        <div id="header-search-wrap" class="relative ml-auto w-72">
+          <input
+            type="text"
+            class="input pl-9"
+            placeholder="Search..."
+            onkeydown="
+              if (event.key === 'Enter') {
+                const w = document.getElementById('header-search-wrap');
+                w.innerHTML =
+                  '<input type=\'text\' class=\'input pr-9\' placeholder=\'Searching...\' disabled /><div class=\'absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground [&>svg]:size-4 opacity-50\'><svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' class=\'animate-spin\'><path d=\'M21 12a9 9 0 1 1-6.219-8.56\'/></svg></div>';
+              }
+            "
+          />
+          <div
+            class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground [&>svg]:size-4"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Language -->
+        <div id="header-lang-menu" class="dropdown-menu">
+          <button
+            type="button"
+            id="header-lang-menu-trigger"
+            aria-haspopup="menu"
+            aria-controls="header-lang-menu-menu"
+            aria-expanded="false"
+            class="btn-ghost flex items-center gap-1.5"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-4"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+              <path d="M2 12h20" />
+            </svg>
+            <span id="header-lang-label" class="text-sm font-medium">EN</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div
+            id="header-lang-menu-popover"
+            data-popover
+            aria-hidden="true"
+            data-align="end"
+            class="min-w-20"
+          >
+            <div
+              role="menu"
+              id="header-lang-menu-menu"
+              aria-labelledby="header-lang-menu-trigger"
+            >
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'EN';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                English
+              </div>
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'AR';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                Arabic
+              </div>
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'FR';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                French
+              </div>
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'TR';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                Turkish
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn flex items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+            />
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+          </svg>
+          Edit Entity
+        </button>
+      </header>
+
+      <!-- ─── Page Content ───────────────────────────────────────────────── -->
+      <div class="px-8 pt-8 pb-16 space-y-6">
+        <!-- ── Entity Hero ── -->
+        <div class="flex items-start justify-between gap-6 flex-wrap">
+          <div class="flex items-center gap-5">
+            <div
+              style="
+                width: 4.5rem;
+                height: 4.5rem;
+                border-radius: 0.75rem;
+                background: #e5e7eb;
+                border: 1px solid var(--border);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #6b7280;
+                flex-shrink: 0;
+              "
+            >
+              AM
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <h1 class="text-2xl font-bold tracking-tight">
+                Al Muthanna Insurance Co.
+              </h1>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span
+                  class="badge flex items-center gap-1.5"
+                  style="font-family: monospace; padding: 0.3rem 0.75rem"
+                  >ENT-001</span
+                >
+                <span
+                  style="
+                    padding: 0.3rem 0.75rem;
+                    font-size: 0.75rem;
+                    font-weight: 500;
+                    border-radius: 9999px;
+                    background: #dbeafe;
+                    color: #1d4ed8;
+                    border: none;
+                  "
+                  >42 Agreements</span
+                >
+                <span
+                  class="badge-outline flex items-center gap-1.5"
+                  style="padding: 0.3rem 0.75rem"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                    <path d="M2 12h20" />
+                  </svg>
+                  Saudi Arabia
+                </span>
+                <span class="badge-outline" style="padding: 0.3rem 0.75rem"
+                  >Since Jan 2019</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Tabs ── -->
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchTab('overview', this)">
+            Overview
+          </button>
+          <button class="tab-btn" onclick="switchTab('contacts', this)">
+            Contacts
+          </button>
+          <button class="tab-btn" onclick="switchTab('agreements', this)">
+            Agreements
+          </button>
+          <button class="tab-btn" onclick="switchTab('notes', this)">
+            Notes
+          </button>
+        </div>
+
+        <!-- ════════════════ OVERVIEW ════════════════ -->
+        <div id="tab-overview" class="tab-panel active">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left col -->
+            <div class="lg:col-span-2 space-y-5">
+              <!-- General Information -->
+              <div class="card p-6">
+                <h2 class="text-base font-semibold mb-1">
+                  General Information
+                </h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-5">
+                  <div class="info-field">
+                    <span class="info-label">Entity Code</span>
+                    <span class="info-value" style="font-family: monospace"
+                      >ENT-001</span
+                    >
+                  </div>
+                  <div class="info-field">
+                    <span class="info-label">Entity Type</span>
+                    <span class="info-value">Insurance Company</span>
+                  </div>
+                  <div class="info-field">
+                    <span class="info-label">Country</span>
+                    <span class="info-value">Saudi Arabia</span>
+                  </div>
+                  <div class="info-field">
+                    <span class="info-label">License Number</span>
+                    <span class="info-value" style="font-family: monospace"
+                      >SA-IC-2019-4471</span
+                    >
+                  </div>
+                  <div class="info-field">
+                    <span class="info-label">Registration Date</span>
+                    <span class="info-value">14 Jan 2019</span>
+                  </div>
+                  <div class="info-field">
+                    <span class="info-label">Status</span>
+                    <span
+                      style="
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 0.4rem;
+                        padding: 0.25rem 0.65rem;
+                        border-radius: 9999px;
+                        background: #dcfce7;
+                        color: #16a34a;
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        width: fit-content;
+                      "
+                    >
+                      <span
+                        style="
+                          width: 6px;
+                          height: 6px;
+                          border-radius: 9999px;
+                          background: #16a34a;
+                          flex-shrink: 0;
+                        "
+                      ></span>
+                      Active
+                    </span>
+                  </div>
+                  <div class="info-field">
+                    <span class="info-label">Tax ID</span>
+                    <span class="info-value" style="font-family: monospace"
+                      >300-542-8810</span
+                    >
+                  </div>
+                  <div class="info-field">
+                    <span class="info-label">Currency</span>
+                    <span class="info-value">SAR - Saudi Riyal</span>
+                  </div>
+                  <div class="info-field">
+                    <span class="info-label">Website</span>
+                    <span class="info-value" style="color: var(--primary)"
+                      >www.almuthanna-ins.sa</span
+                    >
+                  </div>
+                  <div class="info-field sm:col-span-3">
+                    <span class="info-label">Registered Address</span>
+                    <span class="info-value"
+                      >King Fahd Road, Olaya District, Riyadh 12271, Saudi
+                      Arabia</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Financial Overview -->
+              <div class="card p-6">
+                <h2 class="text-base font-semibold mb-1">Financial Overview</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div
+                    class="info-field"
+                    style="
+                      border-left: 3px solid #d1d5db;
+                      padding-left: 0.75rem;
+                    "
+                  >
+                    <span class="info-label">Total Premium</span>
+                    <span class="info-value text-xl font-bold">SAR 12.4M</span>
+                    <span class="text-xs mt-0.5" style="color: #16a34a"
+                      >+8.2% YoY</span
+                    >
+                  </div>
+                  <div
+                    class="info-field"
+                    style="
+                      border-left: 3px solid #d1d5db;
+                      padding-left: 0.75rem;
+                    "
+                  >
+                    <span class="info-label">Active Agreements</span>
+                    <span class="info-value text-xl font-bold">38</span>
+                    <span class="text-xs mt-0.5 text-muted-foreground"
+                      >of 42 total</span
+                    >
+                  </div>
+                  <div
+                    class="info-field"
+                    style="
+                      border-left: 3px solid #d1d5db;
+                      padding-left: 0.75rem;
+                    "
+                  >
+                    <span class="info-label">Claims Ratio</span>
+                    <span class="info-value text-xl font-bold">63%</span>
+                    <span class="text-xs mt-0.5" style="color: #16a34a"
+                      >−2.1% vs avg</span
+                    >
+                  </div>
+                  <div
+                    class="info-field"
+                    style="
+                      border-left: 3px solid #d1d5db;
+                      padding-left: 0.75rem;
+                    "
+                  >
+                    <span class="info-label">Last Payment</span>
+                    <span class="info-value text-xl font-bold">SAR 840K</span>
+                    <span class="text-xs mt-0.5 text-muted-foreground"
+                      >03 May 2026</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right col -->
+            <div class="space-y-5">
+              <!-- Details -->
+              <div class="card p-5">
+                <h2 class="text-base font-semibold mb-1">Details</h2>
+                <div class="space-y-3.5">
+                  <div class="flex items-center justify-between gap-4 text-sm">
+                    <span class="text-muted-foreground shrink-0"
+                      >Account Manager</span
+                    >
+                    <span class="font-medium text-right">Rania Al-Haddad</span>
+                  </div>
+                  <div class="flex items-center justify-between gap-4 text-sm">
+                    <span class="text-muted-foreground shrink-0"
+                      >Risk Category</span
+                    >
+                    <span class="font-medium">Low</span>
+                  </div>
+                  <div class="flex items-center justify-between gap-4 text-sm">
+                    <span class="text-muted-foreground shrink-0"
+                      >Credit Rating</span
+                    >
+                    <span class="font-medium">A+ (S&amp;P)</span>
+                  </div>
+                  <div class="flex items-center justify-between gap-4 text-sm">
+                    <span class="text-muted-foreground shrink-0"
+                      >KYC Status</span
+                    >
+                    <span
+                      style="
+                        font-size: 0.8rem;
+                        font-weight: 600;
+                        color: #16a34a;
+                      "
+                      >Verified</span
+                    >
+                  </div>
+                  <div class="flex items-center justify-between gap-4 text-sm">
+                    <span class="text-muted-foreground shrink-0"
+                      >Last Audit</span
+                    >
+                    <span class="font-medium">12 Feb 2026</span>
+                  </div>
+                  <div class="flex items-center justify-between gap-4 text-sm">
+                    <span class="text-muted-foreground shrink-0"
+                      >Renewal Due</span
+                    >
+                    <span class="font-medium">30 Jun 2026</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recent Activity -->
+              <div class="card p-5">
+                <h2 class="text-base font-semibold mb-1">Recent Activity</h2>
+                <ul class="space-y-4">
+                  <li class="flex items-start gap-3 text-sm">
+                    <span
+                      style="
+                        width: 7px;
+                        height: 7px;
+                        border-radius: 9999px;
+                        background: #16a34a;
+                        margin-top: 0.5rem;
+                        flex-shrink: 0;
+                        border: none;
+                      "
+                    ></span>
+                    <div>
+                      <p class="font-medium">Agreement AGR-2026-041 renewed</p>
+                      <p class="text-xs text-muted-foreground mt-0.5">
+                        02 May 2026
+                      </p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3 text-sm">
+                    <span
+                      style="
+                        width: 7px;
+                        height: 7px;
+                        border-radius: 9999px;
+                        background: var(--border);
+                        margin-top: 0.5rem;
+                        flex-shrink: 0;
+                        border: 1px solid var(--muted-foreground);
+                      "
+                    ></span>
+                    <div>
+                      <p class="font-medium">Payment SAR 840K received</p>
+                      <p class="text-xs text-muted-foreground mt-0.5">
+                        03 May 2026
+                      </p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3 text-sm">
+                    <span
+                      style="
+                        width: 7px;
+                        height: 7px;
+                        border-radius: 9999px;
+                        background: #d97706;
+                        margin-top: 0.5rem;
+                        flex-shrink: 0;
+                        border: none;
+                      "
+                    ></span>
+                    <div>
+                      <p class="font-medium">KYC documents updated</p>
+                      <p class="text-xs text-muted-foreground mt-0.5">
+                        18 Apr 2026
+                      </p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3 text-sm">
+                    <span
+                      style="
+                        width: 7px;
+                        height: 7px;
+                        border-radius: 9999px;
+                        background: var(--border);
+                        margin-top: 0.5rem;
+                        flex-shrink: 0;
+                        border: 1px solid var(--muted-foreground);
+                      "
+                    ></span>
+                    <div>
+                      <p class="font-medium">Annual audit completed</p>
+                      <p class="text-xs text-muted-foreground mt-0.5">
+                        12 Feb 2026
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ════════════════ CONTACTS ════════════════ -->
+        <div id="tab-contacts" class="tab-panel">
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            <!-- Primary -->
+            <div class="contact-card">
+              <div class="flex items-center justify-between">
+                <span
+                  style="
+                    font-size: 0.7rem;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    color: var(--muted-foreground);
+                  "
+                  >Primary Contact</span
+                >
+                <button type="button" class="btn-icon-outline">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                    />
+                    <path
+                      d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="contact-avatar">KA</div>
+                <div>
+                  <p class="font-semibold text-sm">Khalid Al-Amri</p>
+                  <p class="text-xs text-muted-foreground mt-0.5">
+                    Chief Executive Officer
+                  </p>
+                </div>
+              </div>
+              <div class="space-y-2.5 pt-3 border-t border-[var(--border)]">
+                <a
+                  href="tel:+966112345678"
+                  class="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="flex-shrink: 0"
+                  >
+                    <path
+                      d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.82 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.77 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.93a16 16 0 0 0 6.16 6.16l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
+                    />
+                  </svg>
+                  +966 11 234 5678
+                </a>
+                <a
+                  href="tel:+966501234567"
+                  class="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="flex-shrink: 0"
+                  >
+                    <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+                    <path d="M12 18h.01" />
+                  </svg>
+                  +966 50 123 4567
+                </a>
+                <a
+                  href="mailto:k.alamri@almuthanna-ins.sa"
+                  class="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="flex-shrink: 0"
+                  >
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                  </svg>
+                  k.alamri@almuthanna-ins.sa
+                </a>
+              </div>
+            </div>
+
+            <!-- Secondary -->
+            <div class="contact-card">
+              <div class="flex items-center justify-between">
+                <span
+                  style="
+                    font-size: 0.7rem;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    color: var(--muted-foreground);
+                  "
+                  >Secondary Contact</span
+                >
+                <button type="button" class="btn-icon-outline">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                    />
+                    <path
+                      d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="contact-avatar">NZ</div>
+                <div>
+                  <p class="font-semibold text-sm">Nour Al-Zahrani</p>
+                  <p class="text-xs text-muted-foreground mt-0.5">
+                    Head of Reinsurance
+                  </p>
+                </div>
+              </div>
+              <div class="space-y-2.5 pt-3 border-t border-[var(--border)]">
+                <a
+                  href="tel:+966112345690"
+                  class="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="flex-shrink: 0"
+                  >
+                    <path
+                      d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.82 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.77 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.93a16 16 0 0 0 6.16 6.16l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
+                    />
+                  </svg>
+                  +966 11 234 5690
+                </a>
+                <a
+                  href="tel:+966559876543"
+                  class="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="flex-shrink: 0"
+                  >
+                    <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+                    <path d="M12 18h.01" />
+                  </svg>
+                  +966 55 987 6543
+                </a>
+                <a
+                  href="mailto:n.zahrani@almuthanna-ins.sa"
+                  class="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="flex-shrink: 0"
+                  >
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                  </svg>
+                  n.zahrani@almuthanna-ins.sa
+                </a>
+              </div>
+            </div>
+
+            <!-- Tertiary -->
+            <div class="contact-card">
+              <div class="flex items-center justify-between">
+                <span
+                  style="
+                    font-size: 0.7rem;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    color: var(--muted-foreground);
+                  "
+                  >Tertiary Contact</span
+                >
+                <button type="button" class="btn-icon-outline">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                    />
+                    <path
+                      d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="contact-avatar">FM</div>
+                <div>
+                  <p class="font-semibold text-sm">Faisal Al-Mutairi</p>
+                  <p class="text-xs text-muted-foreground mt-0.5">
+                    Finance Director
+                  </p>
+                </div>
+              </div>
+              <div class="space-y-2.5 pt-3 border-t border-[var(--border)]">
+                <a
+                  href="tel:+966112345701"
+                  class="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="flex-shrink: 0"
+                  >
+                    <path
+                      d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.82 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.77 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.93a16 16 0 0 0 6.16 6.16l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
+                    />
+                  </svg>
+                  +966 11 234 5701
+                </a>
+                <a
+                  href="tel:+966541122334"
+                  class="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="flex-shrink: 0"
+                  >
+                    <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+                    <path d="M12 18h.01" />
+                  </svg>
+                  +966 54 112 2334
+                </a>
+                <a
+                  href="mailto:f.mutairi@almuthanna-ins.sa"
+                  class="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="flex-shrink: 0"
+                  >
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                  </svg>
+                  f.mutairi@almuthanna-ins.sa
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ════════════════ AGREEMENTS ════════════════ -->
+        <div id="tab-agreements" class="tab-panel">
+          <!-- Filter bar -->
+          <div class="flex flex-wrap items-center gap-2 mb-4">
+            <!-- Search -->
+            <div class="relative" style="width: 16rem">
+              <input
+                id="agr-search"
+                type="text"
+                class="input w-full"
+                placeholder="Search agreements…"
+                oninput="filterAgrRows()"
+              />
+            </div>
+
+            <!-- Status filter -->
+            <div id="agr-status-select" class="select">
+              <button
+                type="button"
+                class="btn-outline w-40"
+                id="agr-status-trigger"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="agr-status-listbox"
+              >
+                <span class="truncate flex items-center gap-2"
+                  ><span class="sdot sdot-all"></span>All statuses</span
+                >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="text-muted-foreground opacity-50 shrink-0 size-4"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div id="agr-status-popover" data-popover aria-hidden="true">
+                <div
+                  role="listbox"
+                  id="agr-status-listbox"
+                  aria-labelledby="agr-status-trigger"
+                >
+                  <div
+                    role="option"
+                    data-value="all"
+                    aria-selected="true"
+                    onclick="selectAgrStatus('all', this)"
+                  >
+                    <span class="flex items-center gap-2"
+                      ><span class="sdot sdot-all"></span>All statuses</span
+                    >
+                  </div>
+                  <div
+                    role="option"
+                    data-value="active"
+                    onclick="selectAgrStatus('active', this)"
+                  >
+                    <span class="flex items-center gap-2"
+                      ><span class="sdot sdot-active"></span>Active</span
+                    >
+                  </div>
+                  <div
+                    role="option"
+                    data-value="pending"
+                    onclick="selectAgrStatus('pending', this)"
+                  >
+                    <span class="flex items-center gap-2"
+                      ><span class="sdot sdot-pending"></span>Pending</span
+                    >
+                  </div>
+                  <div
+                    role="option"
+                    data-value="expired"
+                    onclick="selectAgrStatus('expired', this)"
+                  >
+                    <span class="flex items-center gap-2"
+                      ><span class="sdot sdot-expired"></span>Expired</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <input type="hidden" id="agr-status-filter" value="all" />
+            </div>
+
+            <!-- Type filter -->
+            <div id="agr-type-select" class="select">
+              <button
+                type="button"
+                class="btn-outline w-32"
+                id="agr-type-trigger"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="agr-type-listbox"
+              >
+                <span class="truncate">All types</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="text-muted-foreground opacity-50 shrink-0 size-4"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div id="agr-type-popover" data-popover aria-hidden="true">
+                <div
+                  role="listbox"
+                  id="agr-type-listbox"
+                  aria-labelledby="agr-type-trigger"
+                >
+                  <div
+                    role="option"
+                    data-value="all"
+                    aria-selected="true"
+                    onclick="selectAgrType('all', this)"
+                  >
+                    <span>All types</span>
+                  </div>
+                  <div
+                    role="option"
+                    data-value="facultative"
+                    onclick="selectAgrType('facultative', this)"
+                  >
+                    <span>Facultative</span>
+                  </div>
+                  <div
+                    role="option"
+                    data-value="treaty"
+                    onclick="selectAgrType('treaty', this)"
+                  >
+                    <span>Treaty</span>
+                  </div>
+                  <div
+                    role="option"
+                    data-value="proportional"
+                    onclick="selectAgrType('proportional', this)"
+                  >
+                    <span>Proportional</span>
+                  </div>
+                </div>
+              </div>
+              <input type="hidden" id="agr-type-filter" value="all" />
+            </div>
+
+            <!-- Reset -->
+            <div class="flex items-center ml-auto">
+              <button
+                type="button"
+                class="btn-outline"
+                onclick="resetAgrFilters()"
+              >
+                Reset filters
+              </button>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="overflow-x-auto border border-border rounded-lg">
+            <table class="table" id="agr-table">
+              <thead>
+                <tr>
+                  <th class="whitespace-nowrap">Agreement No.</th>
+                  <th>Title</th>
+                  <th>Type</th>
+                  <th class="whitespace-nowrap">
+                    <button
+                      type="button"
+                      class="sort-btn"
+                      id="agr-sort-btn"
+                      data-sort="none"
+                      onclick="sortAgrByDate(this)"
+                    >
+                      Start Date
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          id="agr-sort-down"
+                          d="m7 15 5 5 5-5"
+                          style="opacity: 0.4"
+                        />
+                        <path
+                          id="agr-sort-up"
+                          d="m7 9 5-5 5 5"
+                          style="opacity: 0.4"
+                        />
+                      </svg>
+                    </button>
+                  </th>
+                  <th class="whitespace-nowrap">End Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  data-status="active"
+                  data-type="facultative"
+                  data-date="2026-01-01"
+                  data-search="agr-2026-041 motor third party liability facultative"
+                >
+                  <td class="font-mono text-sm font-medium text-primary">
+                    AGR-2026-041
+                  </td>
+                  <td class="text-sm font-medium">
+                    Motor Third Party Liability
+                  </td>
+                  <td class="text-sm text-muted-foreground">Facultative</td>
+                  <td class="text-sm text-muted-foreground whitespace-nowrap">
+                    01 Jan 2026
+                  </td>
+                  <td class="text-sm text-muted-foreground whitespace-nowrap">
+                    31 Dec 2026
+                  </td>
+                  <td>
+                    <span class="agr-badge"
+                      ><span class="sdot sdot-active"></span>Active</span
+                    >
+                  </td>
+                </tr>
+                <tr
+                  data-status="active"
+                  data-type="treaty"
+                  data-date="2026-02-15"
+                  data-search="agr-2026-039 marine cargo reinsurance treaty"
+                >
+                  <td class="font-mono text-sm font-medium text-primary">
+                    AGR-2026-039
+                  </td>
+                  <td class="text-sm font-medium">Marine Cargo Reinsurance</td>
+                  <td class="text-sm text-muted-foreground">Treaty</td>
+                  <td class="text-sm text-muted-foreground whitespace-nowrap">
+                    15 Feb 2026
+                  </td>
+                  <td class="text-sm text-muted-foreground whitespace-nowrap">
+                    14 Feb 2027
+                  </td>
+                  <td>
+                    <span class="agr-badge"
+                      ><span class="sdot sdot-active"></span>Active</span
+                    >
+                  </td>
+                </tr>
+                <tr
+                  data-status="pending"
+                  data-type="proportional"
+                  data-date="2026-03-01"
+                  data-search="agr-2026-033 property all risk cover proportional"
+                >
+                  <td class="font-mono text-sm font-medium text-primary">
+                    AGR-2026-033
+                  </td>
+                  <td class="text-sm font-medium">Property All Risk Cover</td>
+                  <td class="text-sm text-muted-foreground">Proportional</td>
+                  <td class="text-sm text-muted-foreground whitespace-nowrap">
+                    01 Mar 2026
+                  </td>
+                  <td class="text-sm text-muted-foreground whitespace-nowrap">
+                    28 Feb 2027
+                  </td>
+                  <td>
+                    <span class="agr-badge"
+                      ><span class="sdot sdot-pending"></span>Pending</span
+                    >
+                  </td>
+                </tr>
+                <tr
+                  data-status="expired"
+                  data-type="treaty"
+                  data-date="2025-01-01"
+                  data-search="agr-2025-081 life group reinsurance treaty"
+                >
+                  <td class="font-mono text-sm font-medium text-primary">
+                    AGR-2025-081
+                  </td>
+                  <td class="text-sm font-medium">Life Group Reinsurance</td>
+                  <td class="text-sm text-muted-foreground">Treaty</td>
+                  <td class="text-sm text-muted-foreground whitespace-nowrap">
+                    01 Jan 2025
+                  </td>
+                  <td class="text-sm text-muted-foreground whitespace-nowrap">
+                    31 Dec 2025
+                  </td>
+                  <td>
+                    <span class="agr-badge"
+                      ><span class="sdot sdot-expired"></span>Expired</span
+                    >
+                  </td>
+                </tr>
+                <tr
+                  data-status="active"
+                  data-type="facultative"
+                  data-date="2025-06-15"
+                  data-search="agr-2025-074 engineering projects cover facultative"
+                >
+                  <td class="font-mono text-sm font-medium text-primary">
+                    AGR-2025-074
+                  </td>
+                  <td class="text-sm font-medium">
+                    Engineering Projects Cover
+                  </td>
+                  <td class="text-sm text-muted-foreground">Facultative</td>
+                  <td class="text-sm text-muted-foreground whitespace-nowrap">
+                    15 Jun 2025
+                  </td>
+                  <td class="text-sm text-muted-foreground whitespace-nowrap">
+                    14 Jun 2026
+                  </td>
+                  <td>
+                    <span class="agr-badge"
+                      ><span class="sdot sdot-active"></span>Active</span
+                    >
+                  </td>
+                </tr>
+                <tr id="agr-empty-row" style="display: none">
+                  <td
+                    colspan="7"
+                    class="text-center py-10 text-muted-foreground text-sm"
+                  >
+                    No agreements found.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Footer -->
+          <div class="flex items-center justify-between gap-4 flex-wrap py-3">
+            <p class="text-sm text-muted-foreground">
+              0 of <span id="agr-showing-total">5</span> row(s) selected.
+            </p>
+            <div class="flex items-center gap-5">
+              <div class="flex items-center gap-2">
+                <span class="text-sm text-muted-foreground whitespace-nowrap"
+                  >Rows per page</span
+                >
+                <div id="agr-rows-select" class="select">
+                  <button
+                    type="button"
+                    class="btn-outline w-20"
+                    id="agr-rows-trigger"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-controls="agr-rows-listbox"
+                  >
+                    <span class="truncate">10</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="text-muted-foreground opacity-50 shrink-0 size-4"
+                    >
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </button>
+                  <div
+                    id="agr-rows-popover"
+                    data-popover
+                    aria-hidden="true"
+                    data-side="top"
+                  >
+                    <div
+                      role="listbox"
+                      id="agr-rows-listbox"
+                      aria-labelledby="agr-rows-trigger"
+                    >
+                      <div
+                        role="option"
+                        data-value="10"
+                        onclick="selectAgrRowsPerPage(10, this)"
+                      >
+                        <span>10</span>
+                      </div>
+                      <div
+                        role="option"
+                        data-value="25"
+                        onclick="selectAgrRowsPerPage(25, this)"
+                      >
+                        <span>25</span>
+                      </div>
+                      <div
+                        role="option"
+                        data-value="50"
+                        onclick="selectAgrRowsPerPage(50, this)"
+                      >
+                        <span>50</span>
+                      </div>
+                    </div>
+                  </div>
+                  <input type="hidden" id="agr-rows-per-page" value="10" />
+                </div>
+              </div>
+              <span class="text-sm text-muted-foreground whitespace-nowrap"
+                >Page 1 of 1</span
+              >
+              <div class="flex items-center gap-0.5">
+                <button
+                  type="button"
+                  class="btn-icon-ghost"
+                  aria-label="First page"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m11 17-5-5 5-5" />
+                    <path d="m18 17-5-5 5-5" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="btn-icon-ghost"
+                  aria-label="Previous page"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m15 18-6-6 6-6" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="btn-icon-ghost"
+                  aria-label="Next page"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="btn-icon-ghost"
+                  aria-label="Last page"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m6 17 5-5-5-5" />
+                    <path d="m13 17 5-5-5-5" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ════════════════ NOTES ════════════════ -->
+        <div id="tab-notes" class="tab-panel">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-4">
+              <div class="card p-6 space-y-4">
+                <h2 class="text-base font-semibold mb-1">Add a Note</h2>
+                <div class="flex flex-col gap-2">
+                  <textarea
+                    class="textarea w-full"
+                    rows="3"
+                    placeholder="Write a note about this entity…"
+                    style="resize: vertical; min-height: 80px"
+                  ></textarea>
+                  <div class="flex justify-end">
+                    <button type="button" class="btn text-sm h-8 px-4">
+                      Save Note
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="card p-5 space-y-3">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <div
+                        style="
+                          width: 1.6rem;
+                          height: 1.6rem;
+                          border-radius: 9999px;
+                          background: var(--muted);
+                          border: 1px solid var(--border);
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          font-size: 0.6rem;
+                          font-weight: 700;
+                        "
+                      >
+                        ZM
+                      </div>
+                      <span class="text-sm font-semibold">Zain Makki</span>
+                      <span class="text-xs text-muted-foreground"
+                        >· 02 May 2026</span
+                      >
+                    </div>
+                    <button class="btn-icon-outline">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M3 6h18" />
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                      </svg>
+                    </button>
+                  </div>
+                  <p class="text-sm text-foreground leading-relaxed">
+                    Confirmed renewal of AGR-2026-041. Entity requested a 5%
+                    commission increase — escalated to senior management for
+                    approval. Follow up by end of May.
+                  </p>
+                </div>
+
+                <div class="card p-5 space-y-3">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <div
+                        style="
+                          width: 1.6rem;
+                          height: 1.6rem;
+                          border-radius: 9999px;
+                          background: var(--muted);
+                          border: 1px solid var(--border);
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          font-size: 0.6rem;
+                          font-weight: 700;
+                        "
+                      >
+                        RH
+                      </div>
+                      <span class="text-sm font-semibold">Rania Al-Haddad</span>
+                      <span class="text-xs text-muted-foreground"
+                        >· 18 Apr 2026</span
+                      >
+                    </div>
+                    <button class="btn-icon-outline">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M3 6h18" />
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                      </svg>
+                    </button>
+                  </div>
+                  <p class="text-sm text-foreground leading-relaxed">
+                    KYC documentation renewed. New commercial registration
+                    certificate uploaded. Compliance team signed off on 17 Apr
+                    2026.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card p-6 space-y-4 h-fit">
+              <h2 class="text-base font-semibold mb-1">Notes Summary</h2>
+              <div class="space-y-3">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-muted-foreground">Total Notes</span>
+                  <span class="font-medium">2</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-muted-foreground">Last Note</span>
+                  <span class="font-medium">02 May 2026</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-muted-foreground">Contributors</span>
+                  <span class="font-medium">2 users</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      function switchTab(name, btn) {
+        document
+          .querySelectorAll(".tab-panel")
+          .forEach((p) => p.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById("tab-" + name).classList.add("active");
+        btn.classList.add("active");
+      }
+
+      // ── Agreements filter ──
+      var _agrDatePicker = null;
+      document.addEventListener("DOMContentLoaded", function () {
+        _agrDatePicker = flatpickr("#agr-date-range", {
+          mode: "range",
+          showMonths: 2,
+          dateFormat: "d M Y",
+          rangeSeparator: " – ",
+          onChange: function () {
+            filterAgrRows();
+          },
+          onOpen: function (_, __, instance) {
+            instance.jumpToDate(new Date());
+          },
+        });
+      });
+
+      function filterAgrRows() {
+        var query = document.getElementById("agr-search").value.toLowerCase();
+        var status = document.getElementById("agr-status-filter").value;
+        var type = document.getElementById("agr-type-filter").value;
+        var dateRange = _agrDatePicker ? _agrDatePicker.selectedDates : [];
+        var rows = document.querySelectorAll(
+          "#agr-table tbody tr[data-status]",
+        );
+        var visible = 0;
+        rows.forEach(function (row) {
+          var statusMatch = status === "all" || row.dataset.status === status;
+          var typeMatch = type === "all" || row.dataset.type === type;
+          var searchMatch = !query || row.dataset.search.includes(query);
+          var dateMatch = true;
+          if (row.dataset.date && dateRange.length >= 1) {
+            var rowDate = new Date(row.dataset.date);
+            rowDate.setHours(0, 0, 0, 0);
+            if (dateRange.length >= 2) {
+              var from = new Date(dateRange[0]);
+              from.setHours(0, 0, 0, 0);
+              var to = new Date(dateRange[1]);
+              to.setHours(23, 59, 59, 999);
+              dateMatch = rowDate >= from && rowDate <= to;
+            } else {
+              var from2 = new Date(dateRange[0]);
+              from2.setHours(0, 0, 0, 0);
+              dateMatch = rowDate.getTime() === from2.getTime();
+            }
+          }
+          var show = statusMatch && typeMatch && searchMatch && dateMatch;
+          row.style.display = show ? "" : "none";
+          if (show) visible++;
+        });
+        document.getElementById("agr-empty-row").style.display =
+          visible === 0 ? "" : "none";
+        document.getElementById("agr-showing-total").textContent = visible;
+      }
+
+      function _agrSetSelected(listboxId, el) {
+        document
+          .querySelectorAll("#" + listboxId + ' [role="option"]')
+          .forEach(function (o) {
+            o.setAttribute("aria-selected", "false");
+          });
+        el.setAttribute("aria-selected", "true");
+      }
+
+      function selectAgrStatus(value, el) {
+        document.getElementById("agr-status-filter").value = value;
+        var display = document.querySelector("#agr-status-trigger .truncate");
+        if (display) display.innerHTML = el.querySelector("span").innerHTML;
+        _agrSetSelected("agr-status-listbox", el);
+        filterAgrRows();
+      }
+
+      function selectAgrType(value, el) {
+        document.getElementById("agr-type-filter").value = value;
+        var display = document.querySelector("#agr-type-trigger .truncate");
+        if (display) display.textContent = el.querySelector("span").textContent;
+        _agrSetSelected("agr-type-listbox", el);
+        filterAgrRows();
+      }
+
+      function selectAgrRowsPerPage(value, el) {
+        document.getElementById("agr-rows-per-page").value = value;
+        var display = document.querySelector("#agr-rows-trigger .truncate");
+        if (display) display.textContent = el.querySelector("span").textContent;
+        _agrSetSelected("agr-rows-listbox", el);
+      }
+
+      function resetAgrFilters() {
+        document.getElementById("agr-search").value = "";
+        document.getElementById("agr-status-filter").value = "all";
+        document.getElementById("agr-type-filter").value = "all";
+        var sd = document.querySelector("#agr-status-trigger .truncate");
+        if (sd)
+          sd.innerHTML = '<span class="sdot sdot-all"></span>All statuses';
+        var td = document.querySelector("#agr-type-trigger .truncate");
+        if (td) td.textContent = "All types";
+        var sAll = document.querySelector(
+          '#agr-status-listbox [data-value="all"]',
+        );
+        if (sAll) _agrSetSelected("agr-status-listbox", sAll);
+        var tAll = document.querySelector(
+          '#agr-type-listbox [data-value="all"]',
+        );
+        if (tAll) _agrSetSelected("agr-type-listbox", tAll);
+        if (_agrDatePicker) _agrDatePicker.clear();
+        filterAgrRows();
+      }
+
+      var _agrOrigOrder = null;
+      function sortAgrByDate(btn) {
+        var tbody = document.querySelector("#agr-table tbody");
+        var rows = Array.from(tbody.querySelectorAll("tr[data-date]"));
+        var dir = btn.dataset.sort;
+        if (dir === "none" || dir === "desc") {
+          rows.sort(function (a, b) {
+            return a.dataset.date.localeCompare(b.dataset.date);
+          });
+          btn.dataset.sort = "asc";
+          document.getElementById("agr-sort-up").style.opacity = "1";
+          document.getElementById("agr-sort-down").style.opacity = "0.2";
+        } else {
+          rows.sort(function (a, b) {
+            return b.dataset.date.localeCompare(a.dataset.date);
+          });
+          btn.dataset.sort = "desc";
+          document.getElementById("agr-sort-up").style.opacity = "0.2";
+          document.getElementById("agr-sort-down").style.opacity = "1";
+        }
+        var empty = document.getElementById("agr-empty-row");
+        rows.forEach(function (r) {
+          tbody.insertBefore(r, empty);
+        });
+      }
+    </script>
+  </body>
+</html>
