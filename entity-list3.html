@@ -34,7 +34,10 @@
     ></script>
 
     <!-- Flatpickr date picker -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <link rel="stylesheet" href="theme.css" />
@@ -180,29 +183,164 @@
         min-width: unset !important;
       }
       .flatpickr-calendar.arrowTop:before,
-      .flatpickr-calendar.arrowTop:after { display: none; }
-      .flatpickr-months { display: flex !important; align-items: center !important; margin-bottom: 0.625rem; }
-      .flatpickr-month { flex: 1; height: auto !important; display: flex; align-items: center; justify-content: center; }
-      .flatpickr-current-month { position: static !important; display: inline-flex !important; align-items: center !important; gap: 0.1rem; padding: 0 !important; width: auto !important; height: auto !important; font-size: 0.875rem; color: var(--foreground); }
-      .flatpickr-monthDropdown-months { -webkit-appearance: none !important; appearance: none !important; border: none !important; background: transparent !important; padding: 0 !important; margin: 0 !important; font-size: 0.875rem !important; font-weight: 600 !important; color: var(--foreground) !important; pointer-events: none; cursor: default; }
-      .numInputWrapper { border: none !important; display: inline-flex !important; align-items: center; width: auto !important; padding: 0 !important; }
-      .numInputWrapper span.arrowUp, .numInputWrapper span.arrowDown { display: none !important; }
-      input.cur-year { width: 3rem !important; font-size: 0.875rem !important; font-weight: 600 !important; color: var(--foreground) !important; background: transparent !important; border: none !important; padding: 0 !important; pointer-events: none; cursor: default; -moz-appearance: textfield !important; appearance: textfield !important; }
-      input.cur-year::-webkit-outer-spin-button, input.cur-year::-webkit-inner-spin-button { -webkit-appearance: none; }
-      .flatpickr-prev-month, .flatpickr-next-month { position: relative !important; top: auto !important; width: 1.75rem !important; height: 1.75rem !important; border: 1px solid var(--border) !important; border-radius: calc(var(--radius) - 2px) !important; padding: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0; transition: background 120ms; }
-      .flatpickr-prev-month:hover, .flatpickr-next-month:hover { background: var(--muted) !important; border-color: var(--muted) !important; }
-      .flatpickr-prev-month svg, .flatpickr-next-month svg { fill: var(--foreground) !important; width: 12px; height: 12px; }
-      .flatpickr-innerContainer, .flatpickr-rContainer { width: 100%; }
-      .flatpickr-weekdays { display: flex !important; margin-bottom: 0.25rem; }
-      .flatpickr-weekdaycontainer { flex: 1; display: flex; }
-      .flatpickr-weekday { flex: 1; color: var(--muted-foreground); font-size: 0.75rem; font-weight: 500; text-align: center; }
-      .flatpickr-days { display: flex !important; width: 100% !important; }
-      .dayContainer { flex: 1; width: 100% !important; min-width: unset !important; max-width: unset !important; display: flex !important; flex-wrap: wrap; justify-content: flex-start !important; }
-      .flatpickr-day { flex: 1 0 calc(100% / 7); max-width: calc(100% / 7); height: 2.375rem; line-height: 2.375rem; border-radius: 0.4rem; color: var(--foreground); border: none; font-size: 0.8125rem; margin: 0; }
-      .flatpickr-day:hover { background: var(--muted); border: none; outline: none; }
-      .flatpickr-day.today:not(.selected) { background: var(--muted) !important; font-weight: 600; border-bottom: none !important; }
-      .flatpickr-day.selected, .flatpickr-day.selected:hover { background: oklch(0.44 0.2 268) !important; border-color: oklch(0.44 0.2 268) !important; color: #fff !important; border-radius: 0.4rem !important; box-shadow: none !important; }
-      .flatpickr-day.flatpickr-disabled { color: var(--muted-foreground); opacity: 0.35; }
+      .flatpickr-calendar.arrowTop:after {
+        display: none;
+      }
+      .flatpickr-months {
+        display: flex !important;
+        align-items: center !important;
+        margin-bottom: 0.625rem;
+      }
+      .flatpickr-month {
+        flex: 1;
+        height: auto !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .flatpickr-current-month {
+        position: static !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.1rem;
+        padding: 0 !important;
+        width: auto !important;
+        height: auto !important;
+        font-size: 0.875rem;
+        color: var(--foreground);
+      }
+      .flatpickr-monthDropdown-months {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        color: var(--foreground) !important;
+        pointer-events: none;
+        cursor: default;
+      }
+      .numInputWrapper {
+        border: none !important;
+        display: inline-flex !important;
+        align-items: center;
+        width: auto !important;
+        padding: 0 !important;
+      }
+      .numInputWrapper span.arrowUp,
+      .numInputWrapper span.arrowDown {
+        display: none !important;
+      }
+      input.cur-year {
+        width: 3rem !important;
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        color: var(--foreground) !important;
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        pointer-events: none;
+        cursor: default;
+        -moz-appearance: textfield !important;
+        appearance: textfield !important;
+      }
+      input.cur-year::-webkit-outer-spin-button,
+      input.cur-year::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+      .flatpickr-prev-month,
+      .flatpickr-next-month {
+        position: relative !important;
+        top: auto !important;
+        width: 1.75rem !important;
+        height: 1.75rem !important;
+        border: 1px solid var(--border) !important;
+        border-radius: calc(var(--radius) - 2px) !important;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0;
+        transition: background 120ms;
+      }
+      .flatpickr-prev-month:hover,
+      .flatpickr-next-month:hover {
+        background: var(--muted) !important;
+        border-color: var(--muted) !important;
+      }
+      .flatpickr-prev-month svg,
+      .flatpickr-next-month svg {
+        fill: var(--foreground) !important;
+        width: 12px;
+        height: 12px;
+      }
+      .flatpickr-innerContainer,
+      .flatpickr-rContainer {
+        width: 100%;
+      }
+      .flatpickr-weekdays {
+        display: flex !important;
+        margin-bottom: 0.25rem;
+      }
+      .flatpickr-weekdaycontainer {
+        flex: 1;
+        display: flex;
+      }
+      .flatpickr-weekday {
+        flex: 1;
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-align: center;
+      }
+      .flatpickr-days {
+        display: flex !important;
+        width: 100% !important;
+      }
+      .dayContainer {
+        flex: 1;
+        width: 100% !important;
+        min-width: unset !important;
+        max-width: unset !important;
+        display: flex !important;
+        flex-wrap: wrap;
+        justify-content: flex-start !important;
+      }
+      .flatpickr-day {
+        flex: 1 0 calc(100% / 7);
+        max-width: calc(100% / 7);
+        height: 2.375rem;
+        line-height: 2.375rem;
+        border-radius: 0.4rem;
+        color: var(--foreground);
+        border: none;
+        font-size: 0.8125rem;
+        margin: 0;
+      }
+      .flatpickr-day:hover {
+        background: var(--muted);
+        border: none;
+        outline: none;
+      }
+      .flatpickr-day.today:not(.selected) {
+        background: var(--muted) !important;
+        font-weight: 600;
+        border-bottom: none !important;
+      }
+      .flatpickr-day.selected,
+      .flatpickr-day.selected:hover {
+        background: oklch(0.44 0.2 268) !important;
+        border-color: oklch(0.44 0.2 268) !important;
+        color: #fff !important;
+        border-radius: 0.4rem !important;
+        box-shadow: none !important;
+      }
+      .flatpickr-day.flatpickr-disabled {
+        color: var(--muted-foreground);
+        opacity: 0.35;
+      }
     </style>
   </head>
 
@@ -362,7 +500,16 @@
                       >
                     </li>
                     <li>
-                      <a href="#" onclick="document.getElementById('dialog-new-entity').showModal(); return false;"><span>New Entity</span></a>
+                      <a
+                        href="#"
+                        onclick="
+                          document
+                            .getElementById('dialog-new-entity')
+                            .showModal();
+                          return false;
+                        "
+                        ><span>New Entity</span></a
+                      >
                     </li>
                   </ul>
                 </details>
@@ -1544,61 +1691,302 @@
 
         <section>
           <form class="form grid gap-6" onsubmit="return false;">
-
             <!-- Row 1: Entity Name | Company Type | Country -->
             <div class="grid grid-cols-3 gap-5">
               <div class="grid gap-2">
-                <label for="new-entity-name">Entity Name <span class="text-red-500 font-normal">*</span></label>
-                <input type="text" id="new-entity-name" class="input" placeholder="e.g. Gulf Shield Re" autofocus />
+                <label for="new-entity-name"
+                  >Entity Name
+                  <span class="text-red-500 font-normal">*</span></label
+                >
+                <input
+                  type="text"
+                  id="new-entity-name"
+                  class="input"
+                  placeholder="e.g. Gulf Shield Re"
+                  autofocus
+                />
               </div>
               <div class="grid gap-2">
-                <label id="dlg-type-label">Company Type <span class="text-red-500 font-normal">*</span></label>
+                <label id="dlg-type-label"
+                  >Company Type
+                  <span class="text-red-500 font-normal">*</span></label
+                >
                 <div id="dlg-type-sel" class="select">
-                  <button type="button" class="btn-outline w-full" id="dlg-type-sel-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="dlg-type-sel-listbox" aria-labelledby="dlg-type-label dlg-type-sel-trigger">
-                    <span id="dlg-type-sel-label" class="truncate text-muted-foreground">Select…</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground opacity-50 shrink-0 size-4"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                  <button
+                    type="button"
+                    class="btn-outline w-full"
+                    id="dlg-type-sel-trigger"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-controls="dlg-type-sel-listbox"
+                    aria-labelledby="dlg-type-label dlg-type-sel-trigger"
+                  >
+                    <span
+                      id="dlg-type-sel-label"
+                      class="truncate text-muted-foreground"
+                      >Select…</span
+                    >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="text-muted-foreground opacity-50 shrink-0 size-4"
+                    >
+                      <path d="m7 15 5 5 5-5" />
+                      <path d="m7 9 5-5 5 5" />
+                    </svg>
                   </button>
-                  <div id="dlg-type-sel-popover" data-popover aria-hidden="true">
-                    <div role="listbox" id="dlg-type-sel-listbox" aria-labelledby="dlg-type-sel-trigger">
-                      <div role="option" data-value="Insurance Company" onclick="selectDialogType(this.dataset.value, this)">Insurance Company</div>
-                      <div role="option" data-value="Reinsurance Company" onclick="selectDialogType(this.dataset.value, this)">Reinsurance Company</div>
-                      <div role="option" data-value="Broker" onclick="selectDialogType(this.dataset.value, this)">Broker</div>
-                      <div role="option" data-value="Agent" onclick="selectDialogType(this.dataset.value, this)">Agent</div>
-                      <div role="option" data-value="Captive" onclick="selectDialogType(this.dataset.value, this)">Captive</div>
-                      <div role="option" data-value="Lloyd's Syndicate" onclick="selectDialogType(this.dataset.value, this)">Lloyd's Syndicate</div>
-                      <div role="option" data-value="Other" onclick="selectDialogType(this.dataset.value, this)">Other</div>
+                  <div
+                    id="dlg-type-sel-popover"
+                    data-popover
+                    aria-hidden="true"
+                  >
+                    <div
+                      role="listbox"
+                      id="dlg-type-sel-listbox"
+                      aria-labelledby="dlg-type-sel-trigger"
+                    >
+                      <div
+                        role="option"
+                        data-value="Insurance Company"
+                        onclick="selectDialogType(this.dataset.value, this)"
+                      >
+                        Insurance Company
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Reinsurance Company"
+                        onclick="selectDialogType(this.dataset.value, this)"
+                      >
+                        Reinsurance Company
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Broker"
+                        onclick="selectDialogType(this.dataset.value, this)"
+                      >
+                        Broker
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Agent"
+                        onclick="selectDialogType(this.dataset.value, this)"
+                      >
+                        Agent
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Captive"
+                        onclick="selectDialogType(this.dataset.value, this)"
+                      >
+                        Captive
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Lloyd's Syndicate"
+                        onclick="selectDialogType(this.dataset.value, this)"
+                      >
+                        Lloyd's Syndicate
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Other"
+                        onclick="selectDialogType(this.dataset.value, this)"
+                      >
+                        Other
+                      </div>
                     </div>
                   </div>
                   <input type="hidden" id="dlg-type-hidden" value="" />
                 </div>
               </div>
               <div class="grid gap-2">
-                <label id="dlg-country-label">Country <span class="text-red-500 font-normal">*</span></label>
+                <label id="dlg-country-label"
+                  >Country
+                  <span class="text-red-500 font-normal">*</span></label
+                >
                 <div id="dlg-country-sel" class="select">
-                  <button type="button" class="btn-outline w-full" id="dlg-country-sel-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="dlg-country-sel-listbox" aria-labelledby="dlg-country-label dlg-country-sel-trigger">
-                    <span id="dlg-country-sel-label" class="truncate text-muted-foreground">Select…</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground opacity-50 shrink-0 size-4"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                  <button
+                    type="button"
+                    class="btn-outline w-full"
+                    id="dlg-country-sel-trigger"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-controls="dlg-country-sel-listbox"
+                    aria-labelledby="dlg-country-label dlg-country-sel-trigger"
+                  >
+                    <span
+                      id="dlg-country-sel-label"
+                      class="truncate text-muted-foreground"
+                      >Select…</span
+                    >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="text-muted-foreground opacity-50 shrink-0 size-4"
+                    >
+                      <path d="m7 15 5 5 5-5" />
+                      <path d="m7 9 5-5 5 5" />
+                    </svg>
                   </button>
-                  <div id="dlg-country-sel-popover" data-popover aria-hidden="true">
+                  <div
+                    id="dlg-country-sel-popover"
+                    data-popover
+                    aria-hidden="true"
+                  >
                     <header>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                      <input type="text" id="dlg-country-search" placeholder="Search countries..." autocomplete="off" spellcheck="false" aria-autocomplete="list" role="combobox" aria-expanded="false" aria-controls="dlg-country-sel-listbox" aria-labelledby="dlg-country-sel-trigger" oninput="filterCountryOptions('dlg-country-sel-listbox', this.value)" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                      </svg>
+                      <input
+                        type="text"
+                        id="dlg-country-search"
+                        placeholder="Search countries..."
+                        autocomplete="off"
+                        spellcheck="false"
+                        aria-autocomplete="list"
+                        role="combobox"
+                        aria-expanded="false"
+                        aria-controls="dlg-country-sel-listbox"
+                        aria-labelledby="dlg-country-sel-trigger"
+                        oninput="
+                          filterCountryOptions(
+                            'dlg-country-sel-listbox',
+                            this.value,
+                          )
+                        "
+                      />
                     </header>
-                    <div role="listbox" id="dlg-country-sel-listbox" aria-labelledby="dlg-country-sel-trigger" style="max-height: 200px; overflow-y: auto;">
-                      <div role="option" data-value="Bahrain" onclick="selectDialogCountry('Bahrain', this)">Bahrain</div>
-                      <div role="option" data-value="Egypt" onclick="selectDialogCountry('Egypt', this)">Egypt</div>
-                      <div role="option" data-value="France" onclick="selectDialogCountry('France', this)">France</div>
-                      <div role="option" data-value="Germany" onclick="selectDialogCountry('Germany', this)">Germany</div>
-                      <div role="option" data-value="Jordan" onclick="selectDialogCountry('Jordan', this)">Jordan</div>
-                      <div role="option" data-value="Kuwait" onclick="selectDialogCountry('Kuwait', this)">Kuwait</div>
-                      <div role="option" data-value="Lebanon" onclick="selectDialogCountry('Lebanon', this)">Lebanon</div>
-                      <div role="option" data-value="Morocco" onclick="selectDialogCountry('Morocco', this)">Morocco</div>
-                      <div role="option" data-value="Oman" onclick="selectDialogCountry('Oman', this)">Oman</div>
-                      <div role="option" data-value="Qatar" onclick="selectDialogCountry('Qatar', this)">Qatar</div>
-                      <div role="option" data-value="Saudi Arabia" onclick="selectDialogCountry('Saudi Arabia', this)">Saudi Arabia</div>
-                      <div role="option" data-value="Tunisia" onclick="selectDialogCountry('Tunisia', this)">Tunisia</div>
-                      <div role="option" data-value="Turkey" onclick="selectDialogCountry('Turkey', this)">Turkey</div>
-                      <div role="option" data-value="United Arab Emirates" onclick="selectDialogCountry('United Arab Emirates', this)">United Arab Emirates</div>
+                    <div
+                      role="listbox"
+                      id="dlg-country-sel-listbox"
+                      aria-labelledby="dlg-country-sel-trigger"
+                      style="max-height: 200px; overflow-y: auto"
+                    >
+                      <div
+                        role="option"
+                        data-value="Bahrain"
+                        onclick="selectDialogCountry('Bahrain', this)"
+                      >
+                        Bahrain
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Egypt"
+                        onclick="selectDialogCountry('Egypt', this)"
+                      >
+                        Egypt
+                      </div>
+                      <div
+                        role="option"
+                        data-value="France"
+                        onclick="selectDialogCountry('France', this)"
+                      >
+                        France
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Germany"
+                        onclick="selectDialogCountry('Germany', this)"
+                      >
+                        Germany
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Jordan"
+                        onclick="selectDialogCountry('Jordan', this)"
+                      >
+                        Jordan
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Kuwait"
+                        onclick="selectDialogCountry('Kuwait', this)"
+                      >
+                        Kuwait
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Lebanon"
+                        onclick="selectDialogCountry('Lebanon', this)"
+                      >
+                        Lebanon
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Morocco"
+                        onclick="selectDialogCountry('Morocco', this)"
+                      >
+                        Morocco
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Oman"
+                        onclick="selectDialogCountry('Oman', this)"
+                      >
+                        Oman
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Qatar"
+                        onclick="selectDialogCountry('Qatar', this)"
+                      >
+                        Qatar
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Saudi Arabia"
+                        onclick="selectDialogCountry('Saudi Arabia', this)"
+                      >
+                        Saudi Arabia
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Tunisia"
+                        onclick="selectDialogCountry('Tunisia', this)"
+                      >
+                        Tunisia
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Turkey"
+                        onclick="selectDialogCountry('Turkey', this)"
+                      >
+                        Turkey
+                      </div>
+                      <div
+                        role="option"
+                        data-value="United Arab Emirates"
+                        onclick="
+                          selectDialogCountry('United Arab Emirates', this)
+                        "
+                      >
+                        United Arab Emirates
+                      </div>
                     </div>
                   </div>
                   <input type="hidden" id="dlg-country-hidden" value="" />
@@ -1609,41 +1997,117 @@
             <!-- Row 2: CR Number | Registration Date | Tax ID -->
             <div class="grid grid-cols-3 gap-5">
               <div class="grid gap-2">
-                <label for="new-entity-cr">CR Number <span class="text-red-500 font-normal">*</span></label>
-                <input type="text" id="new-entity-cr" class="input" placeholder="e.g. 1010123456" />
+                <label for="new-entity-cr"
+                  >CR Number
+                  <span class="text-red-500 font-normal">*</span></label
+                >
+                <input
+                  type="text"
+                  id="new-entity-cr"
+                  class="input"
+                  placeholder="e.g. 1010123456"
+                />
               </div>
-              <div class="grid gap-2" style="position:relative;">
-                <label for="new-entity-reg-date-display">Registration Date <span class="text-red-500 font-normal">*</span></label>
+              <div class="grid gap-2" style="position: relative">
+                <label for="new-entity-reg-date-display"
+                  >Registration Date
+                  <span class="text-red-500 font-normal">*</span></label
+                >
                 <div class="relative">
-                  <input id="new-entity-reg-date-display" type="text" class="input pl-9 cursor-pointer" placeholder="Pick a date…" readonly onclick="document.getElementById('reg-date-cal-wrap').style.display='block'; event.stopPropagation();" />
+                  <input
+                    id="new-entity-reg-date-display"
+                    type="text"
+                    class="input pl-9 cursor-pointer"
+                    placeholder="Pick a date…"
+                    readonly
+                    onclick="
+                      document.getElementById(
+                        'reg-date-cal-wrap',
+                      ).style.display = 'block';
+                      event.stopPropagation();
+                    "
+                  />
                   <input type="hidden" id="new-entity-reg-date" />
-                  <div class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                  <div
+                    class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="15"
+                      height="15"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                      <line x1="16" x2="16" y1="2" y2="6" />
+                      <line x1="8" x2="8" y1="2" y2="6" />
+                      <line x1="3" x2="21" y1="10" y2="10" />
+                    </svg>
                   </div>
                 </div>
-                <div id="reg-date-cal-wrap" style="display:none; position:absolute; top:100%; left:0; z-index:10; margin-top:4px;" onclick="event.stopPropagation();">
+                <div
+                  id="reg-date-cal-wrap"
+                  style="
+                    display: none;
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    z-index: 10;
+                    margin-top: 4px;
+                  "
+                  onclick="event.stopPropagation()"
+                >
                   <div id="reg-date-cal"></div>
                 </div>
               </div>
               <div class="grid gap-2">
-                <label for="new-entity-tax-id">Tax ID <span class="text-red-500 font-normal">*</span></label>
-                <input type="text" id="new-entity-tax-id" class="input" placeholder="e.g. 300-542-8810" />
+                <label for="new-entity-tax-id"
+                  >Tax ID <span class="text-red-500 font-normal">*</span></label
+                >
+                <input
+                  type="text"
+                  id="new-entity-tax-id"
+                  class="input"
+                  placeholder="e.g. 300-542-8810"
+                />
               </div>
             </div>
 
             <!-- Row 3: Currency | Website | Phone Number -->
             <div class="grid grid-cols-3 gap-5">
               <div class="grid gap-2">
-                <label for="new-entity-currency">Currency <span class="text-red-500 font-normal">*</span></label>
-                <input type="text" id="new-entity-currency" class="input" placeholder="SAR, USD, EUR…" />
+                <label for="new-entity-currency"
+                  >Currency
+                  <span class="text-red-500 font-normal">*</span></label
+                >
+                <input
+                  type="text"
+                  id="new-entity-currency"
+                  class="input"
+                  placeholder="SAR, USD, EUR…"
+                />
               </div>
               <div class="grid gap-2">
                 <label for="new-entity-website">Website</label>
-                <input type="text" id="new-entity-website" class="input" placeholder="www.company.com" />
+                <input
+                  type="text"
+                  id="new-entity-website"
+                  class="input"
+                  placeholder="www.company.com"
+                />
               </div>
               <div class="grid gap-2">
                 <label for="new-entity-phone">Phone Number</label>
-                <input type="tel" id="new-entity-phone" class="input" placeholder="+966 11 234 5678" />
+                <input
+                  type="tel"
+                  id="new-entity-phone"
+                  class="input"
+                  placeholder="+966 11 234 5678"
+                />
               </div>
             </div>
 
@@ -1651,11 +2115,21 @@
             <div class="grid grid-cols-3 gap-5">
               <div class="grid gap-2">
                 <label for="new-entity-fax">Fax Number</label>
-                <input type="tel" id="new-entity-fax" class="input" placeholder="+966 11 234 5679" />
+                <input
+                  type="tel"
+                  id="new-entity-fax"
+                  class="input"
+                  placeholder="+966 11 234 5679"
+                />
               </div>
               <div class="grid gap-2 col-span-2">
                 <label for="new-entity-address">Registered Address</label>
-                <input type="text" id="new-entity-address" class="input" placeholder="Street, City, Zip, Country" />
+                <input
+                  type="text"
+                  id="new-entity-address"
+                  class="input"
+                  placeholder="Street, City, Zip, Country"
+                />
               </div>
             </div>
 
@@ -1665,11 +2139,21 @@
               <div class="grid grid-cols-2 gap-5">
                 <div class="grid gap-2">
                   <label for="new-contact-name">Name</label>
-                  <input type="text" id="new-contact-name" class="input" placeholder="e.g. Khalid Al-Amri" />
+                  <input
+                    type="text"
+                    id="new-contact-name"
+                    class="input"
+                    placeholder="e.g. Khalid Al-Amri"
+                  />
                 </div>
                 <div class="grid gap-2">
                   <label for="new-contact-role">Role</label>
-                  <input type="text" id="new-contact-role" class="input" placeholder="e.g. CEO" />
+                  <input
+                    type="text"
+                    id="new-contact-role"
+                    class="input"
+                    placeholder="e.g. CEO"
+                  />
                 </div>
               </div>
 
@@ -1677,19 +2161,33 @@
               <div class="grid grid-cols-3 gap-5">
                 <div class="grid gap-2">
                   <label for="new-contact-phone">Phone</label>
-                  <input type="tel" id="new-contact-phone" class="input" placeholder="+966 11 234 5678" />
+                  <input
+                    type="tel"
+                    id="new-contact-phone"
+                    class="input"
+                    placeholder="+966 11 234 5678"
+                  />
                 </div>
                 <div class="grid gap-2">
                   <label for="new-contact-mobile">Mobile</label>
-                  <input type="tel" id="new-contact-mobile" class="input" placeholder="+966 50 123 4567" />
+                  <input
+                    type="tel"
+                    id="new-contact-mobile"
+                    class="input"
+                    placeholder="+966 50 123 4567"
+                  />
                 </div>
                 <div class="grid gap-2">
                   <label for="new-contact-email">Email</label>
-                  <input type="email" id="new-contact-email" class="input" placeholder="name@company.com" />
+                  <input
+                    type="email"
+                    id="new-contact-email"
+                    class="input"
+                    placeholder="name@company.com"
+                  />
                 </div>
               </div>
             </div>
-
           </form>
         </section>
 
@@ -1697,7 +2195,24 @@
           <button class="btn-outline" onclick="this.closest('dialog').close()">
             Cancel
           </button>
-          <button class="btn" onclick="this.closest('dialog').close(); document.dispatchEvent(new CustomEvent('basecoat:toast', { detail: { config: { category: 'success', title: 'Entity Created', description: 'New entity created successfully.', cancel: { label: 'Dismiss' } } } }))">
+          <button
+            class="btn"
+            onclick="
+              this.closest('dialog').close();
+              document.dispatchEvent(
+                new CustomEvent('basecoat:toast', {
+                  detail: {
+                    config: {
+                      category: 'success',
+                      title: 'Entity Created',
+                      description: 'New entity created successfully.',
+                      cancel: { label: 'Dismiss' },
+                    },
+                  },
+                }),
+              );
+            "
+          >
             Create Entity
           </button>
         </footer>
@@ -2122,7 +2637,8 @@
         inline: true,
         dateFormat: "d M Y",
         onChange: function (selectedDates, dateStr) {
-          document.getElementById("new-entity-reg-date-display").value = dateStr;
+          document.getElementById("new-entity-reg-date-display").value =
+            dateStr;
           document.getElementById("new-entity-reg-date").value = dateStr;
           document.getElementById("reg-date-cal-wrap").style.display = "none";
         },

@@ -39,10 +39,12 @@
   <body class="h-screen bg-gray-100 flex flex-col overflow-hidden">
     <!-- Card container -->
     <div
-      class="grid grid-cols-1 [@media(min-width:900px)]:grid-cols-[45%_55%] bg-white overflow-hidden w-full h-full"
+      class="grid grid-cols-1 [@media(min-width:900px)]:grid-cols-[55%_45%] bg-white overflow-hidden w-full h-full"
     >
-      <!-- LEFT: Form -->
-      <div class="flex flex-col justify-center px-20 py-24">
+      <!-- Form (right on desktop) -->
+      <div
+        class="flex flex-col justify-center px-20 py-24 [@media(min-width:900px)]:order-2"
+      >
         <div class="w-full max-w-[520px] mx-auto">
           <!-- Cygnet logo -->
           <div class="flex justify-center mb-5">
@@ -175,33 +177,129 @@
         </div>
       </div>
 
-      <!-- RIGHT: Static panel -->
+      <!-- Branding panel (left on desktop) -->
       <div
-        class="hidden [@media(min-width:900px)]:flex items-center justify-center relative overflow-hidden"
-        style="
-          background: radial-gradient(
-            ellipse at 0% 100%,
-            rgba(99, 102, 241, 0.12) 0%,
-            rgba(139, 92, 246, 0.07) 35%,
-            #ffffff 70%
-          );
-        "
+        class="hidden [@media(min-width:900px)]:flex flex-col relative overflow-hidden text-white p-14 [@media(min-width:900px)]:order-1"
+        style="background: linear-gradient(135deg, #3332e9 0%, #9a6aff 100%)"
       >
+        <!-- Logo -->
+        <div
+          class="flex items-center justify-center size-12 rounded-xl bg-white/15 backdrop-blur text-white shrink-0"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+          </svg>
+        </div>
+
+        <!-- Slider -->
+        <div class="mt-10">
+          <div class="relative min-h-[104px]">
+            <div
+              class="brand-slide absolute inset-0 transition-opacity duration-500"
+            >
+              <h1 class="text-4xl font-bold mb-3 text-white">Designed for Individuals</h1>
+              <p class="text-white/80 text-base max-w-sm leading-relaxed">
+                See the analytics and grow your data remotely, from anywhere!
+              </p>
+            </div>
+            <div
+              class="brand-slide absolute inset-0 transition-opacity duration-500 opacity-0 pointer-events-none"
+            >
+              <h1 class="text-4xl font-bold mb-3 text-white">Powerful Analytics</h1>
+              <p class="text-white/80 text-base max-w-sm leading-relaxed">
+                Track performance and uncover insights with real-time
+                dashboards.
+              </p>
+            </div>
+            <div
+              class="brand-slide absolute inset-0 transition-opacity duration-500 opacity-0 pointer-events-none"
+            >
+              <h1 class="text-4xl font-bold mb-3 text-white">Secure by Design</h1>
+              <p class="text-white/80 text-base max-w-sm leading-relaxed">
+                Your data stays protected with enterprise-grade security.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 mt-3">
+            <button
+              type="button"
+              aria-label="Go to slide 1"
+              class="brand-dot h-1.5 w-7 rounded-full bg-white transition-all duration-300"
+            ></button>
+            <button
+              type="button"
+              aria-label="Go to slide 2"
+              class="brand-dot h-1.5 w-1.5 rounded-full bg-white/40 transition-all duration-300"
+            ></button>
+            <button
+              type="button"
+              aria-label="Go to slide 3"
+              class="brand-dot h-1.5 w-1.5 rounded-full bg-white/40 transition-all duration-300"
+            ></button>
+          </div>
+        </div>
+
         <!-- Dashboard image -->
-        <img
-          src="assets/portal.png"
-          alt="Dashboard preview"
-          style="
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translate(8%, -50%);
-            width: 95%;
-            height: auto;
-            display: block;
-          "
-        />
+        <div class="flex-1 flex items-end justify-center mt-28">
+          <img
+            src="assets/portal.png"
+            alt="Dashboard preview"
+            class="w-[100%] h-auto object-contain"
+          />
+        </div>
       </div>
+
+      <script>
+        (function () {
+          const slides = Array.from(document.querySelectorAll(".brand-slide"));
+          const dots = Array.from(document.querySelectorAll(".brand-dot"));
+          if (!slides.length) return;
+          let current = 0;
+          let timer;
+
+          function show(n) {
+            current = (n + slides.length) % slides.length;
+            slides.forEach((s, i) => {
+              const active = i === current;
+              s.classList.toggle("opacity-0", !active);
+              s.classList.toggle("pointer-events-none", !active);
+            });
+            dots.forEach((d, i) => {
+              const active = i === current;
+              d.classList.toggle("w-7", active);
+              d.classList.toggle("bg-white", active);
+              d.classList.toggle("w-1.5", !active);
+              d.classList.toggle("bg-white/40", !active);
+            });
+          }
+
+          function start() {
+            clearInterval(timer);
+            timer = setInterval(() => show(current + 1), 4000);
+          }
+
+          dots.forEach((d, i) =>
+            d.addEventListener("click", () => {
+              show(i);
+              start();
+            })
+          );
+
+          show(0);
+          start();
+        })();
+      </script>
     </div>
   </body>
 </html>
