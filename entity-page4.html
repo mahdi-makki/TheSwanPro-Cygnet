@@ -231,7 +231,7 @@
         box-shadow: none !important;
         outline: none !important;
       }
-      .contact-name-input {
+      .contact-edit-input.contact-name-input {
         font-weight: 600 !important;
         font-size: 0.875rem !important;
         color: var(--foreground) !important;
@@ -242,21 +242,37 @@
         font-weight: 400 !important;
         letter-spacing: 0.01em !important;
       }
-      .contact-name-input:not([readonly]) + .contact-role-input:not([readonly]) {
+      .contact-role-input:not([readonly]) {
         margin-top: 0.35rem !important;
       }
       .contact-detail-input {
-        color: var(--muted-foreground) !important;
+        color: var(--foreground) !important;
         font-size: 0.8125rem !important;
-        font-weight: 400 !important;
+        font-weight: 600 !important;
       }
       .contact-detail-input:not([readonly]) {
         color: var(--foreground) !important;
-        font-weight: 500 !important;
+        font-weight: 600 !important;
+      }
+      .contact-detail-display {
+        flex: 1;
+        min-width: 0;
+        color: var(--foreground);
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.4;
+        word-break: break-word;
       }
       .contact-detail-icon {
         flex-shrink: 0;
         color: #6b7280;
+      }
+      /* Colorful icons only in the overview General Information card */
+      #general-info-card .contact-detail-icon {
+        color: var(--primary);
+      }
+      #general-info-card .contact-icon-wrap {
+        background: oklch(0.38 0.23 268 / 0.1);
       }
       .contact-icon-wrap {
         flex-shrink: 0;
@@ -355,6 +371,17 @@
       .flatpickr-prev-month, .flatpickr-next-month { position:relative!important; top:auto!important; width:1.75rem!important; height:1.75rem!important; border:1px solid var(--border)!important; border-radius:calc(var(--radius) - 2px)!important; padding:0!important; display:flex!important; align-items:center!important; justify-content:center!important; }
       .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange { background:var(--primary)!important; border-color:var(--primary)!important; color:#fff!important; }
       .flatpickr-day.inRange { background:oklch(0.38 0.23 268/.12)!important; border-color:transparent!important; box-shadow:none!important; }
+      /* Single-month inline calendar (registration date) — compact, no extra space */
+      #reg-date-cal-wrap .flatpickr-calendar { width:fit-content!important; padding:0.875rem!important; }
+      #reg-date-cal-wrap .flatpickr-months { justify-content:space-between!important; }
+      #reg-date-cal-wrap .flatpickr-month { flex:1 1 auto!important; }
+      #reg-date-cal-wrap .flatpickr-rContainer,
+      #reg-date-cal-wrap .flatpickr-days,
+      #reg-date-cal-wrap .dayContainer { width:auto!important; min-width:0!important; max-width:none!important; }
+      #reg-date-cal-wrap .dayContainer { display:grid!important; grid-template-columns:repeat(7,2.25rem)!important; }
+      #reg-date-cal-wrap .flatpickr-weekdaycontainer { display:grid!important; grid-template-columns:repeat(7,2.25rem)!important; }
+      #reg-date-cal-wrap .flatpickr-weekdays { width:auto!important; }
+      #reg-date-cal-wrap .flatpickr-day { width:2.25rem!important; max-width:2.25rem!important; height:2.25rem!important; line-height:2.25rem!important; }
 
       /* ── Editable entity fields ── */
       .edit-input {
@@ -378,6 +405,16 @@
         border-color: transparent !important;
         box-shadow: none !important;
         outline: none !important;
+      }
+      /* Registration-date picker: restore a real input box while editing */
+      .edit-input[readonly].reg-date-active {
+        background: var(--background) !important;
+        border: 1px solid var(--border) !important;
+        border-radius: calc(var(--radius) - 2px) !important;
+        height: 2.25rem !important;
+        min-height: 2.25rem !important;
+        padding: 0 0.75rem 0 2.25rem !important;
+        cursor: pointer !important;
       }
 
       /* ── Row action trigger ── */
@@ -1068,9 +1105,6 @@
           <button class="tab-btn" onclick="switchTab('agreements', this)">
             Agreements
           </button>
-          <button class="tab-btn" onclick="switchTab('contacts', this)">
-            Contacts
-          </button>
         </div>
 
         <!-- ════════════════ OVERVIEW ════════════════ -->
@@ -1143,7 +1177,8 @@
                     </div>
                     <div class="info-field">
                       <span class="info-label">Country</span>
-                      <input class="input edit-input" type="text" id="input-country" value="Saudi Arabia" readonly />
+                      <span class="info-value field-display" id="input-country-display">Saudi Arabia</span>
+                      <input class="input edit-input field-input" type="text" id="input-country" value="Saudi Arabia" readonly style="display:none" />
                     </div>
                   </div>
                 </div>
@@ -1157,15 +1192,26 @@
                   <div style="border-left:2px solid var(--border);padding-left:1rem;margin-left:0.9rem;display:flex;flex-direction:column;gap:1rem">
                     <div class="info-field">
                       <span class="info-label">CR Number</span>
-                      <input class="input edit-input" type="text" id="input-license" value="SA-IC-2019-4471" style="font-family:monospace" readonly />
+                      <span class="info-value field-display" id="input-license-display" style="font-family:monospace">SA-IC-2019-4471</span>
+                      <input class="input edit-input field-input" type="text" id="input-license" value="SA-IC-2019-4471" style="font-family:monospace;display:none" readonly />
                     </div>
                     <div class="info-field">
                       <span class="info-label">Registration Date</span>
-                      <input class="input edit-input" type="text" id="input-reg-date" value="14 Jan 2019" placeholder="DD MMM YYYY" readonly />
+                      <span class="info-value field-display" id="input-reg-date-display">14 Jan 2019</span>
+                      <div class="relative reg-date-wrap" style="display:none">
+                        <input class="input edit-input" type="text" id="input-reg-date" value="14 Jan 2019" placeholder="Pick a date…" readonly onclick="openRegDateCal(event)" />
+                        <div id="reg-date-icon" class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground" style="display:none">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
+                        </div>
+                        <div id="reg-date-cal-wrap" style="display:none;position:absolute;top:100%;left:0;z-index:10;margin-top:4px" onclick="event.stopPropagation()">
+                          <div id="reg-date-cal"></div>
+                        </div>
+                      </div>
                     </div>
                     <div class="info-field">
                       <span class="info-label">Tax ID</span>
-                      <input class="input edit-input" type="tel" id="input-tax-id" value="300-542-8810" style="font-family:monospace" readonly />
+                      <span class="info-value field-display" id="input-tax-id-display" style="font-family:monospace">300-542-8810</span>
+                      <input class="input edit-input field-input" type="tel" id="input-tax-id" value="300-542-8810" style="font-family:monospace;display:none" readonly />
                     </div>
                     <div class="info-field">
                       <span class="info-label">Currency</span>
@@ -1218,19 +1264,26 @@
                   <div style="border-left:2px solid var(--border);padding-left:1rem;margin-left:0.9rem;display:flex;flex-direction:column;gap:1rem">
                     <div class="info-field">
                       <span class="info-label">Phone Number</span>
-                      <input class="input edit-input" type="tel" id="input-phone" value="+966 11 462 8810" readonly />
+                      <span class="info-value field-display" id="input-phone-display">+966 11 462 8810</span>
+                      <input class="input edit-input field-input" type="tel" id="input-phone" value="+966 11 462 8810" readonly style="display:none" />
                     </div>
                     <div class="info-field">
                       <span class="info-label">Fax Number</span>
-                      <input class="input edit-input" type="tel" id="input-fax" value="+966 11 462 8811" readonly />
+                      <span class="info-value field-display" id="input-fax-display">+966 11 462 8811</span>
+                      <input class="input edit-input field-input" type="tel" id="input-fax" value="+966 11 462 8811" readonly style="display:none" />
                     </div>
                     <div class="info-field">
                       <span class="info-label">Website</span>
-                      <input class="input edit-input" type="url" id="input-website" value="www.almuthanna-ins.sa" readonly />
+                      <a id="website-link" class="info-value" href="https://www.almuthanna-ins.sa" target="_blank" rel="noopener noreferrer" style="color:var(--primary);text-decoration:none;font-weight:500">www.almuthanna-ins.sa</a>
+                      <div id="website-edit-wrap" class="relative" style="display:none">
+                        <input type="url" class="input edit-input pl-15" id="input-website" value="www.almuthanna-ins.sa" placeholder="example.com" readonly />
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground text-sm">https://</div>
+                      </div>
                     </div>
                     <div class="info-field">
                       <span class="info-label">Registered Address</span>
-                      <input class="input edit-input" type="text" id="input-address" value="King Fahd Road, Olaya District, Riyadh 12271, Saudi Arabia" readonly />
+                      <span class="info-value field-display" id="input-address-display">King Fahd Road, Olaya District, Riyadh 12271, Saudi Arabia</span>
+                      <input class="input edit-input field-input" type="text" id="input-address" value="King Fahd Road, Olaya District, Riyadh 12271, Saudi Arabia" readonly style="display:none" />
                     </div>
                   </div>
                 </div>
@@ -1238,36 +1291,38 @@
               </div>
             </div>
 
-          </div>
-        </div>
-
-        <!-- ════════════════ CONTACTS ════════════════ -->
-        <div id="tab-contacts" class="tab-panel">
-          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            <!-- Contacts -->
+            <div>
+              <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
 
             <!-- Primary -->
             <div class="contact-card">
               <span style="font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-foreground)">Primary Contact</span>
               <div style="display:flex;align-items:center;gap:0.875rem">
-                <div class="contact-avatar">KA</div>
+                <div class="contact-avatar" id="avatar-c1">KA</div>
                 <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:0">
-                  <input class="input edit-input contact-edit-input contact-name-input" type="text" id="input-c1-name" value="Khalid Al-Amri" readonly />
-                  <input class="input edit-input contact-edit-input contact-role-input" type="text" id="input-c1-role" value="Chief Executive Officer" readonly />
+                  <span class="field-display" id="input-c1-name-display" style="font-weight:600;font-size:0.875rem;color:var(--foreground);line-height:1.4">Khalid Al-Amri</span>
+                  <input class="input edit-input contact-edit-input contact-name-input field-input" type="text" id="input-c1-name" value="Khalid Al-Amri" readonly style="display:none" />
+                  <span class="field-display" id="input-c1-role-display" style="color:var(--muted-foreground);font-size:0.875rem;font-weight:400;letter-spacing:0.01em;line-height:1.4">Chief Executive Officer</span>
+                  <input class="input edit-input contact-edit-input contact-role-input field-input" type="text" id="input-c1-role" value="Chief Executive Officer" readonly style="display:none" />
                 </div>
               </div>
               <div style="height:1px;background:var(--border)"></div>
               <div style="display:flex;flex-direction:column;gap:0.5rem">
                 <div style="display:flex;align-items:center;gap:0.625rem">
                   <span class="contact-icon-wrap"><svg class="contact-detail-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.82 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.77 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.93a16 16 0 0 0 6.16 6.16l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
-                  <input class="input edit-input contact-edit-input contact-detail-input" type="tel" id="input-c1-phone" value="+966 11 234 5678" readonly style="flex:1;min-width:0" />
+                  <span class="field-display contact-detail-display" id="input-c1-phone-display">+966 11 234 5678</span>
+                  <input class="input edit-input contact-edit-input contact-detail-input field-input" type="tel" id="input-c1-phone" value="+966 11 234 5678" readonly style="flex:1;min-width:0;display:none" />
                 </div>
                 <div style="display:flex;align-items:center;gap:0.625rem">
                   <span class="contact-icon-wrap"><svg class="contact-detail-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg></span>
-                  <input class="input edit-input contact-edit-input contact-detail-input" type="tel" id="input-c1-mobile" value="+966 50 123 4567" readonly style="flex:1;min-width:0" />
+                  <span class="field-display contact-detail-display" id="input-c1-mobile-display">+966 50 123 4567</span>
+                  <input class="input edit-input contact-edit-input contact-detail-input field-input" type="tel" id="input-c1-mobile" value="+966 50 123 4567" readonly style="flex:1;min-width:0;display:none" />
                 </div>
                 <div style="display:flex;align-items:center;gap:0.625rem">
                   <span class="contact-icon-wrap"><svg class="contact-detail-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
-                  <input class="input edit-input contact-edit-input contact-detail-input" type="email" id="input-c1-email" value="k.alamri@almuthanna-ins.sa" readonly style="flex:1;min-width:0" />
+                  <span class="field-display contact-detail-display" id="input-c1-email-display">k.alamri@almuthanna-ins.sa</span>
+                  <input class="input edit-input contact-edit-input contact-detail-input field-input" type="email" id="input-c1-email" value="k.alamri@almuthanna-ins.sa" readonly style="flex:1;min-width:0;display:none" />
                 </div>
               </div>
             </div>
@@ -1276,25 +1331,30 @@
             <div class="contact-card">
               <span style="font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-foreground)">Secondary Contact</span>
               <div style="display:flex;align-items:center;gap:0.875rem">
-                <div class="contact-avatar">NZ</div>
+                <div class="contact-avatar" id="avatar-c2">NZ</div>
                 <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:0">
-                  <input class="input edit-input contact-edit-input contact-name-input" type="text" id="input-c2-name" value="Nour Al-Zahrani" readonly />
-                  <input class="input edit-input contact-edit-input contact-role-input" type="text" id="input-c2-role" value="Head of Reinsurance" readonly />
+                  <span class="field-display" id="input-c2-name-display" style="font-weight:600;font-size:0.875rem;color:var(--foreground);line-height:1.4">Nour Al-Zahrani</span>
+                  <input class="input edit-input contact-edit-input contact-name-input field-input" type="text" id="input-c2-name" value="Nour Al-Zahrani" readonly style="display:none" />
+                  <span class="field-display" id="input-c2-role-display" style="color:var(--muted-foreground);font-size:0.875rem;font-weight:400;letter-spacing:0.01em;line-height:1.4">Head of Reinsurance</span>
+                  <input class="input edit-input contact-edit-input contact-role-input field-input" type="text" id="input-c2-role" value="Head of Reinsurance" readonly style="display:none" />
                 </div>
               </div>
               <div style="height:1px;background:var(--border)"></div>
               <div style="display:flex;flex-direction:column;gap:0.5rem">
                 <div style="display:flex;align-items:center;gap:0.625rem">
                   <span class="contact-icon-wrap"><svg class="contact-detail-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.82 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.77 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.93a16 16 0 0 0 6.16 6.16l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
-                  <input class="input edit-input contact-edit-input contact-detail-input" type="tel" id="input-c2-phone" value="+966 11 234 5690" readonly style="flex:1;min-width:0" />
+                  <span class="field-display contact-detail-display" id="input-c2-phone-display">+966 11 234 5690</span>
+                  <input class="input edit-input contact-edit-input contact-detail-input field-input" type="tel" id="input-c2-phone" value="+966 11 234 5690" readonly style="flex:1;min-width:0;display:none" />
                 </div>
                 <div style="display:flex;align-items:center;gap:0.625rem">
                   <span class="contact-icon-wrap"><svg class="contact-detail-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg></span>
-                  <input class="input edit-input contact-edit-input contact-detail-input" type="tel" id="input-c2-mobile" value="+966 55 987 6543" readonly style="flex:1;min-width:0" />
+                  <span class="field-display contact-detail-display" id="input-c2-mobile-display">+966 55 987 6543</span>
+                  <input class="input edit-input contact-edit-input contact-detail-input field-input" type="tel" id="input-c2-mobile" value="+966 55 987 6543" readonly style="flex:1;min-width:0;display:none" />
                 </div>
                 <div style="display:flex;align-items:center;gap:0.625rem">
                   <span class="contact-icon-wrap"><svg class="contact-detail-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
-                  <input class="input edit-input contact-edit-input contact-detail-input" type="email" id="input-c2-email" value="n.zahrani@almuthanna-ins.sa" readonly style="flex:1;min-width:0" />
+                  <span class="field-display contact-detail-display" id="input-c2-email-display">n.zahrani@almuthanna-ins.sa</span>
+                  <input class="input edit-input contact-edit-input contact-detail-input field-input" type="email" id="input-c2-email" value="n.zahrani@almuthanna-ins.sa" readonly style="flex:1;min-width:0;display:none" />
                 </div>
               </div>
             </div>
@@ -1303,26 +1363,34 @@
             <div class="contact-card">
               <span style="font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted-foreground)">Tertiary Contact</span>
               <div style="display:flex;align-items:center;gap:0.875rem">
-                <div class="contact-avatar">FM</div>
+                <div class="contact-avatar" id="avatar-c3">FM</div>
                 <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:0">
-                  <input class="input edit-input contact-edit-input contact-name-input" type="text" id="input-c3-name" value="Faisal Al-Mutairi" readonly />
-                  <input class="input edit-input contact-edit-input contact-role-input" type="text" id="input-c3-role" value="Finance Director" readonly />
+                  <span class="field-display" id="input-c3-name-display" style="font-weight:600;font-size:0.875rem;color:var(--foreground);line-height:1.4">Faisal Al-Mutairi</span>
+                  <input class="input edit-input contact-edit-input contact-name-input field-input" type="text" id="input-c3-name" value="Faisal Al-Mutairi" readonly style="display:none" />
+                  <span class="field-display" id="input-c3-role-display" style="color:var(--muted-foreground);font-size:0.875rem;font-weight:400;letter-spacing:0.01em;line-height:1.4">Finance Director</span>
+                  <input class="input edit-input contact-edit-input contact-role-input field-input" type="text" id="input-c3-role" value="Finance Director" readonly style="display:none" />
                 </div>
               </div>
               <div style="height:1px;background:var(--border)"></div>
               <div style="display:flex;flex-direction:column;gap:0.5rem">
                 <div style="display:flex;align-items:center;gap:0.625rem">
                   <span class="contact-icon-wrap"><svg class="contact-detail-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.82 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.77 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.93a16 16 0 0 0 6.16 6.16l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
-                  <input class="input edit-input contact-edit-input contact-detail-input" type="tel" id="input-c3-phone" value="+966 11 234 5701" readonly style="flex:1;min-width:0" />
+                  <span class="field-display contact-detail-display" id="input-c3-phone-display">+966 11 234 5701</span>
+                  <input class="input edit-input contact-edit-input contact-detail-input field-input" type="tel" id="input-c3-phone" value="+966 11 234 5701" readonly style="flex:1;min-width:0;display:none" />
                 </div>
                 <div style="display:flex;align-items:center;gap:0.625rem">
                   <span class="contact-icon-wrap"><svg class="contact-detail-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg></span>
-                  <input class="input edit-input contact-edit-input contact-detail-input" type="tel" id="input-c3-mobile" value="+966 54 112 2334" readonly style="flex:1;min-width:0" />
+                  <span class="field-display contact-detail-display" id="input-c3-mobile-display">+966 54 112 2334</span>
+                  <input class="input edit-input contact-edit-input contact-detail-input field-input" type="tel" id="input-c3-mobile" value="+966 54 112 2334" readonly style="flex:1;min-width:0;display:none" />
                 </div>
                 <div style="display:flex;align-items:center;gap:0.625rem">
                   <span class="contact-icon-wrap"><svg class="contact-detail-icon" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
-                  <input class="input edit-input contact-edit-input contact-detail-input" type="email" id="input-c3-email" value="f.mutairi@almuthanna-ins.sa" readonly style="flex:1;min-width:0" />
+                  <span class="field-display contact-detail-display" id="input-c3-email-display">f.mutairi@almuthanna-ins.sa</span>
+                  <input class="input edit-input contact-edit-input contact-detail-input field-input" type="email" id="input-c3-email" value="f.mutairi@almuthanna-ins.sa" readonly style="flex:1;min-width:0;display:none" />
                 </div>
+              </div>
+            </div>
+
               </div>
             </div>
 
@@ -1502,19 +1570,40 @@
 
       // ── Agreements filter ──
       var _agrDatePicker = null;
+      var _regDatePicker = null;
+      function openRegDateCal(event) {
+        if (!_entityEditing) return;
+        document.getElementById('reg-date-cal-wrap').style.display = 'block';
+        event.stopPropagation();
+      }
+      document.addEventListener('click', function () {
+        var w = document.getElementById('reg-date-cal-wrap');
+        if (w) w.style.display = 'none';
+      });
+
       document.addEventListener('DOMContentLoaded', function () {
-        _agrDatePicker = flatpickr('#agr-date-range', {
-          mode: 'range', showMonths: 2, dateFormat: 'd M Y', rangeSeparator: ' – ',
-          onChange: function () { filterAgrRows(); },
-          onOpen: function (_, __, instance) { instance.jumpToDate(new Date()); }
+        _regDatePicker = flatpickr('#reg-date-cal', {
+          inline: true,
+          dateFormat: 'd M Y',
+          onChange: function (selectedDates, dateStr) {
+            document.getElementById('input-reg-date').value = dateStr;
+            document.getElementById('reg-date-cal-wrap').style.display = 'none';
+          }
         });
+        if (document.getElementById('agr-date-range')) {
+          _agrDatePicker = flatpickr('#agr-date-range', {
+            mode: 'range', showMonths: 2, dateFormat: 'd M Y', rangeSeparator: ' – ',
+            onChange: function () { filterAgrRows(); },
+            onOpen: function (_, __, instance) { instance.jumpToDate(new Date()); }
+          });
+        }
       });
 
       function filterAgrRows() {
         var query = document.getElementById('agr-search').value.toLowerCase();
         var status = document.getElementById('agr-status-filter').value;
         var type = document.getElementById('agr-type-filter').value;
-        var dateRange = _agrDatePicker ? _agrDatePicker.selectedDates : [];
+        var dateRange = (_agrDatePicker && _agrDatePicker.selectedDates) ? _agrDatePicker.selectedDates : [];
         var rows = document.querySelectorAll('#agr-table tbody tr[data-status]');
         var visible = 0;
         rows.forEach(function (row) {
@@ -1587,6 +1676,7 @@
 
       // ── Edit Entity ──
       var _entityOrigValues = {};
+      var _entityEditing = false;
       var _origCompanyType = '';
       var _origCurrency = '';
 
@@ -1634,17 +1724,32 @@
           _entityOrigValues[el.id] = el.value;
           el.removeAttribute('readonly');
         });
+        // Swap plain-text values for their inputs
+        document.querySelectorAll('.field-display').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.field-input').forEach(function(el) { el.style.display = ''; });
+        document.querySelector('.reg-date-wrap').style.display = '';
         _origCompanyType = document.getElementById('input-entity-type').value;
         _origCurrency = document.getElementById('input-currency').value;
         document.getElementById('company-type-display').style.display = 'none';
         document.getElementById('company-type-select-wrap').style.display = '';
         document.getElementById('currency-display').style.display = 'none';
         document.getElementById('currency-select-wrap').style.display = '';
+        document.getElementById('website-link').style.display = 'none';
+        document.getElementById('website-edit-wrap').style.display = '';
+        // Registration date: calendar-picker only (keep readonly, show icon + padding)
+        _entityEditing = true;
+        var regInput = document.getElementById('input-reg-date');
+        regInput.setAttribute('readonly', '');
+        regInput.classList.add('reg-date-active');
+        document.getElementById('reg-date-icon').style.display = '';
+        if (_regDatePicker && regInput.value) _regDatePicker.setDate(regInput.value, false);
         document.getElementById('edit-entity-btn').style.display = 'none';
         document.getElementById('cancel-edit-btn').style.display = '';
         document.getElementById('save-entity-btn').style.display = '';
         document.getElementById('edit-mode-badge').style.display = '';
-        document.getElementById('general-info-card').style.borderColor = 'var(--primary)';
+        var gic = document.getElementById('general-info-card');
+        gic.style.borderColor = 'var(--primary)';
+        gic.style.overflow = 'visible';
       }
 
       function cancelEditMode() {
@@ -1663,6 +1768,14 @@
         document.getElementById('company-type-display').textContent = newType;
         var newCurrency = document.getElementById('input-currency').value;
         document.getElementById('currency-display').textContent = newCurrency;
+        ['c1', 'c2', 'c3'].forEach(function (c) {
+          var nameEl = document.getElementById('input-' + c + '-name');
+          var avatarEl = document.getElementById('avatar-' + c);
+          if (!nameEl || !avatarEl) return;
+          var initials = nameEl.value.trim().split(/\s+/).filter(Boolean)
+            .slice(0, 2).map(function (w) { return w.charAt(0).toUpperCase(); }).join('');
+          if (initials) avatarEl.textContent = initials;
+        });
         var btn = document.getElementById('save-entity-btn');
         var orig = btn.innerHTML;
         btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Saved';
@@ -1672,15 +1785,37 @@
 
       function exitEditMode() {
         document.querySelectorAll('.edit-input').forEach(function(el) { el.setAttribute('readonly', ''); });
+        // Write input values back into the plain-text displays, then swap back
+        document.querySelectorAll('.field-input').forEach(function(el) {
+          var disp = document.getElementById(el.id + '-display');
+          if (disp) disp.textContent = el.value;
+          el.style.display = 'none';
+        });
+        document.querySelectorAll('.field-display').forEach(function(el) { el.style.display = ''; });
+        document.querySelector('.reg-date-wrap').style.display = 'none';
+        document.getElementById('input-reg-date-display').textContent = document.getElementById('input-reg-date').value;
         document.getElementById('company-type-display').style.display = '';
         document.getElementById('company-type-select-wrap').style.display = 'none';
         document.getElementById('currency-display').style.display = '';
         document.getElementById('currency-select-wrap').style.display = 'none';
+        var webVal = document.getElementById('input-website').value.trim().replace(/^https?:\/\//i, '');
+        var webLink = document.getElementById('website-link');
+        webLink.textContent = webVal;
+        webLink.href = 'https://' + webVal;
+        document.getElementById('website-edit-wrap').style.display = 'none';
+        webLink.style.display = '';
+        _entityEditing = false;
+        var regInput = document.getElementById('input-reg-date');
+        regInput.classList.remove('reg-date-active');
+        document.getElementById('reg-date-icon').style.display = 'none';
+        document.getElementById('reg-date-cal-wrap').style.display = 'none';
         document.getElementById('edit-entity-btn').style.display = '';
         document.getElementById('cancel-edit-btn').style.display = 'none';
         document.getElementById('save-entity-btn').style.display = 'none';
         document.getElementById('edit-mode-badge').style.display = 'none';
-        document.getElementById('general-info-card').style.borderColor = '';
+        var gic = document.getElementById('general-info-card');
+        gic.style.borderColor = '';
+        gic.style.overflow = 'hidden';
       }
 
       var _agrOrigOrder = null;

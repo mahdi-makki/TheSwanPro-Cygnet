@@ -1679,7 +1679,7 @@
       class="dialog w-full"
       aria-labelledby="dialog-new-entity-title"
       aria-describedby="dialog-new-entity-desc"
-      onclick="if (event.target === this) this.close();"
+      oncancel="event.preventDefault()"
     >
       <div>
         <header>
@@ -2642,6 +2642,11 @@
           document.getElementById("new-entity-reg-date").value = dateStr;
           document.getElementById("reg-date-cal-wrap").style.display = "none";
         },
+      });
+
+      // Close the calendar when clicking outside of it (without selecting)
+      document.addEventListener("click", function () {
+        document.getElementById("reg-date-cal-wrap").style.display = "none";
       });
     </script>
 
