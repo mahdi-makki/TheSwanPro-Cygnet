@@ -7,14 +7,16 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
+namespace Cygnet.FrontEnd.VSNet
+{
+    public partial class Default
+    {
+        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
-public partial class Default {
-    protected global::System.Web.UI.HtmlControls.HtmlForm form1;
-    protected global::System.Web.UI.WebControls.TextBox UsernameTextBox;
-    protected global::System.Web.UI.WebControls.TextBox PasswordTextBox;
-    protected global::System.Web.UI.WebControls.Button LoginButton;
-    protected global::System.Web.UI.HtmlControls.HtmlGenericControl ErrorWrapper;
-    protected global::System.Web.UI.WebControls.Literal ErrorMessageText;
+        protected global::System.Web.UI.WebControls.TextBox UsernameTextBox;
+
+        protected global::System.Web.UI.WebControls.TextBox PasswordTextBox;
+
+        protected global::System.Web.UI.WebControls.Button LoginButton;
+    }
 }

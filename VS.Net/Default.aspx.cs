@@ -1,42 +1,20 @@
 using System;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 
-public partial class Default : Page
+namespace Cygnet.FrontEnd.VSNet
 {
-    protected void Page_Load(object sender, EventArgs e)
+    public partial class Default : Page
     {
-        if (!IsPostBack)
+        protected void Page_Load(object sender, EventArgs e)
         {
-            ErrorWrapper.Visible = false;
-        }
-    }
-
-    protected void LoginButton_Click(object sender, EventArgs e)
-    {
-        ErrorWrapper.Visible = false;
-
-        string username = UsernameTextBox.Text.Trim();
-        string password = PasswordTextBox.Text;
-
-        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-        {
-            ShowError("Please enter both username and password.");
-            return;
+            // Page load logic can be added here.
         }
 
-        if (!username.Contains("@"))
+        protected void LoginButton_Click(object sender, EventArgs e)
         {
-            ShowError("Invalid email address.");
-            return;
+            // Handle login button click in code-behind.
+            // Add authentication or redirect logic here.
         }
-
-        // TODO: Add real authentication logic here.
-        Response.Redirect("Default.aspx");
-    }
-
-    private void ShowError(string message)
-    {
-        ErrorMessageText.Text = message;
-        ErrorWrapper.Visible = true;
     }
 }

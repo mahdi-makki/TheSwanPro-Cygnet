@@ -1,11 +1,11 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="Default" %>
-<!DOCTYPE html>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="Cygnet.FrontEnd.VSNet.Default" %>
+<!doctype html>
 <html lang="en">
-  <head runat="server">
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TheSwanPro - Login</title>
-    <link rel="icon" type="image/png" href="../assets/swan_pro_icon.png" />
+    <link rel="icon" type="image/png" href="../Images/swan_pro_icon.png" />
 
     <!-- Tailwind CSS (REQUIRED for Basecoat component layouts) -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -34,21 +34,38 @@
       defer
     ></script>
 
-    <link rel="stylesheet" href="../theme.css" />
+    <link rel="stylesheet" href="Content/theme.css" />
+
+    <style>
+      .spin-icon {
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
   </head>
 
   <body class="h-screen bg-gray-100 flex flex-col overflow-hidden">
     <!-- Card container -->
     <div
-      class="grid grid-cols-1 [@media(min-width:900px)]:grid-cols-[45%_55%] bg-white overflow-hidden w-full h-full"
+      class="grid grid-cols-1 [@media(min-width:900px)]:grid-cols-[55%_45%] bg-white overflow-hidden w-full h-full"
     >
-      <!-- LEFT: Form -->
-      <div class="flex flex-col justify-center px-20 py-24">
+      <!-- Form (right on desktop) -->
+      <div
+        class="flex flex-col justify-center px-20 py-24 [@media(min-width:900px)]:order-2"
+      >
         <div class="w-full max-w-[520px] mx-auto">
           <!-- Cygnet logo -->
           <div class="flex justify-center mb-5">
             <img
-              src="../assets/cygnet_logo.png"
+              src="../Images/cygnet_logo.png"
               alt="Cygnet logo"
               class="h-11 object-contain"
             />
@@ -62,23 +79,28 @@
           </header>
 
           <section>
-            <form id="form1" runat="server" class="form mx-auto" style="max-width: 320px">
+            <form
+              id="form1"
+              class="form mx-auto"
+              style="max-width: 320px"
+              method="post"
+              runat="server"
+            >
               <div class="grid gap-6">
                 <div class="grid gap-2">
                   <label for="UsernameTextBox">Username</label>
                   <asp:TextBox
                     ID="UsernameTextBox"
                     runat="server"
-                    ClientIDMode="Static"
                     CssClass="input"
-                    Placeholder="m@example.com"
-                    TextMode="SingleLine"
+                    placeholder="m@example.com"
+                    aria-invalid="false"
                   />
                 </div>
 
                 <div class="grid gap-2">
                   <div class="flex items-center gap-2">
-                    <label for="PasswordTextBox">Password</label>
+                    <label for="demo-card-form-password">Password</label>
                     <a
                       href="#"
                       class="ml-auto text-sm underline-offset-4 hover:underline"
@@ -91,9 +113,10 @@
                     <asp:TextBox
                       ID="PasswordTextBox"
                       runat="server"
-                      ClientIDMode="Static"
                       CssClass="input pr-9"
                       TextMode="Password"
+                      placeholder=""
+                      aria-invalid="false"
                     />
                     <div
                       class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground [&>svg]:size-4"
@@ -119,20 +142,16 @@
                 </div>
 
                 <footer class="flex flex-col items-center gap-3 mt-2">
-                  <button
-                    id="LoginButton"
+                  <asp:Button
+                    ID="LoginButton"
                     runat="server"
-                    class="btn w-full"
-                    type="submit"
-                    onserverclick="LoginButton_Click"
-                    onclick="this.disabled=true; this.innerHTML='<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' class=\'animate-spin\'><path d=\'M12 2v4\'/><path d=\'m16.2 7.8 2.9-2.9\'/><path d=\'M18 12h4\'/><path d=\'m16.2 16.2 2.9 2.9\'/><path d=\'M12 18v4\'/><path d=\'m4.9 19.1 2.9-2.9\'/><path d=\'M2 12h4\'/><path d=\'m4.9 4.9 2.9 2.9\'/></svg>Loading...'; return true;"
-                  >
-                    Login
-                  </button>
+                    CssClass="btn w-full"
+                    Text="Login"
+                    OnClick="LoginButton_Click"
+                    OnClientClick="this.disabled=true;this.innerHTML='<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' class=\'spin-icon\'><path d=\'M12 2v4\'/><path d=\'m16.2 7.8 2.9-2.9\'/><path d=\'M18 12h4\'/><path d=\'m16.2 16.2 2.9 2.9\'/><path d=\'M12 18v4\'/><path d=\'m4.9 19.1 2.9-2.9\'/><path d=\'M2 12h4\'/><path d=\'m4.9 4.9 2.9 2.9\'/></svg>Loading...';"
+                  />
 
-                  <span
-                    id="ErrorWrapper"
-                    runat="server"
+                  <div
                     class="hidden flex justify-center items-center text-sm text-red-600 gap-1.5"
                   >
                     <svg
@@ -151,8 +170,8 @@
                       <path d="M12 16v-4" />
                       <path d="M12 8h.01" />
                     </svg>
-                    <asp:Literal ID="ErrorMessageText" runat="server" Mode="PassThrough" />
-                  </span>
+                    Invalid email address
+                  </div>
 
                   <!-- Powered by TheSwanPro logo -->
                   <p
@@ -160,7 +179,7 @@
                   >
                     Powered by
                     <img
-                      src="../assets/swan_pro_logo.png"
+                      src="../Images/swan_pro_logo.png"
                       alt="TheSwanPro"
                       class="h-6 object-contain inline-block"
                     />
@@ -172,33 +191,135 @@
         </div>
       </div>
 
-      <!-- RIGHT: Static panel -->
+      <!-- Branding panel (left on desktop) -->
       <div
-        class="hidden [@media(min-width:900px)]:flex items-center justify-center relative overflow-hidden"
-        style="
-          background: radial-gradient(
-            ellipse at 0% 100%,
-            rgba(99, 102, 241, 0.12) 0%,
-            rgba(139, 92, 246, 0.07) 35%,
-            #ffffff 70%
-          );
-        "
+        class="hidden [@media(min-width:900px)]:flex flex-col relative overflow-hidden text-slate-700 p-14 [@media(min-width:900px)]:order-1"
+        style="background: linear-gradient(135deg, #e8e9ff 0%, #f4ecff 100%)"
       >
+        <!-- Logo -->
+        <div
+          class="flex items-center justify-center size-12 rounded-xl bg-[var(--primary)] text-white shadow-sm shrink-0"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+          </svg>
+        </div>
+
+        <!-- Slider -->
+        <div class="mt-10">
+          <div class="relative min-h-[104px]">
+            <div
+              class="brand-slide absolute inset-0 transition-opacity duration-500"
+            >
+              <h1 class="text-4xl font-bold mb-3 text-slate-900">
+                Designed for Individuals
+              </h1>
+              <p class="text-slate-500 text-base max-w-sm leading-relaxed">
+                See the analytics and grow your data remotely, from anywhere!
+              </p>
+            </div>
+            <div
+              class="brand-slide absolute inset-0 transition-opacity duration-500 opacity-0 pointer-events-none"
+            >
+              <h1 class="text-4xl font-bold mb-3 text-slate-900">
+                Powerful Analytics
+              </h1>
+              <p class="text-slate-500 text-base max-w-sm leading-relaxed">
+                Track performance and uncover insights with real-time
+                dashboards.
+              </p>
+            </div>
+            <div
+              class="brand-slide absolute inset-0 transition-opacity duration-500 opacity-0 pointer-events-none"
+            >
+              <h1 class="text-4xl font-bold mb-3 text-slate-900">
+                Secure by Design
+              </h1>
+              <p class="text-slate-500 text-base max-w-sm leading-relaxed">
+                Your data stays protected with enterprise-grade security.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 mt-3">
+            <button
+              type="button"
+              aria-label="Go to slide 1"
+              class="brand-dot h-1.5 w-7 rounded-full bg-[var(--primary)] transition-all duration-300"
+            ></button>
+            <button
+              type="button"
+              aria-label="Go to slide 2"
+              class="brand-dot h-1.5 w-1.5 rounded-full bg-[var(--primary)]/30 transition-all duration-300"
+            ></button>
+            <button
+              type="button"
+              aria-label="Go to slide 3"
+              class="brand-dot h-1.5 w-1.5 rounded-full bg-[var(--primary)]/30 transition-all duration-300"
+            ></button>
+          </div>
+        </div>
+
         <!-- Dashboard image -->
-        <img
-          src="../assets/portal.png"
-          alt="Dashboard preview"
-          style="
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translate(8%, -50%);
-            width: 95%;
-            height: auto;
-            display: block;
-          "
-        />
+        <div class="flex-1 flex items-end justify-center mt-28">
+          <img
+            src="../Images/portal.png"
+            alt="Dashboard preview"
+            class="w-[100%] h-auto object-contain"
+          />
+        </div>
       </div>
+
+      <script>
+        (function () {
+          const slides = Array.from(document.querySelectorAll(".brand-slide"));
+          const dots = Array.from(document.querySelectorAll(".brand-dot"));
+          if (!slides.length) return;
+          let current = 0;
+          let timer;
+
+          function show(n) {
+            current = (n + slides.length) % slides.length;
+            slides.forEach((s, i) => {
+              const active = i === current;
+              s.classList.toggle("opacity-0", !active);
+              s.classList.toggle("pointer-events-none", !active);
+            });
+            dots.forEach((d, i) => {
+              const active = i === current;
+              d.classList.toggle("w-7", active);
+              d.classList.toggle("bg-[var(--primary)]", active);
+              d.classList.toggle("w-1.5", !active);
+              d.classList.toggle("bg-[var(--primary)]/30", !active);
+            });
+          }
+
+          function start() {
+            clearInterval(timer);
+            timer = setInterval(() => show(current + 1), 4000);
+          }
+
+          dots.forEach((d, i) =>
+            d.addEventListener("click", () => {
+              show(i);
+              start();
+            }),
+          );
+
+          show(0);
+          start();
+        })();
+      </script>
     </div>
   </body>
 </html>
