@@ -54,8 +54,6 @@
 
   <body class="h-screen bg-gray-100 flex flex-col overflow-hidden">
     <!-- Card container -->
-
-    
     <div
       class="grid grid-cols-1 [@media(min-width:900px)]:grid-cols-[55%_45%] bg-white overflow-hidden w-full h-full"
     >
