@@ -1,3 +1,10 @@
-top tab logo
-folders (Images/Content)
-Cugnus & logo
+(entity-page) make the general information data not bold 
+
+(sidebar) contracts = commercial
+contracts
+    1. agrrements
+    2. entities
+    3. Policy Certificates
+(sidebar) Claims = Operations (section title)
+
+filter by ###
