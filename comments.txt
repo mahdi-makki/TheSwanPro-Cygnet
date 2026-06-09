@@ -1,5 +1,3 @@
-(entity-page) make the general information data not bold 
-
 (sidebar) contracts = commercial
 contracts
     1. agrrements
