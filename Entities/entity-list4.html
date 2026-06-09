@@ -157,6 +157,34 @@
         background-color: oklch(0.38 0.23 268 / 0.035);
       }
 
+      /* ── Filter dropdown listboxes — equal height + scroll on overflow ── */
+      #ent-country-sel-listbox,
+      #ent-type-sel-listbox {
+        max-height: 16rem;
+        overflow-y: auto;
+      }
+
+      /* ── Sort button — no hover, plain label feel ── */
+      .sort-btn {
+        cursor: default;
+        background: transparent;
+        border: none;
+        padding: 0;
+        font-weight: inherit;
+        font-size: inherit;
+        letter-spacing: inherit;
+        color: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .sort-btn:hover,
+      .sort-btn:focus {
+        background: transparent;
+        outline: none;
+        color: inherit;
+      }
+
       /* ── Row action trigger — no hover response ── */
       .row-action-trigger {
         cursor: default !important;
@@ -1439,6 +1467,152 @@
             <input type="hidden" id="entity-country-hidden" value="" />
           </div>
 
+          <!-- Company type filter — Basecoat searchable select -->
+          <div id="ent-type-sel" class="select">
+            <button
+              type="button"
+              class="btn-outline w-48"
+              id="ent-type-sel-trigger"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="ent-type-sel-listbox"
+            >
+              <span id="ent-type-sel-label" class="truncate"
+                >All Company Types</span
+              >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-muted-foreground opacity-50 shrink-0 size-4"
+              >
+                <path d="m7 15 5 5 5-5" />
+                <path d="m7 9 5-5 5 5" />
+              </svg>
+            </button>
+            <div id="ent-type-sel-popover" data-popover aria-hidden="true">
+              <header>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+                <input
+                  type="text"
+                  id="ent-type-search"
+                  placeholder="Search company types..."
+                  autocomplete="off"
+                  spellcheck="false"
+                  aria-autocomplete="list"
+                  role="combobox"
+                  aria-expanded="false"
+                  aria-controls="ent-type-sel-listbox"
+                  aria-labelledby="ent-type-sel-trigger"
+                  oninput="
+                    filterCountryOptions('ent-type-sel-listbox', this.value)
+                  "
+                />
+              </header>
+              <div
+                role="listbox"
+                id="ent-type-sel-listbox"
+                aria-labelledby="ent-type-sel-trigger"
+              >
+                <div
+                  role="option"
+                  data-value=""
+                  aria-selected="true"
+                  onclick="selectTypeFilter('', 'All Company Types', this)"
+                >
+                  All Company Types
+                </div>
+                <div
+                  role="option"
+                  data-value="Insurance Company"
+                  onclick="
+                    selectTypeFilter(
+                      'Insurance Company',
+                      'Insurance Company',
+                      this,
+                    )
+                  "
+                >
+                  Insurance Company
+                </div>
+                <div
+                  role="option"
+                  data-value="Reinsurance Company"
+                  onclick="
+                    selectTypeFilter(
+                      'Reinsurance Company',
+                      'Reinsurance Company',
+                      this,
+                    )
+                  "
+                >
+                  Reinsurance Company
+                </div>
+                <div
+                  role="option"
+                  data-value="Broker"
+                  onclick="selectTypeFilter('Broker', 'Broker', this)"
+                >
+                  Broker
+                </div>
+                <div
+                  role="option"
+                  data-value="Agent"
+                  onclick="selectTypeFilter('Agent', 'Agent', this)"
+                >
+                  Agent
+                </div>
+                <div
+                  role="option"
+                  data-value="Captive"
+                  onclick="selectTypeFilter('Captive', 'Captive', this)"
+                >
+                  Captive
+                </div>
+                <div
+                  role="option"
+                  data-value="Lloyd's Syndicate"
+                  onclick="
+                    selectTypeFilter(
+                      'Lloyd\'s Syndicate',
+                      'Lloyd\'s Syndicate',
+                      this,
+                    )
+                  "
+                >
+                  Lloyd's Syndicate
+                </div>
+                <div
+                  role="option"
+                  data-value="Other"
+                  onclick="selectTypeFilter('Other', 'Other', this)"
+                >
+                  Other
+                </div>
+              </div>
+            </div>
+            <input type="hidden" id="entity-type-hidden" value="" />
+          </div>
+
           <!-- Reset + View Toggle -->
           <div class="ml-auto flex items-center gap-2">
             <button type="button" class="btn-outline" onclick="clearFilters()">
@@ -1513,8 +1687,41 @@
                 <th class="whitespace-nowrap">Company Type</th>
                 <th>Country</th>
                 <th class="whitespace-nowrap">CR Number</th>
-                <th class="whitespace-nowrap">Reg. Date</th>
                 <th class="whitespace-nowrap">Tax ID</th>
+                <th class="whitespace-nowrap">
+                  <button
+                    type="button"
+                    class="sort-btn"
+                    id="sort-date-btn"
+                    data-sort="none"
+                    onclick="sortByRegDate(this)"
+                  >
+                    Reg. Date
+                    <svg
+                      id="sort-date-icon"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        id="sort-date-down"
+                        d="m7 15 5 5 5-5"
+                        style="opacity: 0.4"
+                      />
+                      <path
+                        id="sort-date-up"
+                        d="m7 9 5-5 5 5"
+                        style="opacity: 0.4"
+                      />
+                    </svg>
+                  </button>
+                </th>
                 <th class="whitespace-nowrap">Phone</th>
                 <th class="w-10"></th>
               </tr>
@@ -2499,6 +2706,24 @@
         applyFilters();
       }
 
+      /* ─── Company type filter select ────────────────────────────────────── */
+      function selectTypeFilter(value, label, el) {
+        document.getElementById("entity-type-hidden").value = value;
+        document.getElementById("ent-type-sel-label").textContent = label;
+        document
+          .querySelectorAll('#ent-type-sel-listbox [role="option"]')
+          .forEach((o) => o.removeAttribute("aria-selected"));
+        el.setAttribute("aria-selected", "true");
+        const popover = document.getElementById("ent-type-sel-popover");
+        const trigger = document.getElementById("ent-type-sel-trigger");
+        popover.setAttribute("aria-hidden", "true");
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.focus();
+        document.getElementById("ent-type-search").value = "";
+        filterCountryOptions("ent-type-sel-listbox", "");
+        applyFilters();
+      }
+
       /* ─── Dialog entity type select ─────────────────────────────────────── */
       function selectDialogType(value, el) {
         document.getElementById("dlg-type-hidden").value = value;
@@ -2587,8 +2812,8 @@
             <td class="text-sm text-muted-foreground whitespace-nowrap">${e.type}</td>
             <td class="text-sm text-muted-foreground whitespace-nowrap">${e.country}</td>
             <td class="text-sm text-muted-foreground whitespace-nowrap">${e.cr}</td>
-            <td class="text-sm text-muted-foreground whitespace-nowrap">${e.regDate}</td>
             <td class="text-sm text-muted-foreground whitespace-nowrap">${e.taxId}</td>
+            <td class="text-sm text-muted-foreground whitespace-nowrap">${e.regDate}</td>
             <td class="text-sm text-muted-foreground whitespace-nowrap">${e.phone}</td>
             <td>${actionMenu(e.id, e.website)}</td>
           </tr>`;
@@ -2607,8 +2832,8 @@
             <p style="${muted};min-width:9rem;flex-shrink:0">${e.type}</p>
             <p style="${base};min-width:10rem;flex-shrink:0">${e.country}</p>
             <p style="${muted};min-width:8rem;flex-shrink:0">${e.cr}</p>
-            <p style="${muted};min-width:8rem;flex-shrink:0">${e.regDate}</p>
             <p style="${muted};min-width:9rem;flex-shrink:0">${e.taxId}</p>
+            <p style="${muted};min-width:8rem;flex-shrink:0">${e.regDate}</p>
             <p style="${base};min-width:9rem;flex-shrink:0">${e.phone}</p>
             ${actionMenu("l" + e.id, e.website)}
           </div>`;
@@ -2659,6 +2884,32 @@
         applyFilters();
       }
 
+      /* ─── Reg. Date sorting ─────────────────────────────────────────────── */
+      let entSortDir = "none";
+
+      function _setSortArrows(upId, downId, direction) {
+        const up = document.getElementById(upId);
+        const down = document.getElementById(downId);
+        if (direction === "asc") {
+          up.style.opacity = "1";
+          down.style.opacity = "0.2";
+        } else if (direction === "desc") {
+          up.style.opacity = "0.2";
+          down.style.opacity = "1";
+        } else {
+          up.style.opacity = "0.4";
+          down.style.opacity = "0.4";
+        }
+      }
+
+      function sortByRegDate(btn) {
+        const cycle = ["none", "asc", "desc"];
+        entSortDir = cycle[(cycle.indexOf(btn.dataset.sort) + 1) % cycle.length];
+        btn.dataset.sort = entSortDir;
+        _setSortArrows("sort-date-up", "sort-date-down", entSortDir);
+        applyFilters();
+      }
+
       /* ─── Apply filters ─────────────────────────────────────────────────── */
       function applyFilters() {
         const q = document
@@ -2666,6 +2917,7 @@
           .value.toLowerCase()
           .trim();
         const country = document.getElementById("entity-country-hidden").value;
+        const type = document.getElementById("entity-type-hidden").value;
 
         const filtered = ENTITIES.filter((e) => {
           const matchQ =
@@ -2673,8 +2925,17 @@
             e.name.toLowerCase().includes(q) ||
             e.code.toLowerCase().includes(q);
           const matchCountry = !country || e.country === country;
-          return matchQ && matchCountry;
+          const matchType = !type || e.type === type;
+          return matchQ && matchCountry && matchType;
         });
+
+        if (entSortDir !== "none") {
+          filtered.sort((a, b) => {
+            const aDate = new Date(a.regDate || "");
+            const bDate = new Date(b.regDate || "");
+            return entSortDir === "asc" ? aDate - bDate : bDate - aDate;
+          });
+        }
 
         render(filtered);
       }
@@ -2682,6 +2943,15 @@
       /* ─── Clear filters ─────────────────────────────────────────────────── */
       function clearFilters() {
         document.getElementById("entity-search").value = "";
+        entSortDir = "none";
+        const sortBtn = document.getElementById("sort-date-btn");
+        sortBtn.dataset.sort = "none";
+        _setSortArrows("sort-date-up", "sort-date-down", "none");
+        selectTypeFilter(
+          "",
+          "All Company Types",
+          document.querySelector('#ent-type-sel-listbox [data-value=""]'),
+        );
         selectCountryFilter(
           "",
           "All Countries",
@@ -2765,6 +3035,27 @@
           tableWrap.classList.add("hidden");
         }
       }
+
+      /* ─── Reset a filter's search box when its dropdown opens ───────────── */
+      function resetFilterSearchOnOpen(triggerId, searchId, listboxId) {
+        const trigger = document.getElementById(triggerId);
+        if (!trigger) return;
+        trigger.addEventListener("click", () => {
+          const search = document.getElementById(searchId);
+          if (search) search.value = "";
+          filterCountryOptions(listboxId, "");
+        });
+      }
+      resetFilterSearchOnOpen(
+        "ent-country-sel-trigger",
+        "ent-country-search",
+        "ent-country-sel-listbox",
+      );
+      resetFilterSearchOnOpen(
+        "ent-type-sel-trigger",
+        "ent-type-search",
+        "ent-type-sel-listbox",
+      );
 
       /* ─── Init ──────────────────────────────────────────────────────────── */
       render(ENTITIES);

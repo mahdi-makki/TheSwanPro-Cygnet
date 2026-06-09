@@ -3526,5 +3526,21 @@
         });
       }
     </script>
+    <!-- Reset searchable-select search box on reopen (prevents stale filter state) -->
+    <script>
+      (function () {
+        document.querySelectorAll(".select").forEach(function (sel) {
+          var trigger = sel.querySelector('[aria-haspopup="listbox"]');
+          var search = sel.querySelector('input[role="combobox"]');
+          if (!trigger || !search) return;
+          trigger.addEventListener("click", function () {
+            if (search.value !== "") {
+              search.value = "";
+              search.dispatchEvent(new Event("input", { bubbles: true }));
+            }
+          });
+        });
+      })();
+    </script>
   </body>
 </html>
