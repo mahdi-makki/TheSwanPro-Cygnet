@@ -1,0 +1,2541 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cygnus - Entities</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/cygnus_icon.svg" />
+
+    <!-- Tailwind CSS (REQUIRED for Basecoat component layouts) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- Basecoat CSS (Design tokens + component styling) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/basecoat.cdn.min.css"
+    />
+
+    <!-- Basecoat Core JS (required for all interactive parts) -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/all.min.js"
+      defer
+    ></script>
+
+    <!-- Basecoat Component Registry -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/basecoat.min.js"
+      defer
+    ></script>
+
+    <!-- Dropdown Menu Component -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/dropdown-menu.min.js"
+      defer
+    ></script>
+
+    <!-- Flatpickr date picker -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <link rel="stylesheet" href="../theme.css" />
+
+    <style>
+      /* ── Global scrollbar — matches sidebar .scrollbar class ── */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+      }
+      *::-webkit-scrollbar {
+        width: var(--scrollbar-width);
+      }
+      *::-webkit-scrollbar-track {
+        background: var(--scrollbar-track);
+      }
+      *::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb);
+        border-radius: var(--scrollbar-radius);
+      }
+
+      /* ── Collapse hidden Basecoat popovers — prevent layout inflation ── */
+      [data-popover][aria-hidden="true"] {
+        height: 0 !important;
+        min-height: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        overflow: hidden !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+
+      /* ── Metric card icon badge ── */
+      .ct-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 9999px;
+        border: 1px solid var(--border);
+        color: var(--muted-foreground);
+        background: transparent;
+        flex-shrink: 0;
+      }
+
+      /* ── Entity card ── */
+      .entity-card {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgb(0 0 0 / 0.05);
+        transition: box-shadow 150ms ease;
+        display: flex;
+        flex-direction: column;
+      }
+      .entity-card:hover {
+        box-shadow: 0 4px 16px rgb(0 0 0 / 0.09);
+      }
+      .entity-card-footer {
+        background: #ffffff;
+        border-top: 1px solid var(--border);
+        padding: 0.7rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      /* ── Entity list row ── */
+      .entity-row {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.5rem 1.25rem;
+        transition: background 120ms ease;
+      }
+      .entity-row:hover {
+        background: oklch(0.38 0.23 268 / 0.035);
+      }
+
+      /* ── View toggle active state ── */
+      .view-btn.active {
+        background: var(--secondary);
+        color: var(--foreground);
+      }
+
+      /* ── New entity dialog width override ── */
+      #dialog-new-entity > * {
+        max-width: 900px !important;
+        width: min(900px, calc(100vw - 2rem)) !important;
+      }
+
+      /* ── Entities table cell padding — matches travel certificate ── */
+      #entities-table th {
+        padding-top: 0.6rem;
+        padding-bottom: 0.6rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        font-size: 0.8125rem;
+        letter-spacing: 0.02em;
+      }
+      #entities-table td {
+        padding-top: 0.7rem;
+        padding-bottom: 0.7rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      #entities-table tbody tr {
+        border-bottom: 1px solid var(--border);
+        transition: background 120ms ease;
+      }
+      #entities-table tbody tr:hover {
+        background-color: oklch(0.38 0.23 268 / 0.035);
+      }
+
+      /* ── Filter dropdown listboxes — equal height + scroll on overflow ── */
+      #ent-country-sel-listbox,
+      #ent-type-sel-listbox {
+        max-height: 16rem;
+        overflow-y: auto;
+      }
+
+      /* ── Sort button — no hover, plain label feel ── */
+      .sort-btn {
+        cursor: default;
+        background: transparent;
+        border: none;
+        padding: 0;
+        font-weight: inherit;
+        font-size: inherit;
+        letter-spacing: inherit;
+        color: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .sort-btn:hover,
+      .sort-btn:focus {
+        background: transparent;
+        outline: none;
+        color: inherit;
+      }
+
+      /* ── Row action trigger — no hover response ── */
+      .row-action-trigger {
+        cursor: default !important;
+        color: var(--muted-foreground);
+      }
+      .row-action-trigger:hover,
+      .row-action-trigger:focus {
+        background: transparent !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+        outline: none !important;
+      }
+
+      /* ── Flatpickr — single-month picker ── */
+      .flatpickr-calendar {
+        z-index: 99999 !important;
+        font-family: inherit;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: 0 8px 24px rgb(0 0 0 / 0.09);
+        padding: 1rem 1.25rem;
+        width: 280px !important;
+        max-width: 280px !important;
+        min-width: unset !important;
+      }
+      .flatpickr-calendar.arrowTop:before,
+      .flatpickr-calendar.arrowTop:after {
+        display: none;
+      }
+      .flatpickr-months {
+        display: flex !important;
+        align-items: center !important;
+        margin-bottom: 0.625rem;
+      }
+      .flatpickr-month {
+        flex: 1;
+        height: auto !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .flatpickr-current-month {
+        position: static !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.1rem;
+        padding: 0 !important;
+        width: auto !important;
+        height: auto !important;
+        font-size: 0.875rem;
+        color: var(--foreground);
+      }
+      .flatpickr-monthDropdown-months {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        color: var(--foreground) !important;
+        pointer-events: none;
+        cursor: default;
+      }
+      .numInputWrapper {
+        border: none !important;
+        display: inline-flex !important;
+        align-items: center;
+        width: auto !important;
+        padding: 0 !important;
+      }
+      .numInputWrapper span.arrowUp,
+      .numInputWrapper span.arrowDown {
+        display: none !important;
+      }
+      input.cur-year {
+        width: 3rem !important;
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        color: var(--foreground) !important;
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        pointer-events: none;
+        cursor: default;
+        -moz-appearance: textfield !important;
+        appearance: textfield !important;
+      }
+      input.cur-year::-webkit-outer-spin-button,
+      input.cur-year::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+      .flatpickr-prev-month,
+      .flatpickr-next-month {
+        position: relative !important;
+        top: auto !important;
+        width: 1.75rem !important;
+        height: 1.75rem !important;
+        border: 1px solid var(--border) !important;
+        border-radius: calc(var(--radius) - 2px) !important;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0;
+        transition: background 120ms;
+      }
+      .flatpickr-prev-month:hover,
+      .flatpickr-next-month:hover {
+        background: var(--muted) !important;
+        border-color: var(--muted) !important;
+      }
+      .flatpickr-prev-month svg,
+      .flatpickr-next-month svg {
+        fill: var(--foreground) !important;
+        width: 12px;
+        height: 12px;
+      }
+      .flatpickr-innerContainer,
+      .flatpickr-rContainer {
+        width: 100%;
+      }
+      .flatpickr-weekdays {
+        display: flex !important;
+        margin-bottom: 0.25rem;
+      }
+      .flatpickr-weekdaycontainer {
+        flex: 1;
+        display: flex;
+      }
+      .flatpickr-weekday {
+        flex: 1;
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-align: center;
+      }
+      .flatpickr-days {
+        display: flex !important;
+        width: 100% !important;
+      }
+      .dayContainer {
+        flex: 1;
+        width: 100% !important;
+        min-width: unset !important;
+        max-width: unset !important;
+        display: flex !important;
+        flex-wrap: wrap;
+        justify-content: flex-start !important;
+      }
+      .flatpickr-day {
+        flex: 1 0 calc(100% / 7);
+        max-width: calc(100% / 7);
+        height: 2.375rem;
+        line-height: 2.375rem;
+        border-radius: 0.4rem;
+        color: var(--foreground);
+        border: none;
+        font-size: 0.8125rem;
+        margin: 0;
+      }
+      .flatpickr-day:hover {
+        background: var(--muted);
+        border: none;
+        outline: none;
+      }
+      .flatpickr-day.today:not(.selected) {
+        background: var(--muted) !important;
+        font-weight: 600;
+        border-bottom: none !important;
+      }
+      .flatpickr-day.selected,
+      .flatpickr-day.selected:hover {
+        background: oklch(0.44 0.2 268) !important;
+        border-color: oklch(0.44 0.2 268) !important;
+        color: #fff !important;
+        border-radius: 0.4rem !important;
+        box-shadow: none !important;
+      }
+      .flatpickr-day.flatpickr-disabled {
+        color: var(--muted-foreground);
+        opacity: 0.35;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <main>
+      <!-- ─── Top Navigation Header ─────────────────────────────────────── -->
+      <header
+        class="sticky top-0 z-50 bg-white flex items-center gap-3 p-3 border-b border-gray-200"
+      >
+        <button
+          type="button"
+          onclick="document.dispatchEvent(new CustomEvent('basecoat:sidebar'))"
+          class="btn-ghost"
+          data-tooltip="Toggle sidebar"
+          data-side="bottom"
+          data-align="start"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect width="18" height="18" x="3" y="3" rx="2" />
+            <path d="M15 3v18" />
+          </svg>
+        </button>
+
+        <div class="w-px h-4 bg-gray-200 mr-3"></div>
+
+        <ol
+          class="text-muted-foreground flex flex-wrap items-center gap-1.5 text-sm break-words sm:gap-2.5"
+        >
+          <li class="inline-flex items-center gap-1.5">
+            <a href="#" class="hover:text-foreground transition-colors">Home</a>
+          </li>
+          <li>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3.5"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </li>
+          <li class="inline-flex items-center gap-1.5">
+            <a href="#" class="hover:text-foreground transition-colors"
+              >Contracts</a
+            >
+          </li>
+          <li>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3.5"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </li>
+          <li class="inline-flex items-center gap-1.5">
+            <span class="text-foreground font-semibold">Entities</span>
+          </li>
+        </ol>
+
+        <!-- SEARCH BAR -->
+        <div id="header-search-wrap" class="relative ml-auto w-72">
+          <input
+            type="text"
+            class="input pl-9"
+            placeholder="Search..."
+            onkeydown="
+              if (event.key === 'Enter') {
+                const w = document.getElementById('header-search-wrap');
+                w.innerHTML =
+                  '<input type=\'text\' class=\'input pr-9\' placeholder=\'Searching...\' disabled /><div class=\'absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground [&>svg]:size-4 opacity-50\'><svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' class=\'animate-spin\'><path d=\'M21 12a9 9 0 1 1-6.219-8.56\'/></svg></div>';
+              }
+            "
+          />
+          <div
+            class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground [&>svg]:size-4"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- LANGUAGE TOGGLE -->
+        <div id="header-lang-menu" class="dropdown-menu">
+          <button
+            type="button"
+            id="header-lang-menu-trigger"
+            aria-haspopup="menu"
+            aria-controls="header-lang-menu-menu"
+            aria-expanded="false"
+            class="btn-ghost flex items-center gap-1.5"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-4"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+              <path d="M2 12h20" />
+            </svg>
+            <span id="header-lang-label" class="text-sm font-medium">EN</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div
+            id="header-lang-menu-popover"
+            data-popover
+            aria-hidden="true"
+            data-align="end"
+            class="min-w-20"
+          >
+            <div
+              role="menu"
+              id="header-lang-menu-menu"
+              aria-labelledby="header-lang-menu-trigger"
+            >
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'EN';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                English
+              </div>
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'AR';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                Arabic
+              </div>
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'FR';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                French
+              </div>
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'TR';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                Turkish
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEW ENTITY -->
+        <button
+          type="button"
+          class="btn"
+          onclick="document.getElementById('dialog-new-entity').showModal()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+          New Entity
+        </button>
+      </header>
+
+      <!-- ─── Page Content ──────────────────────────────────────────────── -->
+      <div class="px-8 pt-8 pb-0 space-y-3">
+        <!-- ── Page Header ── -->
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <h1 class="text-3xl font-bold tracking-tight">Entities</h1>
+            <p class="text-muted-foreground mt-1.5">
+              Manage all registered insurance entities and their linked
+              agreements.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              class="btn-icon-outline"
+              data-tooltip="Export PDF"
+              data-side="bottom"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-4"
+              >
+                <path
+                  d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                />
+                <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                <path d="M10 9H8" />
+                <path d="M16 13H8" />
+                <path d="M16 17H8" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="btn-icon-outline"
+              data-tooltip="Export Excel"
+              data-side="bottom"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-4"
+              >
+                <rect width="18" height="18" x="3" y="3" rx="2" />
+                <path d="M3 9h18" />
+                <path d="M3 15h18" />
+                <path d="M9 3v18" />
+                <path d="M15 3v18" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="btn-icon-outline"
+              data-tooltip="Print"
+              data-side="bottom"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-4"
+              >
+                <polyline points="6 9 6 2 18 2 18 9" />
+                <path
+                  d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+                />
+                <rect width="12" height="8" x="6" y="14" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ── Filter Bar ── -->
+        <div class="flex items-center gap-3 flex-wrap mt-6">
+          <!-- Search -->
+          <div class="relative min-w-52 flex-1 max-w-xs">
+            <input
+              type="text"
+              id="entity-search"
+              class="input pl-9 h-9 text-sm w-full"
+              placeholder="Search by name or code…"
+              oninput="applyFilters()"
+            />
+            <div
+              class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground [&>svg]:size-4"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Country filter — Basecoat searchable select -->
+          <div id="ent-country-sel" class="select">
+            <button
+              type="button"
+              class="btn-outline w-44"
+              id="ent-country-sel-trigger"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="ent-country-sel-listbox"
+            >
+              <span id="ent-country-sel-label" class="truncate"
+                >All Countries</span
+              >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-muted-foreground opacity-50 shrink-0 size-4"
+              >
+                <path d="m7 15 5 5 5-5" />
+                <path d="m7 9 5-5 5 5" />
+              </svg>
+            </button>
+            <div id="ent-country-sel-popover" data-popover aria-hidden="true">
+              <header>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+                <input
+                  type="text"
+                  id="ent-country-search"
+                  placeholder="Search countries..."
+                  autocomplete="off"
+                  spellcheck="false"
+                  aria-autocomplete="list"
+                  role="combobox"
+                  aria-expanded="false"
+                  aria-controls="ent-country-sel-listbox"
+                  aria-labelledby="ent-country-sel-trigger"
+                  oninput="
+                    filterCountryOptions('ent-country-sel-listbox', this.value)
+                  "
+                />
+              </header>
+              <div
+                role="listbox"
+                id="ent-country-sel-listbox"
+                aria-labelledby="ent-country-sel-trigger"
+              >
+                <div
+                  role="option"
+                  data-value=""
+                  aria-selected="true"
+                  onclick="selectCountryFilter('', 'All Countries', this)"
+                >
+                  All Countries
+                </div>
+                <div
+                  role="option"
+                  data-value="Bahrain"
+                  onclick="selectCountryFilter('Bahrain', 'Bahrain', this)"
+                >
+                  Bahrain
+                </div>
+                <div
+                  role="option"
+                  data-value="Egypt"
+                  onclick="selectCountryFilter('Egypt', 'Egypt', this)"
+                >
+                  Egypt
+                </div>
+                <div
+                  role="option"
+                  data-value="France"
+                  onclick="selectCountryFilter('France', 'France', this)"
+                >
+                  France
+                </div>
+                <div
+                  role="option"
+                  data-value="Germany"
+                  onclick="selectCountryFilter('Germany', 'Germany', this)"
+                >
+                  Germany
+                </div>
+                <div
+                  role="option"
+                  data-value="Jordan"
+                  onclick="selectCountryFilter('Jordan', 'Jordan', this)"
+                >
+                  Jordan
+                </div>
+                <div
+                  role="option"
+                  data-value="Kuwait"
+                  onclick="selectCountryFilter('Kuwait', 'Kuwait', this)"
+                >
+                  Kuwait
+                </div>
+                <div
+                  role="option"
+                  data-value="Lebanon"
+                  onclick="selectCountryFilter('Lebanon', 'Lebanon', this)"
+                >
+                  Lebanon
+                </div>
+                <div
+                  role="option"
+                  data-value="Morocco"
+                  onclick="selectCountryFilter('Morocco', 'Morocco', this)"
+                >
+                  Morocco
+                </div>
+                <div
+                  role="option"
+                  data-value="Oman"
+                  onclick="selectCountryFilter('Oman', 'Oman', this)"
+                >
+                  Oman
+                </div>
+                <div
+                  role="option"
+                  data-value="Qatar"
+                  onclick="selectCountryFilter('Qatar', 'Qatar', this)"
+                >
+                  Qatar
+                </div>
+                <div
+                  role="option"
+                  data-value="Saudi Arabia"
+                  onclick="
+                    selectCountryFilter('Saudi Arabia', 'Saudi Arabia', this)
+                  "
+                >
+                  Saudi Arabia
+                </div>
+                <div
+                  role="option"
+                  data-value="Tunisia"
+                  onclick="selectCountryFilter('Tunisia', 'Tunisia', this)"
+                >
+                  Tunisia
+                </div>
+                <div
+                  role="option"
+                  data-value="Turkey"
+                  onclick="selectCountryFilter('Turkey', 'Turkey', this)"
+                >
+                  Turkey
+                </div>
+                <div
+                  role="option"
+                  data-value="United Arab Emirates"
+                  onclick="
+                    selectCountryFilter('United Arab Emirates', 'UAE', this)
+                  "
+                >
+                  United Arab Emirates
+                </div>
+              </div>
+            </div>
+            <input type="hidden" id="entity-country-hidden" value="" />
+          </div>
+
+          <!-- Company type filter — Basecoat searchable select -->
+          <div id="ent-type-sel" class="select">
+            <button
+              type="button"
+              class="btn-outline w-48"
+              id="ent-type-sel-trigger"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="ent-type-sel-listbox"
+            >
+              <span id="ent-type-sel-label" class="truncate"
+                >All Company Types</span
+              >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-muted-foreground opacity-50 shrink-0 size-4"
+              >
+                <path d="m7 15 5 5 5-5" />
+                <path d="m7 9 5-5 5 5" />
+              </svg>
+            </button>
+            <div id="ent-type-sel-popover" data-popover aria-hidden="true">
+              <header>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+                <input
+                  type="text"
+                  id="ent-type-search"
+                  placeholder="Search company types..."
+                  autocomplete="off"
+                  spellcheck="false"
+                  aria-autocomplete="list"
+                  role="combobox"
+                  aria-expanded="false"
+                  aria-controls="ent-type-sel-listbox"
+                  aria-labelledby="ent-type-sel-trigger"
+                  oninput="
+                    filterCountryOptions('ent-type-sel-listbox', this.value)
+                  "
+                />
+              </header>
+              <div
+                role="listbox"
+                id="ent-type-sel-listbox"
+                aria-labelledby="ent-type-sel-trigger"
+              >
+                <div
+                  role="option"
+                  data-value=""
+                  aria-selected="true"
+                  onclick="selectTypeFilter('', 'All Company Types', this)"
+                >
+                  All Company Types
+                </div>
+                <div
+                  role="option"
+                  data-value="Insurance Company"
+                  onclick="
+                    selectTypeFilter(
+                      'Insurance Company',
+                      'Insurance Company',
+                      this,
+                    )
+                  "
+                >
+                  Insurance Company
+                </div>
+                <div
+                  role="option"
+                  data-value="Reinsurance Company"
+                  onclick="
+                    selectTypeFilter(
+                      'Reinsurance Company',
+                      'Reinsurance Company',
+                      this,
+                    )
+                  "
+                >
+                  Reinsurance Company
+                </div>
+                <div
+                  role="option"
+                  data-value="Broker"
+                  onclick="selectTypeFilter('Broker', 'Broker', this)"
+                >
+                  Broker
+                </div>
+                <div
+                  role="option"
+                  data-value="Agent"
+                  onclick="selectTypeFilter('Agent', 'Agent', this)"
+                >
+                  Agent
+                </div>
+                <div
+                  role="option"
+                  data-value="Captive"
+                  onclick="selectTypeFilter('Captive', 'Captive', this)"
+                >
+                  Captive
+                </div>
+                <div
+                  role="option"
+                  data-value="Lloyd's Syndicate"
+                  onclick="
+                    selectTypeFilter(
+                      'Lloyd\'s Syndicate',
+                      'Lloyd\'s Syndicate',
+                      this,
+                    )
+                  "
+                >
+                  Lloyd's Syndicate
+                </div>
+                <div
+                  role="option"
+                  data-value="Other"
+                  onclick="selectTypeFilter('Other', 'Other', this)"
+                >
+                  Other
+                </div>
+              </div>
+            </div>
+            <input type="hidden" id="entity-type-hidden" value="" />
+          </div>
+
+          <!-- Reset + View Toggle -->
+          <div class="ml-auto flex items-center gap-2">
+            <button type="button" class="btn-outline" onclick="clearFilters()">
+              Reset filters
+            </button>
+            <div
+              class="flex items-center gap-0.5 border border-[var(--border)] rounded-md p-0.5"
+            >
+              <button
+                id="view-table-btn"
+                class="view-btn active btn-ghost !h-7 !w-7 !rounded-[calc(var(--radius)-2px)] !p-0 flex items-center justify-center"
+                onclick="setView('table')"
+                data-tooltip="Table view"
+                data-side="bottom"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect width="18" height="18" x="3" y="3" rx="2" />
+                  <path d="M3 9h18" />
+                  <path d="M9 21V9" />
+                </svg>
+              </button>
+              <button
+                id="view-list-btn"
+                class="view-btn btn-ghost !h-7 !w-7 !rounded-[calc(var(--radius)-2px)] !p-0 flex items-center justify-center"
+                onclick="setView('list')"
+                data-tooltip="List view"
+                data-side="bottom"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="8" x2="21" y1="6" y2="6" />
+                  <line x1="8" x2="21" y1="12" y2="12" />
+                  <line x1="8" x2="21" y1="18" y2="18" />
+                  <line x1="3" x2="3.01" y1="6" y2="6" />
+                  <line x1="3" x2="3.01" y1="12" y2="12" />
+                  <line x1="3" x2="3.01" y1="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Table View ── -->
+        <div
+          id="entities-table-wrap"
+          class="overflow-x-auto border border-[var(--border)] rounded-lg"
+        >
+          <table class="table w-full" id="entities-table">
+            <thead>
+              <tr>
+                <th class="whitespace-nowrap">Code</th>
+                <th>Entity Name</th>
+                <th class="whitespace-nowrap">Company Type</th>
+                <th>Country</th>
+                <th class="whitespace-nowrap">CR Number</th>
+                <th class="whitespace-nowrap">Tax ID</th>
+                <th class="whitespace-nowrap">
+                  <button
+                    type="button"
+                    class="sort-btn"
+                    id="sort-date-btn"
+                    data-sort="none"
+                    onclick="sortByRegDate(this)"
+                  >
+                    Reg. Date
+                    <svg
+                      id="sort-date-icon"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        id="sort-date-down"
+                        d="m7 15 5 5 5-5"
+                        style="opacity: 0.4"
+                      />
+                      <path
+                        id="sort-date-up"
+                        d="m7 9 5-5 5 5"
+                        style="opacity: 0.4"
+                      />
+                    </svg>
+                  </button>
+                </th>
+                <th class="whitespace-nowrap">Phone</th>
+                <th class="w-10"></th>
+              </tr>
+            </thead>
+            <tbody id="entities-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- ── List View ── -->
+        <div
+          id="entities-list-wrap"
+          class="hidden flex flex-col gap-2"
+          id="entities-list"
+        ></div>
+
+        <!-- ── Empty State ── -->
+        <div
+          id="entities-empty"
+          class="hidden flex flex-col items-center justify-center py-16 gap-3 text-muted-foreground"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="36"
+            height="36"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="opacity-30"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <p class="text-sm font-medium">No entities match your filters.</p>
+          <button class="btn-ghost text-xs" onclick="clearFilters()">
+            Clear filters
+          </button>
+        </div>
+
+        <!-- ── Table Footer ── -->
+        <div
+          class="flex items-center justify-between gap-4 flex-wrap py-1 !mt-0"
+        >
+          <!-- Left: row count -->
+          <p class="text-sm text-muted-foreground">
+            0 of <span id="entities-count">0</span> row(s) selected.
+          </p>
+
+          <!-- Right: rows per page + page nav -->
+          <div class="flex items-center gap-5">
+            <!-- Rows per page -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-muted-foreground whitespace-nowrap"
+                >Rows per page</span
+              >
+              <div id="ent-rows-select" class="select">
+                <button
+                  type="button"
+                  class="btn-outline w-20"
+                  id="ent-rows-select-trigger"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-controls="ent-rows-select-listbox"
+                >
+                  <span class="truncate">10</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-muted-foreground opacity-50 shrink-0 size-4"
+                  >
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
+                <div
+                  id="ent-rows-select-popover"
+                  data-popover
+                  aria-hidden="true"
+                  data-side="top"
+                >
+                  <div
+                    role="listbox"
+                    id="ent-rows-select-listbox"
+                    aria-labelledby="ent-rows-select-trigger"
+                  >
+                    <div
+                      role="option"
+                      data-value="10"
+                      onclick="selectEntRowsPerPage(10, this)"
+                    >
+                      <span>10</span>
+                    </div>
+                    <div
+                      role="option"
+                      data-value="25"
+                      onclick="selectEntRowsPerPage(25, this)"
+                    >
+                      <span>25</span>
+                    </div>
+                    <div
+                      role="option"
+                      data-value="50"
+                      onclick="selectEntRowsPerPage(50, this)"
+                    >
+                      <span>50</span>
+                    </div>
+                    <div
+                      role="option"
+                      data-value="100"
+                      onclick="selectEntRowsPerPage(100, this)"
+                    >
+                      <span>100</span>
+                    </div>
+                  </div>
+                </div>
+                <input type="hidden" id="ent-rows-per-page" value="10" />
+              </div>
+            </div>
+
+            <!-- Page indicator -->
+            <span
+              id="ent-page-indicator"
+              class="text-sm text-muted-foreground whitespace-nowrap"
+              >Page 1 of 2</span
+            >
+
+            <!-- Page nav -->
+            <div class="flex items-center gap-0.5">
+              <button
+                type="button"
+                class="btn-icon-ghost"
+                aria-label="First page"
+                onclick="entGoToPage(1)"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m11 17-5-5 5-5" />
+                  <path d="m18 17-5-5 5-5" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="btn-icon-ghost"
+                aria-label="Previous page"
+                onclick="entGoToPage(entCurrentPage - 1)"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m15 18-6-6 6-6" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="btn-icon-ghost"
+                aria-label="Next page"
+                onclick="entGoToPage(entCurrentPage + 1)"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="btn-icon-ghost"
+                aria-label="Last page"
+                onclick="entGoToPage(entTotalPages)"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 17 5-5-5-5" />
+                  <path d="m13 17 5-5-5-5" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pb-4"></div>
+    </main>
+
+    <!-- ─── New Entity Dialog ───────────────────────────────────────────── -->
+    <dialog
+      id="dialog-new-entity"
+      class="dialog w-full"
+      aria-labelledby="dialog-new-entity-title"
+      aria-describedby="dialog-new-entity-desc"
+      oncancel="event.preventDefault()"
+    >
+      <div>
+        <header>
+          <h2 id="dialog-new-entity-title">New Entity</h2>
+          <p id="dialog-new-entity-desc">
+            Fill in the details below to register a new insurance entity.
+          </p>
+        </header>
+
+        <section>
+          <form class="form grid gap-6" onsubmit="return false;">
+            <!-- Row 1: Entity Name | Company Type | Country -->
+            <div class="grid grid-cols-3 gap-5">
+              <div class="grid gap-2">
+                <label for="new-entity-name"
+                  >Entity Name
+                  <span class="text-red-500 font-normal">*</span></label
+                >
+                <input
+                  type="text"
+                  id="new-entity-name"
+                  class="input"
+                  placeholder="e.g. Gulf Shield Re"
+                  autofocus
+                />
+              </div>
+              <div class="grid gap-2">
+                <label id="dlg-type-label"
+                  >Company Type
+                  <span class="text-red-500 font-normal">*</span></label
+                >
+                <div id="dlg-type-sel" class="select">
+                  <button
+                    type="button"
+                    class="btn-outline w-full"
+                    id="dlg-type-sel-trigger"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-controls="dlg-type-sel-listbox"
+                    aria-labelledby="dlg-type-label dlg-type-sel-trigger"
+                  >
+                    <span
+                      id="dlg-type-sel-label"
+                      class="truncate text-muted-foreground"
+                      >Select…</span
+                    >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="text-muted-foreground opacity-50 shrink-0 size-4"
+                    >
+                      <path d="m7 15 5 5 5-5" />
+                      <path d="m7 9 5-5 5 5" />
+                    </svg>
+                  </button>
+                  <div
+                    id="dlg-type-sel-popover"
+                    data-popover
+                    aria-hidden="true"
+                  >
+                    <div
+                      role="listbox"
+                      id="dlg-type-sel-listbox"
+                      aria-labelledby="dlg-type-sel-trigger"
+                    >
+                      <div
+                        role="option"
+                        data-value="Insurance Company"
+                        onclick="selectDialogType(this.dataset.value, this)"
+                      >
+                        Insurance Company
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Reinsurance Company"
+                        onclick="selectDialogType(this.dataset.value, this)"
+                      >
+                        Reinsurance Company
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Broker"
+                        onclick="selectDialogType(this.dataset.value, this)"
+                      >
+                        Broker
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Agent"
+                        onclick="selectDialogType(this.dataset.value, this)"
+                      >
+                        Agent
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Captive"
+                        onclick="selectDialogType(this.dataset.value, this)"
+                      >
+                        Captive
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Lloyd's Syndicate"
+                        onclick="selectDialogType(this.dataset.value, this)"
+                      >
+                        Lloyd's Syndicate
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Other"
+                        onclick="selectDialogType(this.dataset.value, this)"
+                      >
+                        Other
+                      </div>
+                    </div>
+                  </div>
+                  <input type="hidden" id="dlg-type-hidden" value="" />
+                </div>
+              </div>
+              <div class="grid gap-2">
+                <label id="dlg-country-label"
+                  >Country
+                  <span class="text-red-500 font-normal">*</span></label
+                >
+                <div id="dlg-country-sel" class="select">
+                  <button
+                    type="button"
+                    class="btn-outline w-full"
+                    id="dlg-country-sel-trigger"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-controls="dlg-country-sel-listbox"
+                    aria-labelledby="dlg-country-label dlg-country-sel-trigger"
+                  >
+                    <span
+                      id="dlg-country-sel-label"
+                      class="truncate text-muted-foreground"
+                      >Select…</span
+                    >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="text-muted-foreground opacity-50 shrink-0 size-4"
+                    >
+                      <path d="m7 15 5 5 5-5" />
+                      <path d="m7 9 5-5 5 5" />
+                    </svg>
+                  </button>
+                  <div
+                    id="dlg-country-sel-popover"
+                    data-popover
+                    aria-hidden="true"
+                  >
+                    <header>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                      </svg>
+                      <input
+                        type="text"
+                        id="dlg-country-search"
+                        placeholder="Search countries..."
+                        autocomplete="off"
+                        spellcheck="false"
+                        aria-autocomplete="list"
+                        role="combobox"
+                        aria-expanded="false"
+                        aria-controls="dlg-country-sel-listbox"
+                        aria-labelledby="dlg-country-sel-trigger"
+                        oninput="
+                          filterCountryOptions(
+                            'dlg-country-sel-listbox',
+                            this.value,
+                          )
+                        "
+                      />
+                    </header>
+                    <div
+                      role="listbox"
+                      id="dlg-country-sel-listbox"
+                      aria-labelledby="dlg-country-sel-trigger"
+                      style="max-height: 200px; overflow-y: auto"
+                    >
+                      <div
+                        role="option"
+                        data-value="Bahrain"
+                        onclick="selectDialogCountry('Bahrain', this)"
+                      >
+                        Bahrain
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Egypt"
+                        onclick="selectDialogCountry('Egypt', this)"
+                      >
+                        Egypt
+                      </div>
+                      <div
+                        role="option"
+                        data-value="France"
+                        onclick="selectDialogCountry('France', this)"
+                      >
+                        France
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Germany"
+                        onclick="selectDialogCountry('Germany', this)"
+                      >
+                        Germany
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Jordan"
+                        onclick="selectDialogCountry('Jordan', this)"
+                      >
+                        Jordan
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Kuwait"
+                        onclick="selectDialogCountry('Kuwait', this)"
+                      >
+                        Kuwait
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Lebanon"
+                        onclick="selectDialogCountry('Lebanon', this)"
+                      >
+                        Lebanon
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Morocco"
+                        onclick="selectDialogCountry('Morocco', this)"
+                      >
+                        Morocco
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Oman"
+                        onclick="selectDialogCountry('Oman', this)"
+                      >
+                        Oman
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Qatar"
+                        onclick="selectDialogCountry('Qatar', this)"
+                      >
+                        Qatar
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Saudi Arabia"
+                        onclick="selectDialogCountry('Saudi Arabia', this)"
+                      >
+                        Saudi Arabia
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Tunisia"
+                        onclick="selectDialogCountry('Tunisia', this)"
+                      >
+                        Tunisia
+                      </div>
+                      <div
+                        role="option"
+                        data-value="Turkey"
+                        onclick="selectDialogCountry('Turkey', this)"
+                      >
+                        Turkey
+                      </div>
+                      <div
+                        role="option"
+                        data-value="United Arab Emirates"
+                        onclick="
+                          selectDialogCountry('United Arab Emirates', this)
+                        "
+                      >
+                        United Arab Emirates
+                      </div>
+                    </div>
+                  </div>
+                  <input type="hidden" id="dlg-country-hidden" value="" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 2: CR Number | Registration Date | Tax ID -->
+            <div class="grid grid-cols-3 gap-5">
+              <div class="grid gap-2">
+                <label for="new-entity-cr"
+                  >CR Number
+                  <span class="text-red-500 font-normal">*</span></label
+                >
+                <input
+                  type="text"
+                  id="new-entity-cr"
+                  class="input"
+                  placeholder="e.g. 1010123456"
+                />
+              </div>
+              <div class="grid gap-2" style="position: relative">
+                <label for="new-entity-reg-date-display"
+                  >Registration Date
+                  <span class="text-red-500 font-normal">*</span></label
+                >
+                <div class="relative">
+                  <input
+                    id="new-entity-reg-date-display"
+                    type="text"
+                    class="input pl-9 cursor-pointer"
+                    placeholder="Pick a date…"
+                    readonly
+                    onclick="
+                      document.getElementById(
+                        'reg-date-cal-wrap',
+                      ).style.display = 'block';
+                      event.stopPropagation();
+                    "
+                  />
+                  <input type="hidden" id="new-entity-reg-date" />
+                  <div
+                    class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="15"
+                      height="15"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                      <line x1="16" x2="16" y1="2" y2="6" />
+                      <line x1="8" x2="8" y1="2" y2="6" />
+                      <line x1="3" x2="21" y1="10" y2="10" />
+                    </svg>
+                  </div>
+                </div>
+                <div
+                  id="reg-date-cal-wrap"
+                  style="
+                    display: none;
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    z-index: 10;
+                    margin-top: 4px;
+                  "
+                  onclick="event.stopPropagation()"
+                >
+                  <div id="reg-date-cal"></div>
+                </div>
+              </div>
+              <div class="grid gap-2">
+                <label for="new-entity-tax-id"
+                  >Tax ID <span class="text-red-500 font-normal">*</span></label
+                >
+                <input
+                  type="text"
+                  id="new-entity-tax-id"
+                  class="input"
+                  placeholder="e.g. 300-542-8810"
+                />
+              </div>
+            </div>
+
+            <!-- Row 3: Currency | Website | Phone Number -->
+            <div class="grid grid-cols-3 gap-5">
+              <div class="grid gap-2">
+                <label for="new-entity-currency"
+                  >Currency
+                  <span class="text-red-500 font-normal">*</span></label
+                >
+                <input
+                  type="text"
+                  id="new-entity-currency"
+                  class="input"
+                  placeholder="SAR, USD, EUR…"
+                />
+              </div>
+              <div class="grid gap-2">
+                <label for="new-entity-website">Website</label>
+                <input
+                  type="text"
+                  id="new-entity-website"
+                  class="input"
+                  placeholder="www.company.com"
+                />
+              </div>
+              <div class="grid gap-2">
+                <label for="new-entity-phone">Phone Number</label>
+                <input
+                  type="tel"
+                  id="new-entity-phone"
+                  class="input"
+                  placeholder="+966 11 234 5678"
+                />
+              </div>
+            </div>
+
+            <!-- Row 4: Fax Number | Registered Address -->
+            <div class="grid grid-cols-3 gap-5">
+              <div class="grid gap-2">
+                <label for="new-entity-fax">Fax Number</label>
+                <input
+                  type="tel"
+                  id="new-entity-fax"
+                  class="input"
+                  placeholder="+966 11 234 5679"
+                />
+              </div>
+              <div class="grid gap-2 col-span-2">
+                <label for="new-entity-address">Registered Address</label>
+                <input
+                  type="text"
+                  id="new-entity-address"
+                  class="input"
+                  placeholder="Street, City, Zip, Country"
+                />
+              </div>
+            </div>
+
+            <!-- ── Contact Details (optional) ── -->
+            <div class="border-t border-[var(--border)] pt-6 grid gap-3">
+              <!-- Name | Role -->
+              <div class="grid grid-cols-2 gap-5">
+                <div class="grid gap-2">
+                  <label for="new-contact-name">Name</label>
+                  <input
+                    type="text"
+                    id="new-contact-name"
+                    class="input"
+                    placeholder="e.g. Khalid Al-Amri"
+                  />
+                </div>
+                <div class="grid gap-2">
+                  <label for="new-contact-role">Role</label>
+                  <input
+                    type="text"
+                    id="new-contact-role"
+                    class="input"
+                    placeholder="e.g. CEO"
+                  />
+                </div>
+              </div>
+
+              <!-- Phone | Mobile | Email -->
+              <div class="grid grid-cols-3 gap-5">
+                <div class="grid gap-2">
+                  <label for="new-contact-phone">Phone</label>
+                  <input
+                    type="tel"
+                    id="new-contact-phone"
+                    class="input"
+                    placeholder="+966 11 234 5678"
+                  />
+                </div>
+                <div class="grid gap-2">
+                  <label for="new-contact-mobile">Mobile</label>
+                  <input
+                    type="tel"
+                    id="new-contact-mobile"
+                    class="input"
+                    placeholder="+966 50 123 4567"
+                  />
+                </div>
+                <div class="grid gap-2">
+                  <label for="new-contact-email">Email</label>
+                  <input
+                    type="email"
+                    id="new-contact-email"
+                    class="input"
+                    placeholder="name@company.com"
+                  />
+                </div>
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <footer>
+          <button class="btn-outline" onclick="this.closest('dialog').close()">
+            Cancel
+          </button>
+          <button
+            class="btn"
+            onclick="
+              this.closest('dialog').close();
+              document.dispatchEvent(
+                new CustomEvent('basecoat:toast', {
+                  detail: {
+                    config: {
+                      category: 'success',
+                      title: 'Entity Created',
+                      description: 'New entity created successfully.',
+                      cancel: { label: 'Dismiss' },
+                    },
+                  },
+                }),
+              );
+            "
+          >
+            Create Entity
+          </button>
+        </footer>
+
+        <!-- Close X -->
+        <button
+          type="button"
+          aria-label="Close dialog"
+          onclick="this.closest('dialog').close()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+    </dialog>
+
+    <script>
+      /* ─── Data ─────────────────────────────────────────────────────────── */
+      const ENTITIES = [
+        {
+          id: 1,
+          code: "ENT-001",
+          name: "Al Muthanna Insurance Co.",
+          type: "Insurance Company",
+          country: "Saudi Arabia",
+          flag: "🇸🇦",
+          cr: "1010123456",
+          regDate: "12 Mar 2008",
+          taxId: "300-542-8810",
+          phone: "+966 11 234 5678",
+          website: "www.almuthanna.com.sa",
+          agreements: 42,
+        },
+        {
+          id: 2,
+          code: "ENT-002",
+          name: "Gulf Shield Re",
+          type: "Reinsurance Company",
+          country: "United Arab Emirates",
+          flag: "🇦🇪",
+          cr: "CN-1042837",
+          regDate: "05 Jun 2011",
+          taxId: "100-874-3321",
+          phone: "+971 4 887 3200",
+          website: "www.gulfshildre.ae",
+          agreements: 18,
+        },
+        {
+          id: 3,
+          code: "ENT-003",
+          name: "Orient Takaful",
+          type: "Insurance Company",
+          country: "Kuwait",
+          flag: "🇰🇼",
+          cr: "KW-588341",
+          regDate: "19 Jan 2006",
+          taxId: "200-661-4450",
+          phone: "+965 2244 8800",
+          website: "www.orienttakaful.com.kw",
+          agreements: 31,
+        },
+        {
+          id: 4,
+          code: "ENT-004",
+          name: "Méditerranée Assurance",
+          type: "Insurance Company",
+          country: "France",
+          flag: "🇫🇷",
+          cr: "FR-77200412",
+          regDate: "02 Sep 2015",
+          taxId: "FR-44-399018",
+          phone: "+33 1 44 82 00 00",
+          website: "www.med-assurance.fr",
+          agreements: 7,
+        },
+        {
+          id: 5,
+          code: "ENT-005",
+          name: "SwanPro Direct",
+          type: "Broker",
+          country: "Bahrain",
+          flag: "🇧🇭",
+          cr: "BH-109342",
+          regDate: "28 Feb 2019",
+          taxId: "BH-010-9342",
+          phone: "+973 1756 0000",
+          website: "www.swanprodirect.bh",
+          agreements: 15,
+        },
+        {
+          id: 6,
+          code: "ENT-006",
+          name: "Atlas Cover Ltd",
+          type: "Insurance Company",
+          country: "Morocco",
+          flag: "🇲🇦",
+          cr: "MA-RC-55812",
+          regDate: "14 Nov 2013",
+          taxId: "MA-55812-001",
+          phone: "+212 522 481 900",
+          website: "www.atlascover.ma",
+          agreements: 9,
+        },
+        {
+          id: 7,
+          code: "ENT-007",
+          name: "Crescent Re",
+          type: "Reinsurance Company",
+          country: "Turkey",
+          flag: "🇹🇷",
+          cr: "TR-0441823",
+          regDate: "30 Apr 2009",
+          taxId: "TR-441-823-00",
+          phone: "+90 212 385 5500",
+          website: "www.crescentre.com.tr",
+          agreements: 24,
+        },
+        {
+          id: 8,
+          code: "ENT-008",
+          name: "Nordic Bridge Insurance",
+          type: "Insurance Company",
+          country: "Germany",
+          flag: "🇩🇪",
+          cr: "DE-HRB-91240",
+          regDate: "07 Aug 2017",
+          taxId: "DE-291-884-512",
+          phone: "+49 30 2093 0000",
+          website: "www.nordicbridge.de",
+          agreements: 5,
+        },
+        {
+          id: 9,
+          code: "ENT-009",
+          name: "Nile Valley Assurance",
+          type: "Insurance Company",
+          country: "Egypt",
+          flag: "🇪🇬",
+          cr: "EG-33017482",
+          regDate: "22 May 2004",
+          taxId: "EG-714-332-09",
+          phone: "+20 2 2574 1234",
+          website: "www.nilevalley.eg",
+          agreements: 13,
+        },
+        {
+          id: 10,
+          code: "ENT-010",
+          name: "Bosphorus Insurance Group",
+          type: "Insurance Company",
+          country: "Turkey",
+          flag: "🇹🇷",
+          cr: "TR-0882214",
+          regDate: "11 Dec 2001",
+          taxId: "TR-882-214-01",
+          phone: "+90 212 444 7700",
+          website: "www.bosphorusinsurance.com.tr",
+          agreements: 11,
+        },
+        {
+          id: 11,
+          code: "ENT-011",
+          name: "Crescent Life Qatar",
+          type: "Insurance Company",
+          country: "Qatar",
+          flag: "🇶🇦",
+          cr: "QA-CR-77412",
+          regDate: "03 Oct 2016",
+          taxId: "QA-774-120-03",
+          phone: "+974 4411 2233",
+          website: "www.crescentlifeqatar.qa",
+          agreements: 8,
+        },
+        {
+          id: 12,
+          code: "ENT-012",
+          name: "Sahel Re Holdings",
+          type: "Reinsurance Company",
+          country: "Morocco",
+          flag: "🇲🇦",
+          cr: "MA-RC-88203",
+          regDate: "17 Jul 2021",
+          taxId: "MA-88203-002",
+          phone: "+212 537 760 800",
+          website: "www.sahelre.ma",
+          agreements: 3,
+        },
+      ];
+
+      /* ─── Country filter select ─────────────────────────────────────────── */
+      function selectCountryFilter(value, label, el) {
+        document.getElementById("entity-country-hidden").value = value;
+        document.getElementById("ent-country-sel-label").textContent = label;
+        document
+          .querySelectorAll('#ent-country-sel-listbox [role="option"]')
+          .forEach((o) => o.removeAttribute("aria-selected"));
+        el.setAttribute("aria-selected", "true");
+        const popover = document.getElementById("ent-country-sel-popover");
+        const trigger = document.getElementById("ent-country-sel-trigger");
+        popover.setAttribute("aria-hidden", "true");
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.focus();
+        document.getElementById("ent-country-search").value = "";
+        filterCountryOptions("ent-country-sel-listbox", "");
+        applyFilters();
+      }
+
+      /* ─── Company type filter select ────────────────────────────────────── */
+      function selectTypeFilter(value, label, el) {
+        document.getElementById("entity-type-hidden").value = value;
+        document.getElementById("ent-type-sel-label").textContent = label;
+        document
+          .querySelectorAll('#ent-type-sel-listbox [role="option"]')
+          .forEach((o) => o.removeAttribute("aria-selected"));
+        el.setAttribute("aria-selected", "true");
+        const popover = document.getElementById("ent-type-sel-popover");
+        const trigger = document.getElementById("ent-type-sel-trigger");
+        popover.setAttribute("aria-hidden", "true");
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.focus();
+        document.getElementById("ent-type-search").value = "";
+        filterCountryOptions("ent-type-sel-listbox", "");
+        applyFilters();
+      }
+
+      /* ─── Dialog entity type select ─────────────────────────────────────── */
+      function selectDialogType(value, el) {
+        document.getElementById("dlg-type-hidden").value = value;
+        const lbl = document.getElementById("dlg-type-sel-label");
+        lbl.textContent = value;
+        lbl.classList.remove("text-muted-foreground");
+        document
+          .querySelectorAll('#dlg-type-sel-listbox [role="option"]')
+          .forEach((o) => o.removeAttribute("aria-selected"));
+        el.setAttribute("aria-selected", "true");
+        const popover = document.getElementById("dlg-type-sel-popover");
+        const trigger = document.getElementById("dlg-type-sel-trigger");
+        popover.setAttribute("aria-hidden", "true");
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.focus();
+      }
+
+      /* ─── Dialog country select ──────────────────────────────────────────── */
+      function selectDialogCountry(value, el) {
+        document.getElementById("dlg-country-hidden").value = value;
+        const lbl = document.getElementById("dlg-country-sel-label");
+        lbl.textContent = value;
+        lbl.classList.remove("text-muted-foreground");
+        document
+          .querySelectorAll('#dlg-country-sel-listbox [role="option"]')
+          .forEach((o) => o.removeAttribute("aria-selected"));
+        el.setAttribute("aria-selected", "true");
+        const popover = document.getElementById("dlg-country-sel-popover");
+        const trigger = document.getElementById("dlg-country-sel-trigger");
+        popover.setAttribute("aria-hidden", "true");
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.focus();
+        document.getElementById("dlg-country-search").value = "";
+        filterCountryOptions("dlg-country-sel-listbox", "");
+      }
+
+      /* ─── Search filter for country listbox ─────────────────────────────── */
+      function filterCountryOptions(listboxId, query) {
+        const q = query.toLowerCase().trim();
+        document
+          .querySelectorAll(`#${listboxId} [role="option"]`)
+          .forEach((opt) => {
+            opt.style.display =
+              !q || opt.textContent.toLowerCase().includes(q) ? "" : "none";
+          });
+      }
+
+      let currentView = "table";
+
+      /* ─── Action menu HTML (shared) ─────────────────────────────────────── */
+      function actionMenu(id, website) {
+        const websiteHref = website ? "https://" + website : "#";
+        return `
+          <div class="dropdown-menu flex justify-end" id="row-menu-${id}">
+            <button type="button" class="btn-icon-ghost row-action-trigger" id="row-menu-${id}-trigger" aria-haspopup="menu" aria-controls="row-menu-${id}-menu" aria-expanded="false" aria-label="Entity actions">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
+              </svg>
+            </button>
+            <div id="row-menu-${id}-popover" data-popover aria-hidden="true" data-align="end">
+              <div role="menu" id="row-menu-${id}-menu" aria-labelledby="row-menu-${id}-trigger">
+                <a href="sample_entity.html"><div role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  View Entity
+                </div></a>
+                <a href="${websiteHref}" target="_blank" rel="noopener noreferrer"><div role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+                  Visit Website
+                </div></a>
+                <hr role="separator" />
+                <a href="#"><div role="menuitem" class="text-red-500 hover:!bg-red-50">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-red-500"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                  Delete
+                </div></a>
+              </div>
+            </div>
+          </div>`;
+      }
+
+      /* ─── Build a table row ─────────────────────────────────────────────── */
+      function buildTableRow(e) {
+        return `
+          <tr>
+            <td class="font-mono text-sm font-medium text-primary whitespace-nowrap">${e.code}</td>
+            <td class="text-sm font-semibold">${e.name}</td>
+            <td class="text-sm text-muted-foreground whitespace-nowrap">${e.type}</td>
+            <td class="text-sm text-muted-foreground whitespace-nowrap">${e.country}</td>
+            <td class="text-sm text-muted-foreground whitespace-nowrap">${e.cr}</td>
+            <td class="text-sm text-muted-foreground whitespace-nowrap">${e.taxId}</td>
+            <td class="text-sm text-muted-foreground whitespace-nowrap">${e.regDate}</td>
+            <td class="text-sm text-muted-foreground whitespace-nowrap">${e.phone}</td>
+            <td>${actionMenu(e.id, e.website)}</td>
+          </tr>`;
+      }
+
+      /* ─── Build a list row ──────────────────────────────────────────────── */
+      function buildListRow(e) {
+        const base =
+          "font-size:0.875rem;font-weight:400;color:var(--foreground)";
+        const muted =
+          "font-size:0.8125rem;font-weight:400;color:var(--muted-foreground)";
+        return `
+          <div class="entity-row">
+            <span class="font-mono text-sm font-medium text-primary whitespace-nowrap" style="flex-shrink:0;min-width:5.5rem">${e.code}</span>
+            <p style="${base};font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.name}</p>
+            <p style="${muted};min-width:9rem;flex-shrink:0">${e.type}</p>
+            <p style="${base};min-width:10rem;flex-shrink:0">${e.country}</p>
+            <p style="${muted};min-width:8rem;flex-shrink:0">${e.cr}</p>
+            <p style="${muted};min-width:9rem;flex-shrink:0">${e.taxId}</p>
+            <p style="${muted};min-width:8rem;flex-shrink:0">${e.regDate}</p>
+            <p style="${base};min-width:9rem;flex-shrink:0">${e.phone}</p>
+            ${actionMenu("l" + e.id, e.website)}
+          </div>`;
+      }
+
+      /* ─── Render ────────────────────────────────────────────────────────── */
+      function render(list) {
+        const tableWrap = document.getElementById("entities-table-wrap");
+        const listWrap = document.getElementById("entities-list-wrap");
+        const empty = document.getElementById("entities-empty");
+        const count = document.getElementById("entities-count");
+
+        if (list.length === 0) {
+          document.getElementById("entities-tbody").innerHTML = "";
+          listWrap.innerHTML = "";
+          tableWrap.classList.add("hidden");
+          listWrap.classList.add("hidden");
+          empty.classList.remove("hidden");
+          count.textContent = "0";
+          return;
+        }
+
+        empty.classList.add("hidden");
+        count.textContent = list.length;
+
+        if (currentView === "table") {
+          document.getElementById("entities-tbody").innerHTML = list
+            .map(buildTableRow)
+            .join("");
+          tableWrap.classList.remove("hidden");
+          listWrap.classList.add("hidden");
+        } else {
+          listWrap.innerHTML = list.map(buildListRow).join("");
+          listWrap.classList.remove("hidden");
+          tableWrap.classList.add("hidden");
+        }
+      }
+
+      /* ─── View toggle ───────────────────────────────────────────────────── */
+      function setView(v) {
+        currentView = v;
+        document
+          .getElementById("view-table-btn")
+          .classList.toggle("active", v === "table");
+        document
+          .getElementById("view-list-btn")
+          .classList.toggle("active", v === "list");
+        applyFilters();
+      }
+
+      /* ─── Reg. Date sorting ─────────────────────────────────────────────── */
+      let entSortDir = "none";
+
+      function _setSortArrows(upId, downId, direction) {
+        const up = document.getElementById(upId);
+        const down = document.getElementById(downId);
+        if (direction === "asc") {
+          up.style.opacity = "1";
+          down.style.opacity = "0.2";
+        } else if (direction === "desc") {
+          up.style.opacity = "0.2";
+          down.style.opacity = "1";
+        } else {
+          up.style.opacity = "0.4";
+          down.style.opacity = "0.4";
+        }
+      }
+
+      function sortByRegDate(btn) {
+        const cycle = ["none", "asc", "desc"];
+        entSortDir =
+          cycle[(cycle.indexOf(btn.dataset.sort) + 1) % cycle.length];
+        btn.dataset.sort = entSortDir;
+        _setSortArrows("sort-date-up", "sort-date-down", entSortDir);
+        applyFilters();
+      }
+
+      /* ─── Apply filters ─────────────────────────────────────────────────── */
+      function applyFilters() {
+        const q = document
+          .getElementById("entity-search")
+          .value.toLowerCase()
+          .trim();
+        const country = document.getElementById("entity-country-hidden").value;
+        const type = document.getElementById("entity-type-hidden").value;
+
+        const filtered = ENTITIES.filter((e) => {
+          const matchQ =
+            !q ||
+            e.name.toLowerCase().includes(q) ||
+            e.code.toLowerCase().includes(q);
+          const matchCountry = !country || e.country === country;
+          const matchType = !type || e.type === type;
+          return matchQ && matchCountry && matchType;
+        });
+
+        if (entSortDir !== "none") {
+          filtered.sort((a, b) => {
+            const aDate = new Date(a.regDate || "");
+            const bDate = new Date(b.regDate || "");
+            return entSortDir === "asc" ? aDate - bDate : bDate - aDate;
+          });
+        }
+
+        render(filtered);
+      }
+
+      /* ─── Clear filters ─────────────────────────────────────────────────── */
+      function clearFilters() {
+        document.getElementById("entity-search").value = "";
+        entSortDir = "none";
+        const sortBtn = document.getElementById("sort-date-btn");
+        sortBtn.dataset.sort = "none";
+        _setSortArrows("sort-date-up", "sort-date-down", "none");
+        selectTypeFilter(
+          "",
+          "All Company Types",
+          document.querySelector('#ent-type-sel-listbox [data-value=""]'),
+        );
+        selectCountryFilter(
+          "",
+          "All Countries",
+          document.querySelector('#ent-country-sel-listbox [data-value=""]'),
+        );
+      }
+
+      /* ─── Pagination state ─────────────────────────────────────────────── */
+      let entCurrentPage = 1;
+      let entRowsPerPage = 10;
+      let entTotalPages = 1;
+      let entFilteredList = ENTITIES;
+
+      function selectEntRowsPerPage(n, el) {
+        entRowsPerPage = n;
+        document
+          .getElementById("ent-rows-select-trigger")
+          .querySelector("span").textContent = n;
+        document
+          .querySelectorAll("#ent-rows-select-listbox [role='option']")
+          .forEach((o) => o.removeAttribute("aria-selected"));
+        el.setAttribute("aria-selected", "true");
+        document
+          .getElementById("ent-rows-select-popover")
+          .setAttribute("aria-hidden", "true");
+        document
+          .getElementById("ent-rows-select-trigger")
+          .setAttribute("aria-expanded", "false");
+        entGoToPage(1);
+      }
+
+      function entGoToPage(page) {
+        entTotalPages = Math.max(
+          1,
+          Math.ceil(entFilteredList.length / entRowsPerPage),
+        );
+        entCurrentPage = Math.max(1, Math.min(page, entTotalPages));
+        document.getElementById("ent-page-indicator").textContent =
+          "Page " + entCurrentPage + " of " + entTotalPages;
+        const slice = entFilteredList.slice(
+          (entCurrentPage - 1) * entRowsPerPage,
+          entCurrentPage * entRowsPerPage,
+        );
+        renderPage(slice);
+      }
+
+      /* override render to also handle pagination */
+      const _renderBase = render;
+      render = function (list) {
+        entFilteredList = list;
+        entCurrentPage = 1;
+        entGoToPage(1);
+        document.getElementById("entities-count").textContent = list.length;
+      };
+
+      function renderPage(list) {
+        const tableWrap = document.getElementById("entities-table-wrap");
+        const listWrap = document.getElementById("entities-list-wrap");
+        const empty = document.getElementById("entities-empty");
+
+        if (entFilteredList.length === 0) {
+          document.getElementById("entities-tbody").innerHTML = "";
+          listWrap.innerHTML = "";
+          tableWrap.classList.add("hidden");
+          listWrap.classList.add("hidden");
+          empty.classList.remove("hidden");
+          return;
+        }
+
+        empty.classList.add("hidden");
+
+        if (currentView === "table") {
+          document.getElementById("entities-tbody").innerHTML = list
+            .map(buildTableRow)
+            .join("");
+          tableWrap.classList.remove("hidden");
+          listWrap.classList.add("hidden");
+        } else {
+          listWrap.innerHTML = list.map(buildListRow).join("");
+          listWrap.classList.remove("hidden");
+          tableWrap.classList.add("hidden");
+        }
+      }
+
+      /* ─── Reset a filter's search box when its dropdown opens ───────────── */
+      function resetFilterSearchOnOpen(triggerId, searchId, listboxId) {
+        const trigger = document.getElementById(triggerId);
+        if (!trigger) return;
+        trigger.addEventListener("click", () => {
+          const search = document.getElementById(searchId);
+          if (search) search.value = "";
+          filterCountryOptions(listboxId, "");
+        });
+      }
+      resetFilterSearchOnOpen(
+        "ent-country-sel-trigger",
+        "ent-country-search",
+        "ent-country-sel-listbox",
+      );
+      resetFilterSearchOnOpen(
+        "ent-type-sel-trigger",
+        "ent-type-search",
+        "ent-type-sel-listbox",
+      );
+
+      /* ─── Init ──────────────────────────────────────────────────────────── */
+      render(ENTITIES);
+
+      flatpickr("#reg-date-cal", {
+        inline: true,
+        dateFormat: "d M Y",
+        onChange: function (selectedDates, dateStr) {
+          document.getElementById("new-entity-reg-date-display").value =
+            dateStr;
+          document.getElementById("new-entity-reg-date").value = dateStr;
+          document.getElementById("reg-date-cal-wrap").style.display = "none";
+        },
+      });
+
+      // Close the calendar when clicking outside of it (without selecting)
+      document.addEventListener("click", function () {
+        document.getElementById("reg-date-cal-wrap").style.display = "none";
+      });
+    </script>
+
+    <div id="toaster" class="toaster"></div>
+  </body>
+</html>

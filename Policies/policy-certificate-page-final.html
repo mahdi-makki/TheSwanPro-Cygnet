@@ -1,0 +1,2887 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cygnus - Policy Certificates</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/cygnus_icon.svg" />
+
+    <!-- Tailwind CSS (REQUIRED for Basecoat component layouts) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- Basecoat CSS (Design tokens + component styling) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/basecoat.cdn.min.css"
+    />
+
+    <!-- Basecoat Core JS (required for all interactive parts) -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/all.min.js"
+      defer
+    ></script>
+
+    <!-- Basecoat Component Registry -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/basecoat.min.js"
+      defer
+    ></script>
+
+    <!-- Dropdown Menu Component -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@0.3.10/dist/js/dropdown-menu.min.js"
+      defer
+    ></script>
+
+    <!-- Flatpickr date range picker -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <link rel="stylesheet" href="../theme.css" />
+
+    <style>
+      /* ── Global scrollbar — matches sidebar .scrollbar class ── */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+      }
+      *::-webkit-scrollbar {
+        width: var(--scrollbar-width);
+      }
+      *::-webkit-scrollbar-track {
+        background: var(--scrollbar-track);
+      }
+      *::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb);
+        border-radius: var(--scrollbar-radius);
+      }
+
+      /* ── Status badges — shadcn filled-icon style ── */
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        border-radius: 9999px;
+        padding: 0.2rem 0.65rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        line-height: 1.25rem;
+        border: 1px solid;
+        white-space: nowrap;
+      }
+      .status-badge svg {
+        flex-shrink: 0;
+      }
+      .status-valid,
+      .status-pending,
+      .status-pending-delete,
+      .status-cancelled,
+      .status-expired {
+        background: transparent;
+        color: #6b7280;
+        border-color: #e5e7eb;
+      }
+
+      /* ── CT / type badge — circular neutral ── */
+      .ct-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        padding: 0;
+        border-radius: 9999px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        border: 1px solid var(--border);
+        color: var(--muted-foreground);
+        background: transparent;
+        flex-shrink: 0;
+      }
+
+      /* ── Status select dots ── */
+      .sdot {
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+      .sdot-all {
+        background: #9ca3af;
+      }
+      .sdot-valid {
+        background: #16a34a;
+      }
+      .sdot-pending {
+        background: #b45309;
+      }
+      .sdot-pending-delete {
+        background: #c2410c;
+      }
+      .sdot-cancelled {
+        background: #b91c1c;
+      }
+      .sdot-expired {
+        background: #6b7280;
+      }
+
+      /* ── shadcn-style table spacing ── */
+      #cert-table th {
+        padding-top: 0.875rem;
+        padding-bottom: 0.875rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        font-size: 0.8125rem;
+        letter-spacing: 0.02em;
+      }
+      #cert-table td {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      #cert-table tbody tr {
+        border-bottom: 1px solid var(--border);
+        transition: background 120ms ease;
+      }
+      #cert-table tbody tr:hover {
+        background-color: oklch(0.38 0.23 268 / 0.035);
+      }
+
+      /* Export buttons: border dissolves into hover background */
+      .export-btn:hover {
+        background-color: var(--muted);
+        border-color: var(--muted);
+      }
+
+      /* ── Sort button — no hover, plain label feel ── */
+      .sort-btn {
+        cursor: default;
+        background: transparent;
+        border: none;
+        padding: 0;
+        font-weight: 600;
+        font-size: inherit;
+        color: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .sort-btn:hover,
+      .sort-btn:focus {
+        background: transparent;
+        outline: none;
+        color: inherit;
+      }
+
+      /* ── Collapse hidden Basecoat popovers — prevent layout inflation ── */
+      [data-popover][aria-hidden="true"] {
+        height: 0 !important;
+        min-height: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        overflow: hidden !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+
+      /* ── Row action trigger — no hover response ── */
+      .row-action-trigger {
+        cursor: default !important;
+        color: var(--muted-foreground);
+      }
+      .row-action-trigger:hover,
+      .row-action-trigger:focus {
+        background: transparent !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+        outline: none !important;
+      }
+
+      /* ── Flatpickr — two-month range picker ── */
+      .flatpickr-calendar {
+        font-family: inherit;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: 0 8px 24px rgb(0 0 0 / 0.09);
+        padding: 1rem 1.25rem;
+        width: 580px;
+      }
+      .flatpickr-calendar.arrowTop:before,
+      .flatpickr-calendar.arrowTop:after {
+        display: none;
+      }
+
+      /* ── Header row ── */
+      .flatpickr-months {
+        display: flex !important;
+        align-items: center !important;
+        margin-bottom: 0.625rem;
+      }
+      .flatpickr-month {
+        flex: 1;
+        height: auto !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .flatpickr-current-month {
+        position: static !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.3rem;
+        padding: 0 !important;
+        width: auto !important;
+        height: auto !important;
+        font-size: 0.875rem;
+        color: var(--foreground);
+      }
+
+      /* Month name — plain text label, no dropdown chrome */
+      .flatpickr-monthDropdown-months {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        color: var(--foreground) !important;
+        pointer-events: none;
+        cursor: default;
+      }
+
+      /* Year — plain text label */
+      .numInputWrapper {
+        border: none !important;
+        display: inline-flex !important;
+        align-items: center;
+        width: auto !important;
+        padding: 0 !important;
+      }
+      .numInputWrapper span.arrowUp,
+      .numInputWrapper span.arrowDown {
+        display: none !important;
+      }
+      input.cur-year {
+        width: 3rem !important;
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        color: var(--foreground) !important;
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        pointer-events: none;
+        cursor: default;
+        -moz-appearance: textfield !important;
+        appearance: textfield !important;
+      }
+      input.cur-year::-webkit-outer-spin-button,
+      input.cur-year::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+
+      /* ── Nav arrows — subtle icon buttons ── */
+      .flatpickr-prev-month,
+      .flatpickr-next-month {
+        position: relative !important;
+        top: auto !important;
+        width: 1.75rem !important;
+        height: 1.75rem !important;
+        border: 1px solid var(--border) !important;
+        border-radius: calc(var(--radius) - 2px) !important;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0;
+        transition: background 120ms;
+      }
+      .flatpickr-prev-month:hover,
+      .flatpickr-next-month:hover {
+        background: var(--muted) !important;
+        border-color: var(--muted) !important;
+      }
+      .flatpickr-prev-month svg,
+      .flatpickr-next-month svg {
+        fill: var(--foreground) !important;
+        width: 12px;
+        height: 12px;
+      }
+
+      /* ── Two-month grid layout ── */
+      .flatpickr-innerContainer,
+      .flatpickr-rContainer {
+        width: 100%;
+      }
+      .flatpickr-weekdays {
+        display: flex !important;
+        gap: 1.5rem;
+        margin-bottom: 0.25rem;
+      }
+      .flatpickr-weekdaycontainer {
+        flex: 1;
+        display: flex;
+      }
+      .flatpickr-weekday {
+        flex: 1;
+        color: var(--muted-foreground);
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-align: center;
+      }
+      .flatpickr-days {
+        display: flex !important;
+        width: 100% !important;
+        gap: 1.5rem;
+      }
+      .dayContainer {
+        flex: 1;
+        width: 100% !important;
+        min-width: unset !important;
+        max-width: unset !important;
+        display: flex !important;
+        flex-wrap: wrap;
+        justify-content: flex-start !important;
+      }
+
+      /* ── Day cells ── */
+      .flatpickr-day {
+        flex: 1 0 calc(100% / 7);
+        max-width: calc(100% / 7);
+        height: 2.375rem;
+        line-height: 2.375rem;
+        border-radius: 0.4rem;
+        color: var(--foreground);
+        border: none;
+        font-size: 0.8125rem;
+        margin: 0;
+      }
+      .flatpickr-day:hover {
+        background: var(--muted);
+        border: none;
+        outline: none;
+      }
+
+      /* Today — subtle bg, no underline */
+      .flatpickr-day.today:not(.selected):not(.startRange):not(.endRange):not(
+          .inRange
+        ) {
+        background: var(--muted) !important;
+        font-weight: 600;
+        border-bottom: none !important;
+      }
+
+      /* Selected caps */
+      .flatpickr-day.selected,
+      .flatpickr-day.startRange,
+      .flatpickr-day.endRange,
+      .flatpickr-day.selected:hover,
+      .flatpickr-day.startRange:hover,
+      .flatpickr-day.endRange:hover {
+        background: oklch(0.44 0.2 268) !important;
+        border-color: oklch(0.44 0.2 268) !important;
+        color: #fff !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+      .flatpickr-day.startRange:not(.endRange) {
+        border-radius: 0.4rem 0 0 0.4rem !important;
+      }
+      .flatpickr-day.endRange:not(.startRange) {
+        border-radius: 0 0.4rem 0.4rem 0 !important;
+      }
+      .flatpickr-day.startRange.endRange,
+      .flatpickr-day.selected {
+        border-radius: 0.4rem !important;
+      }
+
+      /* Range fill */
+      .flatpickr-day.inRange {
+        background: oklch(0.44 0.2 268 / 0.12) !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        color: var(--foreground) !important;
+      }
+      .flatpickr-day.flatpickr-disabled {
+        color: var(--muted-foreground);
+        opacity: 0.35;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <main>
+      <!-- ─── Top Navigation Header ─────────────────────────────────────── -->
+      <header
+        class="sticky top-0 z-50 bg-white flex items-center gap-3 p-3 border-b border-gray-200"
+      >
+        <button
+          type="button"
+          onclick="document.dispatchEvent(new CustomEvent('basecoat:sidebar'))"
+          class="btn-ghost"
+          data-tooltip="Toggle sidebar"
+          data-side="bottom"
+          data-align="start"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect width="18" height="18" x="3" y="3" rx="2" />
+            <path d="M15 3v18" />
+          </svg>
+        </button>
+
+        <div class="w-px h-4 bg-gray-200 mr-3"></div>
+
+        <ol
+          class="text-muted-foreground flex flex-wrap items-center gap-1.5 text-sm break-words sm:gap-2.5"
+        >
+          <li class="inline-flex items-center gap-1.5">
+            <a href="#" class="hover:text-foreground transition-colors">Home</a>
+          </li>
+          <li>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3.5"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </li>
+          <li class="inline-flex items-center gap-1.5">
+            <a href="#" class="hover:text-foreground transition-colors"
+              >Declarations</a
+            >
+          </li>
+          <li>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3.5"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </li>
+          <li class="inline-flex items-center gap-1.5">
+            <span class="text-foreground font-semibold"
+              >Policy Certificates</span
+            >
+          </li>
+        </ol>
+
+        <!-- SEARCH BAR -->
+        <div id="header-search-wrap" class="relative ml-auto w-72">
+          <input
+            type="text"
+            class="input pl-9"
+            placeholder="Search..."
+            onkeydown="
+              if (event.key === 'Enter') {
+                const w = document.getElementById('header-search-wrap');
+                w.innerHTML =
+                  '<input type=\'text\' class=\'input pr-9\' placeholder=\'Searching...\' disabled /><div class=\'absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground [&>svg]:size-4 opacity-50\'><svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' class=\'animate-spin\'><path d=\'M21 12a9 9 0 1 1-6.219-8.56\'/></svg></div>';
+              }
+            "
+          />
+          <div
+            class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground [&>svg]:size-4"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- LANGUAGE TOGGLE -->
+        <div id="header-lang-menu" class="dropdown-menu">
+          <button
+            type="button"
+            id="header-lang-menu-trigger"
+            aria-haspopup="menu"
+            aria-controls="header-lang-menu-menu"
+            aria-expanded="false"
+            class="btn-ghost flex items-center gap-1.5"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-4"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+              <path d="M2 12h20" />
+            </svg>
+            <span id="header-lang-label" class="text-sm font-medium">EN</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-3"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div
+            id="header-lang-menu-popover"
+            data-popover
+            aria-hidden="true"
+            data-align="end"
+            class="min-w-20"
+          >
+            <div
+              role="menu"
+              id="header-lang-menu-menu"
+              aria-labelledby="header-lang-menu-trigger"
+            >
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'EN';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                English
+              </div>
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'AR';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                Arabic
+              </div>
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'FR';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                French
+              </div>
+              <div
+                role="menuitem"
+                onclick="
+                  document.getElementById('header-lang-label').textContent =
+                    'TR';
+                  this.closest('[data-popover]').setAttribute(
+                    'aria-hidden',
+                    'true',
+                  );
+                "
+              >
+                Turkish
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEW CERTIFICATE -->
+        <button
+          class="btn"
+          onclick="
+            document.dispatchEvent(
+              new CustomEvent('basecoat:toast', {
+                detail: {
+                  config: {
+                    category: 'success',
+                    title: 'New Certificate',
+                    description: 'Opening the certificate form.',
+                    duration: '2500',
+                    cancel: { label: 'Dismiss' },
+                  },
+                },
+              }),
+            )
+          "
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+          New Certificate
+        </button>
+      </header>
+
+      <!-- ─── Page Content ──────────────────────────────────────────────── -->
+      <div class="px-8 pt-8 pb-0 space-y-3">
+        <!-- ── Page Header ── -->
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <h1 class="text-3xl font-bold tracking-tight">
+              Policy Certificates
+            </h1>
+            <p class="text-muted-foreground mt-1.5">
+              Manage and track all issued travel insurance certificates.
+            </p>
+          </div>
+          <!-- Export actions -->
+          <div class="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              class="btn-icon-outline export-btn"
+              data-tooltip="Export PDF"
+              data-side="bottom"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-4"
+              >
+                <path
+                  d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                />
+                <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                <path d="M10 9H8" />
+                <path d="M16 13H8" />
+                <path d="M16 17H8" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="btn-icon-outline export-btn"
+              data-tooltip="Export Excel"
+              data-side="bottom"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-4"
+              >
+                <rect width="18" height="18" x="3" y="3" rx="2" />
+                <path d="M3 9h18" />
+                <path d="M3 15h18" />
+                <path d="M9 3v18" />
+                <path d="M15 3v18" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="btn-icon-outline export-btn"
+              data-tooltip="Print"
+              data-side="bottom"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-4"
+              >
+                <polyline points="6 9 6 2 18 2 18 9" />
+                <path
+                  d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+                />
+                <rect width="12" height="8" x="6" y="14" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ── Stats Cards ── -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
+          <!-- Total -->
+          <div class="card p-4 flex flex-col gap-3">
+            <div class="flex items-start justify-between">
+              <p class="text-sm font-medium text-muted-foreground">Total</p>
+              <span class="ct-badge">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                  />
+                  <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                  <path d="M10 9H8" />
+                  <path d="M16 13H8" />
+                  <path d="M16 17H8" />
+                </svg>
+              </span>
+            </div>
+            <div>
+              <p class="text-3xl font-bold tracking-tight">227</p>
+              <p class="text-xs mt-1" style="color: #16a34a">
+                +5.2% from last month
+              </p>
+            </div>
+          </div>
+
+          <!-- Valid -->
+          <div class="card p-4 flex flex-col gap-3">
+            <div class="flex items-start justify-between">
+              <p class="text-sm font-medium text-muted-foreground">Valid</p>
+              <span class="ct-badge">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  <path d="m9 12 2 2 4-4" />
+                </svg>
+              </span>
+            </div>
+            <div>
+              <p class="text-3xl font-bold tracking-tight">180</p>
+              <p class="text-xs mt-1" style="color: #16a34a">
+                +8.1% from last month
+              </p>
+            </div>
+          </div>
+
+          <!-- Pending -->
+          <div class="card p-4 flex flex-col gap-3">
+            <div class="flex items-start justify-between">
+              <p class="text-sm font-medium text-muted-foreground">Pending</p>
+              <span class="ct-badge">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </span>
+            </div>
+            <div>
+              <p class="text-3xl font-bold tracking-tight">25</p>
+              <p class="text-xs mt-1" style="color: #16a34a">
+                +3.4% from last month
+              </p>
+            </div>
+          </div>
+
+          <!-- Pending Delete -->
+          <div class="card p-4 flex flex-col gap-3">
+            <div class="flex items-start justify-between">
+              <p class="text-sm font-medium text-muted-foreground">
+                Pend. Delete
+              </p>
+              <span class="ct-badge">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 6h18" />
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                  <line x1="10" x2="10" y1="11" y2="17" />
+                  <line x1="14" x2="14" y1="11" y2="17" />
+                </svg>
+              </span>
+            </div>
+            <div>
+              <p class="text-3xl font-bold tracking-tight">8</p>
+              <p class="text-xs mt-1" style="color: #dc2626">
+                -2.0% from last month
+              </p>
+            </div>
+          </div>
+
+          <!-- Cancelled -->
+          <div class="card p-4 flex flex-col gap-3">
+            <div class="flex items-start justify-between">
+              <p class="text-sm font-medium text-muted-foreground">Cancelled</p>
+              <span class="ct-badge">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="m4.9 4.9 14.2 14.2" />
+                </svg>
+              </span>
+            </div>
+            <div>
+              <p class="text-3xl font-bold tracking-tight">10</p>
+              <p class="text-xs mt-1" style="color: #16a34a">
+                +1.2% from last month
+              </p>
+            </div>
+          </div>
+
+          <!-- Expired -->
+          <div class="card p-4 flex flex-col gap-3">
+            <div class="flex items-start justify-between">
+              <p class="text-sm font-medium text-muted-foreground">Expired</p>
+              <span class="ct-badge">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                  <path d="m22 2-5 5" />
+                  <path d="m17 2 5 5" />
+                </svg>
+              </span>
+            </div>
+            <div>
+              <p class="text-3xl font-bold tracking-tight">4</p>
+              <p class="text-xs text-muted-foreground mt-1">No change</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Filter Bar ─────────────────────────────────────────────────
+             Layout (left→right):
+               [Search]  [Status]  |  [From date] → [To date]  [Reset]  |  Rows: [select]
+             Search grows to fill available space; date/rows groups stay compact.
+        ──────────────────────────────────────────────────────────────────── -->
+        <div class="flex flex-wrap items-center gap-2 mt-10">
+          <!-- Search -->
+          <div class="relative" style="width: 16rem">
+            <input
+              id="table-search"
+              type="text"
+              class="input w-full"
+              placeholder="Search for a certificate…"
+              oninput="filterRows()"
+            />
+          </div>
+
+          <!-- Status filter — custom select with colored dots -->
+          <div>
+            <div id="status-select" class="select">
+              <button
+                type="button"
+                class="btn-outline w-40"
+                id="status-select-trigger"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="status-select-listbox"
+              >
+                <span class="truncate flex items-center gap-2">
+                  <span class="sdot sdot-all"></span>All statuses
+                </span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="text-muted-foreground opacity-50 shrink-0 size-4"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div id="status-select-popover" data-popover aria-hidden="true">
+                <div
+                  role="listbox"
+                  id="status-select-listbox"
+                  aria-labelledby="status-select-trigger"
+                >
+                  <div
+                    role="option"
+                    data-value="all"
+                    aria-selected="true"
+                    onclick="selectStatus('all', this)"
+                  >
+                    <span class="flex items-center gap-2"
+                      ><span class="sdot sdot-all"></span>All statuses</span
+                    >
+                  </div>
+                  <div
+                    role="option"
+                    data-value="valid"
+                    onclick="selectStatus('valid', this)"
+                  >
+                    <span class="flex items-center gap-2"
+                      ><span class="sdot sdot-valid"></span>Valid</span
+                    >
+                  </div>
+                  <div
+                    role="option"
+                    data-value="pending"
+                    onclick="selectStatus('pending', this)"
+                  >
+                    <span class="flex items-center gap-2"
+                      ><span class="sdot sdot-pending"></span>Pending</span
+                    >
+                  </div>
+                  <div
+                    role="option"
+                    data-value="pending-delete"
+                    onclick="selectStatus('pending-delete', this)"
+                  >
+                    <span class="flex items-center gap-2"
+                      ><span class="sdot sdot-pending-delete"></span>Pending
+                      Delete</span
+                    >
+                  </div>
+                  <div
+                    role="option"
+                    data-value="cancelled"
+                    onclick="selectStatus('cancelled', this)"
+                  >
+                    <span class="flex items-center gap-2"
+                      ><span class="sdot sdot-cancelled"></span>Cancelled</span
+                    >
+                  </div>
+                  <div
+                    role="option"
+                    data-value="expired"
+                    onclick="selectStatus('expired', this)"
+                  >
+                    <span class="flex items-center gap-2"
+                      ><span class="sdot sdot-expired"></span>Expired</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <input
+                type="hidden"
+                id="status-filter"
+                name="status-filter-value"
+                value="all"
+              />
+            </div>
+          </div>
+
+          <!-- Insurance Company filter -->
+          <div>
+            <div id="dest-select" class="select">
+              <button
+                type="button"
+                class="btn-outline w-51"
+                id="dest-select-trigger"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="dest-select-listbox"
+              >
+                <span class="truncate">All insurers</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="text-muted-foreground opacity-50 shrink-0 size-4"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div id="dest-select-popover" data-popover aria-hidden="true">
+                <div
+                  role="listbox"
+                  id="dest-select-listbox"
+                  aria-labelledby="dest-select-trigger"
+                >
+                  <div
+                    role="option"
+                    data-value="all"
+                    aria-selected="true"
+                    onclick="selectDest('all', this)"
+                  >
+                    <span>All Insurers</span>
+                  </div>
+                  <div
+                    role="option"
+                    data-value="axa"
+                    onclick="selectDest('axa', this)"
+                  >
+                    <span>AXA Travel Insurance</span>
+                  </div>
+                  <div
+                    role="option"
+                    data-value="allianz"
+                    onclick="selectDest('allianz', this)"
+                  >
+                    <span>Allianz Global Assistance</span>
+                  </div>
+                  <div
+                    role="option"
+                    data-value="zurich"
+                    onclick="selectDest('zurich', this)"
+                  >
+                    <span>Zurich Insurance Group</span>
+                  </div>
+                </div>
+              </div>
+              <input type="hidden" id="dest-filter" value="all" />
+            </div>
+          </div>
+
+          <!-- Date range picker (Flatpickr) -->
+          <div>
+            <div class="relative">
+              <input
+                id="date-range-picker"
+                type="text"
+                class="input pl-9 cursor-pointer"
+                style="min-width: 15rem"
+                placeholder="Pick a date range…"
+                readonly
+              />
+              <div
+                class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                  <line x1="16" x2="16" y1="2" y2="6" />
+                  <line x1="8" x2="8" y1="2" y2="6" />
+                  <line x1="3" x2="21" y1="10" y2="10" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reset all filters -->
+          <div class="flex items-center ml-auto">
+            <button type="button" class="btn-outline" onclick="resetFilters()">
+              Reset filters
+            </button>
+          </div>
+        </div>
+        <!-- /filter bar -->
+
+        <!-- ── Certificates Table ─────────────────────────────────────────── -->
+        <div class="overflow-x-auto border border-border rounded-lg">
+          <table class="table" id="cert-table">
+            <thead>
+              <tr>
+                <th class="whitespace-nowrap">Reference No.</th>
+                <th>CT</th>
+                <th class="whitespace-nowrap">
+                  <button
+                    type="button"
+                    class="sort-btn"
+                    id="sort-date-btn"
+                    data-sort="none"
+                    onclick="sortByDate(this)"
+                  >
+                    Issuing Date
+                    <svg
+                      id="sort-date-icon"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        id="sort-date-down"
+                        d="m7 15 5 5 5-5"
+                        style="opacity: 0.4"
+                      />
+                      <path
+                        id="sort-date-up"
+                        d="m7 9 5-5 5 5"
+                        style="opacity: 0.4"
+                      />
+                    </svg>
+                  </button>
+                </th>
+                <th>Office</th>
+                <th>Destination</th>
+                <th>Agent</th>
+                <th>Plan</th>
+                <th>Beneficiary</th>
+                <th class="whitespace-nowrap">Insurance Company</th>
+                <th class="whitespace-nowrap">Travel Period</th>
+                <th class="whitespace-nowrap text-right">
+                  <button
+                    type="button"
+                    class="sort-btn"
+                    id="sort-price-btn"
+                    data-sort="none"
+                    onclick="sortByPrice(this)"
+                  >
+                    Total Price
+                    <svg
+                      id="sort-price-icon"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        id="sort-down"
+                        d="m7 15 5 5 5-5"
+                        style="opacity: 0.4"
+                      />
+                      <path
+                        id="sort-up"
+                        d="m7 9 5-5 5 5"
+                        style="opacity: 0.4"
+                      />
+                    </svg>
+                  </button>
+                </th>
+                <th>Status</th>
+                <th class="w-10"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1 -->
+              <tr
+                data-status="valid"
+                data-search="ysi-26-0000456 sg bah api test germany bahrain api test going advanced tewodroes mekonnen"
+                data-date="2026-04-30"
+              >
+                <td class="font-mono text-sm font-medium text-primary">
+                  YSI-26-0000456
+                </td>
+                <td><span class="ct-badge">SG</span></td>
+                <td class="text-sm whitespace-nowrap">30/04/2026</td>
+                <td class="text-sm">BAH API Test</td>
+                <td>
+                  <span class="text-primary text-sm font-medium">Germany</span>
+                </td>
+                <td class="text-sm">Bahrain API Test</td>
+                <td class="text-sm whitespace-nowrap">Going Advanced</td>
+                <td class="text-sm font-medium">tewodroes MEKONNEN</td>
+                <td class="text-sm whitespace-nowrap">AXA Travel Insurance</td>
+                <td class="text-sm whitespace-nowrap text-muted-foreground">
+                  02/06/2026 – 01/07/2026
+                </td>
+                <td class="text-sm font-semibold text-right whitespace-nowrap">
+                  28.00 USD
+                </td>
+                <td>
+                  <span class="status-badge status-valid"
+                    ><span class="sdot sdot-valid"></span>Valid</span
+                  >
+                </td>
+                <td>
+                  <div class="dropdown-menu flex justify-end" id="row-menu-1">
+                    <button
+                      type="button"
+                      class="btn-icon-ghost row-action-trigger"
+                      id="row-menu-1-trigger"
+                      aria-haspopup="menu"
+                      aria-controls="row-menu-1-menu"
+                      aria-expanded="false"
+                      aria-label="Row actions"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="5" r="1" />
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="12" cy="19" r="1" />
+                      </svg>
+                    </button>
+                    <div
+                      id="row-menu-1-popover"
+                      data-popover
+                      aria-hidden="true"
+                      data-align="end"
+                    >
+                      <div
+                        role="menu"
+                        id="row-menu-1-menu"
+                        aria-labelledby="row-menu-1-trigger"
+                      >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                              />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            View Certificate
+                          </div></a
+                        >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                              />
+                              <path
+                                d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                              />
+                            </svg>
+                            Edit
+                          </div></a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Row 2 -->
+              <tr
+                data-status="valid"
+                data-search="ysi-26-0000454 sg bah api test germany bahrain api test going advanced mastewal woldemariam"
+                data-date="2026-04-29"
+              >
+                <td class="font-mono text-sm font-medium text-primary">
+                  YSI-26-0000454
+                </td>
+                <td><span class="ct-badge">SG</span></td>
+                <td class="text-sm whitespace-nowrap">29/04/2026</td>
+                <td class="text-sm">BAH API Test</td>
+                <td>
+                  <span class="text-primary text-sm font-medium">Germany</span>
+                </td>
+                <td class="text-sm">Bahrain API Test</td>
+                <td class="text-sm whitespace-nowrap">Going Advanced</td>
+                <td class="text-sm font-medium">mastewal woldemariam</td>
+                <td class="text-sm whitespace-nowrap">AXA Travel Insurance</td>
+                <td class="text-sm whitespace-nowrap text-muted-foreground">
+                  02/06/2026 – 01/07/2026
+                </td>
+                <td class="text-sm font-semibold text-right whitespace-nowrap">
+                  28.00 USD
+                </td>
+                <td>
+                  <span class="status-badge status-valid"
+                    ><span class="sdot sdot-valid"></span>Valid</span
+                  >
+                </td>
+                <td>
+                  <div class="dropdown-menu flex justify-end" id="row-menu-2">
+                    <button
+                      type="button"
+                      class="btn-icon-ghost row-action-trigger"
+                      id="row-menu-2-trigger"
+                      aria-haspopup="menu"
+                      aria-controls="row-menu-2-menu"
+                      aria-expanded="false"
+                      aria-label="Row actions"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="5" r="1" />
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="12" cy="19" r="1" />
+                      </svg>
+                    </button>
+                    <div
+                      id="row-menu-2-popover"
+                      data-popover
+                      aria-hidden="true"
+                      data-align="end"
+                    >
+                      <div
+                        role="menu"
+                        id="row-menu-2-menu"
+                        aria-labelledby="row-menu-2-trigger"
+                      >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                              />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            View Certificate
+                          </div></a
+                        >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                              />
+                              <path
+                                d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                              />
+                            </svg>
+                            Edit
+                          </div></a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Row 3 -->
+              <tr
+                data-status="pending"
+                data-search="ysi-26-0000453 sg bah api test germany bahrain api test going advanced mastewal woldemariam"
+                data-date="2026-04-29"
+              >
+                <td class="font-mono text-sm font-medium text-primary">
+                  YSI-26-0000453
+                </td>
+                <td><span class="ct-badge">SG</span></td>
+                <td class="text-sm whitespace-nowrap">29/04/2026</td>
+                <td class="text-sm">BAH API Test</td>
+                <td>
+                  <span class="text-primary text-sm font-medium">Germany</span>
+                </td>
+                <td class="text-sm">Bahrain API Test</td>
+                <td class="text-sm whitespace-nowrap">Going Advanced</td>
+                <td class="text-sm font-medium">mastewal woldemariam</td>
+                <td class="text-sm whitespace-nowrap">
+                  Allianz Global Assistance
+                </td>
+                <td class="text-sm whitespace-nowrap text-muted-foreground">
+                  01/05/2026 – 30/05/2026
+                </td>
+                <td class="text-sm font-semibold text-right whitespace-nowrap">
+                  28.00 USD
+                </td>
+                <td>
+                  <span class="status-badge status-pending"
+                    ><span class="sdot sdot-pending"></span>Pending</span
+                  >
+                </td>
+                <td>
+                  <div class="dropdown-menu flex justify-end" id="row-menu-3">
+                    <button
+                      type="button"
+                      class="btn-icon-ghost row-action-trigger"
+                      id="row-menu-3-trigger"
+                      aria-haspopup="menu"
+                      aria-controls="row-menu-3-menu"
+                      aria-expanded="false"
+                      aria-label="Row actions"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="5" r="1" />
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="12" cy="19" r="1" />
+                      </svg>
+                    </button>
+                    <div
+                      id="row-menu-3-popover"
+                      data-popover
+                      aria-hidden="true"
+                      data-align="end"
+                    >
+                      <div
+                        role="menu"
+                        id="row-menu-3-menu"
+                        aria-labelledby="row-menu-3-trigger"
+                      >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                              />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            View Certificate
+                          </div></a
+                        >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                              />
+                              <path
+                                d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                              />
+                            </svg>
+                            Edit
+                          </div></a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Row 4 -->
+              <tr
+                data-status="pending-delete"
+                data-search="ysi-26-0000452 sg bah api test brazil bahrain api test going advanced nikhil sharma"
+                data-date="2026-04-29"
+              >
+                <td class="font-mono text-sm font-medium text-primary">
+                  YSI-26-0000452
+                </td>
+                <td><span class="ct-badge">SG</span></td>
+                <td class="text-sm whitespace-nowrap">29/04/2026</td>
+                <td class="text-sm">BAH API Test</td>
+                <td>
+                  <span class="text-primary text-sm font-medium">Brazil</span>
+                </td>
+                <td class="text-sm">Bahrain API Test</td>
+                <td class="text-sm whitespace-nowrap">Going Advanced</td>
+                <td class="text-sm font-medium">Nikhil Sharma</td>
+                <td class="text-sm whitespace-nowrap">
+                  Allianz Global Assistance
+                </td>
+                <td class="text-sm whitespace-nowrap text-muted-foreground">
+                  29/04/2026 – 30/06/2026
+                </td>
+                <td class="text-sm font-semibold text-right whitespace-nowrap">
+                  61.00 USD
+                </td>
+                <td>
+                  <span class="status-badge status-pending-delete"
+                    ><span class="sdot sdot-pending-delete"></span>Pending
+                    Delete</span
+                  >
+                </td>
+                <td>
+                  <div class="dropdown-menu flex justify-end" id="row-menu-4">
+                    <button
+                      type="button"
+                      class="btn-icon-ghost row-action-trigger"
+                      id="row-menu-4-trigger"
+                      aria-haspopup="menu"
+                      aria-controls="row-menu-4-menu"
+                      aria-expanded="false"
+                      aria-label="Row actions"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="5" r="1" />
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="12" cy="19" r="1" />
+                      </svg>
+                    </button>
+                    <div
+                      id="row-menu-4-popover"
+                      data-popover
+                      aria-hidden="true"
+                      data-align="end"
+                    >
+                      <div
+                        role="menu"
+                        id="row-menu-4-menu"
+                        aria-labelledby="row-menu-4-trigger"
+                      >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                              />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            View Certificate
+                          </div></a
+                        >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                              />
+                              <path
+                                d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                              />
+                            </svg>
+                            Edit
+                          </div></a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Row 5 -->
+              <tr
+                data-status="cancelled"
+                data-search="ysi-26-0000451 sg bah api test brazil bahrain api test going advanced nikhil sharma"
+                data-date="2026-04-29"
+              >
+                <td class="font-mono text-sm font-medium text-primary">
+                  YSI-26-0000451
+                </td>
+                <td><span class="ct-badge">SG</span></td>
+                <td class="text-sm whitespace-nowrap">29/04/2026</td>
+                <td class="text-sm">BAH API Test</td>
+                <td>
+                  <span class="text-primary text-sm font-medium">Brazil</span>
+                </td>
+                <td class="text-sm">Bahrain API Test</td>
+                <td class="text-sm whitespace-nowrap">Going Advanced</td>
+                <td class="text-sm font-medium">Nikhil Sharma</td>
+                <td class="text-sm whitespace-nowrap">
+                  Zurich Insurance Group
+                </td>
+                <td class="text-sm whitespace-nowrap text-muted-foreground">
+                  29/04/2026 – 30/06/2026
+                </td>
+                <td class="text-sm font-semibold text-right whitespace-nowrap">
+                  61.00 USD
+                </td>
+                <td>
+                  <span class="status-badge status-cancelled"
+                    ><span class="sdot sdot-cancelled"></span>Cancelled</span
+                  >
+                </td>
+                <td>
+                  <div class="dropdown-menu flex justify-end" id="row-menu-5">
+                    <button
+                      type="button"
+                      class="btn-icon-ghost row-action-trigger"
+                      id="row-menu-5-trigger"
+                      aria-haspopup="menu"
+                      aria-controls="row-menu-5-menu"
+                      aria-expanded="false"
+                      aria-label="Row actions"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="5" r="1" />
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="12" cy="19" r="1" />
+                      </svg>
+                    </button>
+                    <div
+                      id="row-menu-5-popover"
+                      data-popover
+                      aria-hidden="true"
+                      data-align="end"
+                    >
+                      <div
+                        role="menu"
+                        id="row-menu-5-menu"
+                        aria-labelledby="row-menu-5-trigger"
+                      >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                              />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            View Certificate
+                          </div></a
+                        >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                              />
+                              <path
+                                d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                              />
+                            </svg>
+                            Edit
+                          </div></a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Row 6 -->
+              <tr
+                data-status="expired"
+                data-search="ysi-26-0000450 sg bah api test brazil bahrain api test going advanced nikhil sharma"
+                data-date="2026-04-29"
+              >
+                <td class="font-mono text-sm font-medium text-primary">
+                  YSI-26-0000450
+                </td>
+                <td><span class="ct-badge">SG</span></td>
+                <td class="text-sm whitespace-nowrap">29/04/2026</td>
+                <td class="text-sm">BAH API Test</td>
+                <td>
+                  <span class="text-primary text-sm font-medium">Brazil</span>
+                </td>
+                <td class="text-sm">Bahrain API Test</td>
+                <td class="text-sm whitespace-nowrap">Going Advanced</td>
+                <td class="text-sm font-medium">Nikhil Sharma</td>
+                <td class="text-sm whitespace-nowrap">Munich Re Travel</td>
+                <td class="text-sm whitespace-nowrap text-muted-foreground">
+                  29/04/2026 – 30/06/2026
+                </td>
+                <td class="text-sm font-semibold text-right whitespace-nowrap">
+                  61.00 USD
+                </td>
+                <td>
+                  <span class="status-badge status-expired"
+                    ><span class="sdot sdot-expired"></span>Expired</span
+                  >
+                </td>
+                <td>
+                  <div class="dropdown-menu flex justify-end" id="row-menu-6">
+                    <button
+                      type="button"
+                      class="btn-icon-ghost row-action-trigger"
+                      id="row-menu-6-trigger"
+                      aria-haspopup="menu"
+                      aria-controls="row-menu-6-menu"
+                      aria-expanded="false"
+                      aria-label="Row actions"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="5" r="1" />
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="12" cy="19" r="1" />
+                      </svg>
+                    </button>
+                    <div
+                      id="row-menu-6-popover"
+                      data-popover
+                      aria-hidden="true"
+                      data-align="end"
+                    >
+                      <div
+                        role="menu"
+                        id="row-menu-6-menu"
+                        aria-labelledby="row-menu-6-trigger"
+                      >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                              />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            View Certificate
+                          </div></a
+                        >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                              />
+                              <path
+                                d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                              />
+                            </svg>
+                            Edit
+                          </div></a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Row 7 -->
+              <tr
+                data-status="pending"
+                data-search="ysi-26-0000449 sg bah api test germany bahrain api test going advanced mastewal woldemariam"
+                data-date="2026-04-29"
+              >
+                <td class="font-mono text-sm font-medium text-primary">
+                  YSI-26-0000449
+                </td>
+                <td><span class="ct-badge">SG</span></td>
+                <td class="text-sm whitespace-nowrap">29/04/2026</td>
+                <td class="text-sm">BAH API Test</td>
+                <td>
+                  <span class="text-primary text-sm font-medium">Germany</span>
+                </td>
+                <td class="text-sm">Bahrain API Test</td>
+                <td class="text-sm whitespace-nowrap">Going Advanced</td>
+                <td class="text-sm font-medium">mastewal woldemariam</td>
+                <td class="text-sm whitespace-nowrap">AIG Travel Guard</td>
+                <td class="text-sm whitespace-nowrap text-muted-foreground">
+                  01/05/2026 – 30/05/2026
+                </td>
+                <td class="text-sm font-semibold text-right whitespace-nowrap">
+                  28.00 USD
+                </td>
+                <td>
+                  <span class="status-badge status-pending"
+                    ><span class="sdot sdot-pending"></span>Pending</span
+                  >
+                </td>
+                <td>
+                  <div class="dropdown-menu flex justify-end" id="row-menu-7">
+                    <button
+                      type="button"
+                      class="btn-icon-ghost row-action-trigger"
+                      id="row-menu-7-trigger"
+                      aria-haspopup="menu"
+                      aria-controls="row-menu-7-menu"
+                      aria-expanded="false"
+                      aria-label="Row actions"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="5" r="1" />
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="12" cy="19" r="1" />
+                      </svg>
+                    </button>
+                    <div
+                      id="row-menu-7-popover"
+                      data-popover
+                      aria-hidden="true"
+                      data-align="end"
+                    >
+                      <div
+                        role="menu"
+                        id="row-menu-7-menu"
+                        aria-labelledby="row-menu-7-trigger"
+                      >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                              />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            View Certificate
+                          </div></a
+                        >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                              />
+                              <path
+                                d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                              />
+                            </svg>
+                            Edit
+                          </div></a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Row 8 -->
+              <tr
+                data-status="valid"
+                data-search="ysi-26-0000448 sg bah api test germany bahrain api test going advanced mastewal woldemariam"
+                data-date="2026-04-29"
+              >
+                <td class="font-mono text-sm font-medium text-primary">
+                  YSI-26-0000448
+                </td>
+                <td><span class="ct-badge">SG</span></td>
+                <td class="text-sm whitespace-nowrap">29/04/2026</td>
+                <td class="text-sm">BAH API Test</td>
+                <td>
+                  <span class="text-primary text-sm font-medium">Germany</span>
+                </td>
+                <td class="text-sm">Bahrain API Test</td>
+                <td class="text-sm whitespace-nowrap">Going Advanced</td>
+                <td class="text-sm font-medium">mastewal woldemariam</td>
+                <td class="text-sm whitespace-nowrap">AIG Travel Guard</td>
+                <td class="text-sm whitespace-nowrap text-muted-foreground">
+                  01/05/2026 – 30/05/2026
+                </td>
+                <td class="text-sm font-semibold text-right whitespace-nowrap">
+                  28.00 USD
+                </td>
+                <td>
+                  <span class="status-badge status-valid"
+                    ><span class="sdot sdot-valid"></span>Valid</span
+                  >
+                </td>
+                <td>
+                  <div class="dropdown-menu flex justify-end" id="row-menu-8">
+                    <button
+                      type="button"
+                      class="btn-icon-ghost row-action-trigger"
+                      id="row-menu-8-trigger"
+                      aria-haspopup="menu"
+                      aria-controls="row-menu-8-menu"
+                      aria-expanded="false"
+                      aria-label="Row actions"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="5" r="1" />
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="12" cy="19" r="1" />
+                      </svg>
+                    </button>
+                    <div
+                      id="row-menu-8-popover"
+                      data-popover
+                      aria-hidden="true"
+                      data-align="end"
+                    >
+                      <div
+                        role="menu"
+                        id="row-menu-8-menu"
+                        aria-labelledby="row-menu-8-trigger"
+                      >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                              />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            View Certificate
+                          </div></a
+                        >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                              />
+                              <path
+                                d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                              />
+                            </svg>
+                            Edit
+                          </div></a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Row 9 -->
+              <tr
+                data-status="cancelled"
+                data-search="ysi-26-0000440 sg bah api test germany bahrain api test going advanced mastewal woldemariam"
+                data-date="2026-04-22"
+              >
+                <td class="font-mono text-sm font-medium text-primary">
+                  YSI-26-0000440
+                </td>
+                <td><span class="ct-badge">SG</span></td>
+                <td class="text-sm whitespace-nowrap">22/04/2026</td>
+                <td class="text-sm">BAH API Test</td>
+                <td>
+                  <span class="text-primary text-sm font-medium">Germany</span>
+                </td>
+                <td class="text-sm">Bahrain API Test</td>
+                <td class="text-sm whitespace-nowrap">Going Advanced</td>
+                <td class="text-sm font-medium">mastewal woldemariam</td>
+                <td class="text-sm whitespace-nowrap">
+                  Generali Global Assistance
+                </td>
+                <td class="text-sm whitespace-nowrap text-muted-foreground">
+                  01/05/2026 – 30/05/2026
+                </td>
+                <td class="text-sm font-semibold text-right whitespace-nowrap">
+                  28.00 USD
+                </td>
+                <td>
+                  <span class="status-badge status-cancelled"
+                    ><span class="sdot sdot-cancelled"></span>Cancelled</span
+                  >
+                </td>
+                <td>
+                  <div class="dropdown-menu flex justify-end" id="row-menu-9">
+                    <button
+                      type="button"
+                      class="btn-icon-ghost row-action-trigger"
+                      id="row-menu-9-trigger"
+                      aria-haspopup="menu"
+                      aria-controls="row-menu-9-menu"
+                      aria-expanded="false"
+                      aria-label="Row actions"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="5" r="1" />
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="12" cy="19" r="1" />
+                      </svg>
+                    </button>
+                    <div
+                      id="row-menu-9-popover"
+                      data-popover
+                      aria-hidden="true"
+                      data-align="end"
+                    >
+                      <div
+                        role="menu"
+                        id="row-menu-9-menu"
+                        aria-labelledby="row-menu-9-trigger"
+                      >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                              />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            View Certificate
+                          </div></a
+                        >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                              />
+                              <path
+                                d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                              />
+                            </svg>
+                            Edit
+                          </div></a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Row 10 -->
+              <tr
+                data-status="expired"
+                data-search="ysi-26-0000439 sg bah api test germany bahrain api test going advanced bruck gebregiorgis"
+                data-date="2026-04-22"
+              >
+                <td class="font-mono text-sm font-medium text-primary">
+                  YSI-26-0000439
+                </td>
+                <td><span class="ct-badge">SG</span></td>
+                <td class="text-sm whitespace-nowrap">22/04/2026</td>
+                <td class="text-sm">BAH API Test</td>
+                <td>
+                  <span class="text-primary text-sm font-medium">Germany</span>
+                </td>
+                <td class="text-sm">Bahrain API Test</td>
+                <td class="text-sm whitespace-nowrap">Going Advanced</td>
+                <td class="text-sm font-medium">Bruck Gebregiorgis</td>
+                <td class="text-sm whitespace-nowrap">
+                  Generali Global Assistance
+                </td>
+                <td class="text-sm whitespace-nowrap text-muted-foreground">
+                  01/05/2026 – 30/05/2026
+                </td>
+                <td class="text-sm font-semibold text-right whitespace-nowrap">
+                  28.00 USD
+                </td>
+                <td>
+                  <span class="status-badge status-expired"
+                    ><span class="sdot sdot-expired"></span>Expired</span
+                  >
+                </td>
+                <td>
+                  <div class="dropdown-menu flex justify-end" id="row-menu-10">
+                    <button
+                      type="button"
+                      class="btn-icon-ghost row-action-trigger"
+                      id="row-menu-10-trigger"
+                      aria-haspopup="menu"
+                      aria-controls="row-menu-10-menu"
+                      aria-expanded="false"
+                      aria-label="Row actions"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="5" r="1" />
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="12" cy="19" r="1" />
+                      </svg>
+                    </button>
+                    <div
+                      id="row-menu-10-popover"
+                      data-popover
+                      aria-hidden="true"
+                      data-align="end"
+                    >
+                      <div
+                        role="menu"
+                        id="row-menu-10-menu"
+                        aria-labelledby="row-menu-10-trigger"
+                      >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                              />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            View Certificate
+                          </div></a
+                        >
+                        <a href="#"
+                          ><div role="menuitem">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path
+                                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                              />
+                              <path
+                                d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                              />
+                            </svg>
+                            Edit
+                          </div></a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Empty-state row (hidden by default, shown when no results) -->
+              <tr id="empty-state-row" style="display: none">
+                <td colspan="12" class="py-12 text-center">
+                  <p class="text-sm font-medium text-foreground">
+                    No certificates found
+                  </p>
+                  <p class="text-xs text-muted-foreground mt-1">
+                    Try adjusting your search or filter criteria.
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Table Footer ───────────────────────────────────────────────── -->
+        <div
+          class="flex items-center justify-between gap-4 flex-wrap py-1 !mt-0"
+        >
+          <!-- Left: row selection count -->
+          <p class="text-sm text-muted-foreground">
+            0 of <span id="showing-total">227</span> row(s) selected.
+          </p>
+
+          <!-- Right: rows per page + page navigation -->
+          <div class="flex items-center gap-5">
+            <!-- Rows per page -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-muted-foreground whitespace-nowrap"
+                >Rows per page</span
+              >
+              <div id="rows-select" class="select">
+                <button
+                  type="button"
+                  class="btn-outline w-20"
+                  id="rows-select-trigger"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-controls="rows-select-listbox"
+                >
+                  <span class="truncate">10</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-muted-foreground opacity-50 shrink-0 size-4"
+                  >
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
+                <div
+                  id="rows-select-popover"
+                  data-popover
+                  aria-hidden="true"
+                  data-side="top"
+                >
+                  <div
+                    role="listbox"
+                    id="rows-select-listbox"
+                    aria-labelledby="rows-select-trigger"
+                  >
+                    <div
+                      role="option"
+                      data-value="10"
+                      onclick="selectRowsPerPage(10, this)"
+                    >
+                      <span>10</span>
+                    </div>
+                    <div
+                      role="option"
+                      data-value="25"
+                      onclick="selectRowsPerPage(25, this)"
+                    >
+                      <span>25</span>
+                    </div>
+                    <div
+                      role="option"
+                      data-value="50"
+                      onclick="selectRowsPerPage(50, this)"
+                    >
+                      <span>50</span>
+                    </div>
+                    <div
+                      role="option"
+                      data-value="100"
+                      onclick="selectRowsPerPage(100, this)"
+                    >
+                      <span>100</span>
+                    </div>
+                  </div>
+                </div>
+                <input type="hidden" id="rows-per-page" value="10" />
+              </div>
+            </div>
+
+            <!-- Page indicator -->
+            <span class="text-sm text-muted-foreground whitespace-nowrap"
+              >Page 1 of 23</span
+            >
+
+            <!-- Page nav -->
+            <div class="flex items-center gap-0.5">
+              <button
+                type="button"
+                class="btn-icon-ghost"
+                aria-label="First page"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m11 17-5-5 5-5" />
+                  <path d="m18 17-5-5 5-5" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="btn-icon-ghost"
+                aria-label="Previous page"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m15 18-6-6 6-6" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="btn-icon-ghost"
+                aria-label="Next page"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="btn-icon-ghost"
+                aria-label="Last page"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 17 5-5-5-5" />
+                  <path d="m13 17 5-5-5-5" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- /table footer -->
+      </div>
+      <div class="pb-4"></div>
+      <!-- /.page content -->
+    </main>
+
+    <script>
+      var _datePicker = null;
+
+      document.addEventListener("DOMContentLoaded", function () {
+        _datePicker = flatpickr("#date-range-picker", {
+          mode: "range",
+          showMonths: 2,
+          dateFormat: "d M Y",
+          rangeSeparator: " – ",
+          onChange: function () {
+            filterRows();
+          },
+          onOpen: function (selectedDates, dateStr, instance) {
+            instance.jumpToDate(new Date());
+          },
+        });
+      });
+
+      function filterRows() {
+        const query = document
+          .getElementById("table-search")
+          .value.toLowerCase();
+        const status = document.getElementById("status-filter").value;
+        const dest = document.getElementById("dest-filter").value;
+        const dateRange = _datePicker ? _datePicker.selectedDates : [];
+        const rows = document.querySelectorAll(
+          "#cert-table tbody tr[data-status]",
+        );
+        let visible = 0;
+
+        rows.forEach(function (row) {
+          const statusMatch = status === "all" || row.dataset.status === status;
+          const insuranceText = row.cells[8]
+            ? row.cells[8].textContent.trim().toLowerCase()
+            : "";
+          const destMatch = dest === "all" || insuranceText.includes(dest);
+          const searchMatch = !query || row.dataset.search.includes(query);
+
+          var dateMatch = true;
+          if (row.dataset.date) {
+            var rowDate = new Date(row.dataset.date);
+            rowDate.setHours(0, 0, 0, 0);
+            if (dateRange.length >= 2) {
+              var from = new Date(dateRange[0]);
+              from.setHours(0, 0, 0, 0);
+              var to = new Date(dateRange[1]);
+              to.setHours(23, 59, 59, 999);
+              dateMatch = rowDate >= from && rowDate <= to;
+            } else if (dateRange.length === 1) {
+              var from = new Date(dateRange[0]);
+              from.setHours(0, 0, 0, 0);
+              dateMatch = rowDate.getTime() === from.getTime();
+            }
+          }
+
+          const show = statusMatch && destMatch && searchMatch && dateMatch;
+          row.style.display = show ? "" : "none";
+          if (show) visible++;
+        });
+
+        document.getElementById("empty-state-row").style.display =
+          visible === 0 ? "" : "none";
+        document.getElementById("showing-total").textContent = visible;
+      }
+
+      function updateRowsPerPage() {
+        /* pagination not yet wired to backend */
+      }
+
+      function resetFilters() {
+        document.getElementById("table-search").value = "";
+        document.getElementById("status-filter").value = "all";
+        document.getElementById("dest-filter").value = "all";
+        var sd = document.querySelector("#status-select-trigger .truncate");
+        if (sd)
+          sd.innerHTML = '<span class="sdot sdot-all"></span>All statuses';
+        var dd = document.querySelector("#dest-select-trigger .truncate");
+        if (dd) dd.textContent = "All insurers";
+        // reset ticks to default options
+        var sAll = document.querySelector(
+          "#status-select-listbox [data-value='all']",
+        );
+        if (sAll) _setSelected("status-select-listbox", sAll);
+        var dAll = document.querySelector(
+          "#dest-select-listbox [data-value='all']",
+        );
+        if (dAll) _setSelected("dest-select-listbox", dAll);
+        if (_datePicker) _datePicker.clear();
+        filterRows();
+      }
+
+      function _setSelected(listboxId, el) {
+        document
+          .querySelectorAll("#" + listboxId + " [role='option']")
+          .forEach(function (opt) {
+            opt.setAttribute("aria-selected", "false");
+          });
+        el.setAttribute("aria-selected", "true");
+      }
+
+      function selectStatus(value, el) {
+        document.getElementById("status-filter").value = value;
+        var display = document.querySelector(
+          "#status-select-trigger .truncate",
+        );
+        if (display) display.innerHTML = el.querySelector("span").innerHTML;
+        _setSelected("status-select-listbox", el);
+        filterRows();
+      }
+
+      function selectDest(value, el) {
+        document.getElementById("dest-filter").value = value;
+        var display = document.querySelector("#dest-select-trigger .truncate");
+        if (display) display.textContent = el.querySelector("span").textContent;
+        _setSelected("dest-select-listbox", el);
+        filterRows();
+      }
+
+      function selectRowsPerPage(value, el) {
+        document.getElementById("rows-per-page").value = value;
+        var display = document.querySelector("#rows-select-trigger .truncate");
+        if (display) display.textContent = el.querySelector("span").textContent;
+        _setSelected("rows-select-listbox", el);
+      }
+
+      var _sortOrigOrder = null;
+
+      function _setSortArrows(upId, downId, direction) {
+        var up = document.getElementById(upId);
+        var down = document.getElementById(downId);
+        if (direction === "asc") {
+          up.style.opacity = "1";
+          down.style.opacity = "0.2";
+        } else if (direction === "desc") {
+          up.style.opacity = "0.2";
+          down.style.opacity = "1";
+        } else {
+          up.style.opacity = "0.4";
+          down.style.opacity = "0.4";
+        }
+      }
+
+      function _resetSortBtn(btnId, upId, downId) {
+        var btn = document.getElementById(btnId);
+        if (btn && btn.dataset.sort !== "none") {
+          btn.dataset.sort = "none";
+          _setSortArrows(upId, downId, "none");
+        }
+      }
+
+      function sortByPrice(btn) {
+        var cycle = ["none", "asc", "desc"];
+        var next = cycle[(cycle.indexOf(btn.dataset.sort) + 1) % cycle.length];
+        btn.dataset.sort = next;
+        _setSortArrows("sort-up", "sort-down", next);
+        _resetSortBtn("sort-date-btn", "sort-date-up", "sort-date-down");
+
+        var tbody = document.querySelector("#cert-table tbody");
+        var emptyRow = document.getElementById("empty-state-row");
+        var rows = Array.from(tbody.querySelectorAll("tr[data-status]"));
+
+        if (next === "none") {
+          if (_sortOrigOrder)
+            _sortOrigOrder.forEach(function (r) {
+              tbody.insertBefore(r, emptyRow);
+            });
+          return;
+        }
+
+        if (!_sortOrigOrder) _sortOrigOrder = rows.slice();
+
+        rows.sort(function (a, b) {
+          var aVal = parseFloat(
+            a.querySelector("td:nth-child(10)").textContent,
+          );
+          var bVal = parseFloat(
+            b.querySelector("td:nth-child(10)").textContent,
+          );
+          return next === "asc" ? aVal - bVal : bVal - aVal;
+        });
+
+        rows.forEach(function (r) {
+          tbody.insertBefore(r, emptyRow);
+        });
+      }
+
+      function sortByDate(btn) {
+        var cycle = ["none", "asc", "desc"];
+        var next = cycle[(cycle.indexOf(btn.dataset.sort) + 1) % cycle.length];
+        btn.dataset.sort = next;
+        _setSortArrows("sort-date-up", "sort-date-down", next);
+        _resetSortBtn("sort-price-btn", "sort-up", "sort-down");
+
+        var tbody = document.querySelector("#cert-table tbody");
+        var emptyRow = document.getElementById("empty-state-row");
+        var rows = Array.from(tbody.querySelectorAll("tr[data-status]"));
+
+        if (next === "none") {
+          if (_sortOrigOrder)
+            _sortOrigOrder.forEach(function (r) {
+              tbody.insertBefore(r, emptyRow);
+            });
+          return;
+        }
+
+        if (!_sortOrigOrder) _sortOrigOrder = rows.slice();
+
+        rows.sort(function (a, b) {
+          var aDate = new Date(a.dataset.date || "");
+          var bDate = new Date(b.dataset.date || "");
+          return next === "asc" ? aDate - bDate : bDate - aDate;
+        });
+
+        rows.forEach(function (r) {
+          tbody.insertBefore(r, emptyRow);
+        });
+      }
+    </script>
+  </body>
+</html>

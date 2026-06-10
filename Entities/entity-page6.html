@@ -571,6 +571,31 @@
         cursor: pointer !important;
       }
 
+      /* ── Responsive grids ── */
+      @media (max-width: 1024px) {
+        .general-info-grid {
+          grid-template-columns: 1fr 1fr !important;
+        }
+        .contacts-grid {
+          grid-template-columns: 1fr !important;
+        }
+        .contacts-grid > div {
+          border-left: none !important;
+          border-top: 1px solid var(--border);
+        }
+        .contacts-grid > div:first-child {
+          border-top: none !important;
+        }
+      }
+      @media (max-width: 768px) {
+        .general-info-grid {
+          grid-template-columns: 1fr !important;
+        }
+        .contacts-grid {
+          grid-template-columns: 1fr !important;
+        }
+      }
+
       /* ── Row action trigger ── */
       .row-action-trigger {
         cursor: default !important;
@@ -595,7 +620,11 @@
     >
       <nav aria-label="Sidebar navigation">
         <header class="px-4 py-4">
-          <img class="w-35" src="../assets/cygnus_logo.svg" alt="Cygnus Logo" />
+          <img
+            class="w-35"
+            src="../assets/cygnus_logo.svg"
+            alt="Cygnus Logo"
+          />
         </header>
 
         <section
@@ -1429,7 +1458,7 @@
               </div>
 
               <!-- Three Columns -->
-              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr">
+              <div class="general-info-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr">
                 <!-- Column 1: Company Details -->
                 <div style="padding: 0.5rem 1.5rem 1.5rem">
                   <div
@@ -1482,9 +1511,7 @@
                   >
                     <div class="info-field">
                       <span class="info-label">Entity Code</span>
-                      <span class="info-value" style="font-family: monospace"
-                        >ENT-001</span
-                      >
+                      <span class="info-value" style="font-family: monospace">ENT-001</span>
                     </div>
                     <div class="info-field">
                       <span class="info-label">Company Type</span>
@@ -1760,6 +1787,233 @@
                         style="display: none"
                       />
                     </div>
+                    <div class="info-field">
+                      <span class="info-label">Currency</span>
+                      <span id="currency-display" class="info-value"
+                        >SAR - Saudi Riyal</span
+                      >
+                      <div
+                        id="currency-select-wrap"
+                        style="display: none; width: 100%"
+                      >
+                        <div
+                          id="select-currency"
+                          class="select"
+                          data-select-initialized
+                          style="width: 100%"
+                        >
+                          <button
+                            type="button"
+                            class="btn-outline w-full"
+                            id="select-currency-trigger"
+                            aria-haspopup="listbox"
+                            aria-expanded="false"
+                            aria-controls="select-currency-listbox"
+                            style="
+                              font-size: 0.875rem;
+                              font-weight: 500;
+                              height: 2.25rem;
+                              padding: 0 0.7rem;
+                              width: 100%;
+                            "
+                            onclick="toggleCurrencyDropdown(event)"
+                          >
+                            <span class="truncate" id="select-currency-label"
+                              >SAR - Saudi Riyal</span
+                            >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="text-muted-foreground opacity-50 shrink-0 size-4"
+                            >
+                              <path d="m7 15 5 5 5-5" />
+                              <path d="m7 9 5-5 5 5" />
+                            </svg>
+                          </button>
+                          <div
+                            id="select-currency-popover"
+                            data-popover
+                            aria-hidden="true"
+                            style="width: 220px"
+                          >
+                            <header>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              >
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="m21 21-4.3-4.3" />
+                              </svg>
+                              <input
+                                type="text"
+                                placeholder="Search..."
+                                autocomplete="off"
+                                autocorrect="off"
+                                spellcheck="false"
+                                aria-autocomplete="list"
+                                role="combobox"
+                                aria-expanded="false"
+                                aria-controls="select-currency-listbox"
+                                aria-labelledby="select-currency-trigger"
+                              />
+                            </header>
+                            <div
+                              role="listbox"
+                              id="select-currency-listbox"
+                              aria-labelledby="select-currency-trigger"
+                              style="max-height: 200px; overflow-y: auto"
+                            >
+                              <div
+                                role="option"
+                                data-value="SAR - Saudi Riyal"
+                                aria-selected="true"
+                                onclick="selectCurrency('SAR - Saudi Riyal', this)"
+                              >
+                                SAR - Saudi Riyal
+                              </div>
+                              <div
+                                role="option"
+                                data-value="USD - US Dollar"
+                                onclick="selectCurrency('USD - US Dollar', this)"
+                              >
+                                USD - US Dollar
+                              </div>
+                              <div
+                                role="option"
+                                data-value="EUR - Euro"
+                                onclick="selectCurrency('EUR - Euro', this)"
+                              >
+                                EUR - Euro
+                              </div>
+                              <div
+                                role="option"
+                                data-value="GBP - British Pound"
+                                onclick="selectCurrency('GBP - British Pound', this)"
+                              >
+                                GBP - British Pound
+                              </div>
+                              <div
+                                role="option"
+                                data-value="AED - UAE Dirham"
+                                onclick="selectCurrency('AED - UAE Dirham', this)"
+                              >
+                                AED - UAE Dirham
+                              </div>
+                              <div
+                                role="option"
+                                data-value="KWD - Kuwaiti Dinar"
+                                onclick="selectCurrency('KWD - Kuwaiti Dinar', this)"
+                              >
+                                KWD - Kuwaiti Dinar
+                              </div>
+                              <div
+                                role="option"
+                                data-value="BHD - Bahraini Dinar"
+                                onclick="selectCurrency('BHD - Bahraini Dinar', this)"
+                              >
+                                BHD - Bahraini Dinar
+                              </div>
+                              <div
+                                role="option"
+                                data-value="QAR - Qatari Riyal"
+                                onclick="selectCurrency('QAR - Qatari Riyal', this)"
+                              >
+                                QAR - Qatari Riyal
+                              </div>
+                              <div
+                                role="option"
+                                data-value="OMR - Omani Rial"
+                                onclick="selectCurrency('OMR - Omani Rial', this)"
+                              >
+                                OMR - Omani Rial
+                              </div>
+                              <div
+                                role="option"
+                                data-value="JOD - Jordanian Dinar"
+                                onclick="selectCurrency('JOD - Jordanian Dinar', this)"
+                              >
+                                JOD - Jordanian Dinar
+                              </div>
+                              <div
+                                role="option"
+                                data-value="EGP - Egyptian Pound"
+                                onclick="selectCurrency('EGP - Egyptian Pound', this)"
+                              >
+                                EGP - Egyptian Pound
+                              </div>
+                              <div
+                                role="option"
+                                data-value="JPY - Japanese Yen"
+                                onclick="selectCurrency('JPY - Japanese Yen', this)"
+                              >
+                                JPY - Japanese Yen
+                              </div>
+                              <div
+                                role="option"
+                                data-value="CNY - Chinese Yuan"
+                                onclick="selectCurrency('CNY - Chinese Yuan', this)"
+                              >
+                                CNY - Chinese Yuan
+                              </div>
+                              <div
+                                role="option"
+                                data-value="CHF - Swiss Franc"
+                                onclick="selectCurrency('CHF - Swiss Franc', this)"
+                              >
+                                CHF - Swiss Franc
+                              </div>
+                              <div
+                                role="option"
+                                data-value="CAD - Canadian Dollar"
+                                onclick="selectCurrency('CAD - Canadian Dollar', this)"
+                              >
+                                CAD - Canadian Dollar
+                              </div>
+                              <div
+                                role="option"
+                                data-value="AUD - Australian Dollar"
+                                onclick="selectCurrency('AUD - Australian Dollar', this)"
+                              >
+                                AUD - Australian Dollar
+                              </div>
+                              <div
+                                role="option"
+                                data-value="INR - Indian Rupee"
+                                onclick="selectCurrency('INR - Indian Rupee', this)"
+                              >
+                                INR - Indian Rupee
+                              </div>
+                              <div
+                                role="option"
+                                data-value="TRY - Turkish Lira"
+                                onclick="selectCurrency('TRY - Turkish Lira', this)"
+                              >
+                                TRY - Turkish Lira
+                              </div>
+                            </div>
+                          </div>
+                          <input
+                            type="hidden"
+                            id="input-currency"
+                            value="SAR - Saudi Riyal"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -1904,273 +2158,25 @@
                       />
                     </div>
                     <div class="info-field">
-                      <span class="info-label">Currency</span>
-                      <span id="currency-display" class="info-value"
-                        >SAR - Saudi Riyal</span
+                      <span class="info-label">VAT Number</span>
+                      <span
+                        class="info-value field-display"
+                        id="input-vat-display"
+                        >310122393500003</span
                       >
-                      <div
-                        id="currency-select-wrap"
-                        style="display: none; width: 100%"
-                      >
-                        <div
-                          id="select-currency"
-                          class="select"
-                          data-select-initialized
-                          style="width: 100%"
-                        >
-                          <button
-                            type="button"
-                            class="btn-outline w-full"
-                            id="select-currency-trigger"
-                            aria-haspopup="listbox"
-                            aria-expanded="false"
-                            aria-controls="select-currency-listbox"
-                            style="
-                              font-size: 0.875rem;
-                              font-weight: 500;
-                              height: 2.25rem;
-                              padding: 0 0.7rem;
-                              width: 100%;
-                            "
-                            onclick="toggleCurrencyDropdown(event)"
-                          >
-                            <span class="truncate" id="select-currency-label"
-                              >SAR - Saudi Riyal</span
-                            >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              class="text-muted-foreground opacity-50 shrink-0 size-4"
-                            >
-                              <path d="m7 15 5 5 5-5" />
-                              <path d="m7 9 5-5 5 5" />
-                            </svg>
-                          </button>
-                          <div
-                            id="select-currency-popover"
-                            data-popover
-                            aria-hidden="true"
-                            style="width: 220px"
-                          >
-                            <header>
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              >
-                                <circle cx="11" cy="11" r="8" />
-                                <path d="m21 21-4.3-4.3" />
-                              </svg>
-                              <input
-                                type="text"
-                                placeholder="Search..."
-                                autocomplete="off"
-                                autocorrect="off"
-                                spellcheck="false"
-                                aria-autocomplete="list"
-                                role="combobox"
-                                aria-expanded="false"
-                                aria-controls="select-currency-listbox"
-                                aria-labelledby="select-currency-trigger"
-                              />
-                            </header>
-                            <div
-                              role="listbox"
-                              id="select-currency-listbox"
-                              aria-labelledby="select-currency-trigger"
-                              style="max-height: 200px; overflow-y: auto"
-                            >
-                              <div
-                                role="option"
-                                data-value="SAR - Saudi Riyal"
-                                aria-selected="true"
-                                onclick="
-                                  selectCurrency('SAR - Saudi Riyal', this)
-                                "
-                              >
-                                SAR - Saudi Riyal
-                              </div>
-                              <div
-                                role="option"
-                                data-value="USD - US Dollar"
-                                onclick="
-                                  selectCurrency('USD - US Dollar', this)
-                                "
-                              >
-                                USD - US Dollar
-                              </div>
-                              <div
-                                role="option"
-                                data-value="EUR - Euro"
-                                onclick="selectCurrency('EUR - Euro', this)"
-                              >
-                                EUR - Euro
-                              </div>
-                              <div
-                                role="option"
-                                data-value="GBP - British Pound"
-                                onclick="
-                                  selectCurrency('GBP - British Pound', this)
-                                "
-                              >
-                                GBP - British Pound
-                              </div>
-                              <div
-                                role="option"
-                                data-value="AED - UAE Dirham"
-                                onclick="
-                                  selectCurrency('AED - UAE Dirham', this)
-                                "
-                              >
-                                AED - UAE Dirham
-                              </div>
-                              <div
-                                role="option"
-                                data-value="KWD - Kuwaiti Dinar"
-                                onclick="
-                                  selectCurrency('KWD - Kuwaiti Dinar', this)
-                                "
-                              >
-                                KWD - Kuwaiti Dinar
-                              </div>
-                              <div
-                                role="option"
-                                data-value="BHD - Bahraini Dinar"
-                                onclick="
-                                  selectCurrency('BHD - Bahraini Dinar', this)
-                                "
-                              >
-                                BHD - Bahraini Dinar
-                              </div>
-                              <div
-                                role="option"
-                                data-value="QAR - Qatari Riyal"
-                                onclick="
-                                  selectCurrency('QAR - Qatari Riyal', this)
-                                "
-                              >
-                                QAR - Qatari Riyal
-                              </div>
-                              <div
-                                role="option"
-                                data-value="OMR - Omani Rial"
-                                onclick="
-                                  selectCurrency('OMR - Omani Rial', this)
-                                "
-                              >
-                                OMR - Omani Rial
-                              </div>
-                              <div
-                                role="option"
-                                data-value="JOD - Jordanian Dinar"
-                                onclick="
-                                  selectCurrency('JOD - Jordanian Dinar', this)
-                                "
-                              >
-                                JOD - Jordanian Dinar
-                              </div>
-                              <div
-                                role="option"
-                                data-value="EGP - Egyptian Pound"
-                                onclick="
-                                  selectCurrency('EGP - Egyptian Pound', this)
-                                "
-                              >
-                                EGP - Egyptian Pound
-                              </div>
-                              <div
-                                role="option"
-                                data-value="JPY - Japanese Yen"
-                                onclick="
-                                  selectCurrency('JPY - Japanese Yen', this)
-                                "
-                              >
-                                JPY - Japanese Yen
-                              </div>
-                              <div
-                                role="option"
-                                data-value="CNY - Chinese Yuan"
-                                onclick="
-                                  selectCurrency('CNY - Chinese Yuan', this)
-                                "
-                              >
-                                CNY - Chinese Yuan
-                              </div>
-                              <div
-                                role="option"
-                                data-value="CHF - Swiss Franc"
-                                onclick="
-                                  selectCurrency('CHF - Swiss Franc', this)
-                                "
-                              >
-                                CHF - Swiss Franc
-                              </div>
-                              <div
-                                role="option"
-                                data-value="CAD - Canadian Dollar"
-                                onclick="
-                                  selectCurrency('CAD - Canadian Dollar', this)
-                                "
-                              >
-                                CAD - Canadian Dollar
-                              </div>
-                              <div
-                                role="option"
-                                data-value="AUD - Australian Dollar"
-                                onclick="
-                                  selectCurrency(
-                                    'AUD - Australian Dollar',
-                                    this,
-                                  )
-                                "
-                              >
-                                AUD - Australian Dollar
-                              </div>
-                              <div
-                                role="option"
-                                data-value="INR - Indian Rupee"
-                                onclick="
-                                  selectCurrency('INR - Indian Rupee', this)
-                                "
-                              >
-                                INR - Indian Rupee
-                              </div>
-                              <div
-                                role="option"
-                                data-value="TRY - Turkish Lira"
-                                onclick="
-                                  selectCurrency('TRY - Turkish Lira', this)
-                                "
-                              >
-                                TRY - Turkish Lira
-                              </div>
-                            </div>
-                          </div>
-                          <input
-                            type="hidden"
-                            id="input-currency"
-                            value="SAR - Saudi Riyal"
-                          />
-                        </div>
-                      </div>
+                      <input
+                        class="input edit-input field-input"
+                        type="text"
+                        id="input-vat"
+                        value="310122393500003"
+                        style="display: none"
+                        readonly
+                      />
                     </div>
                   </div>
                 </div>
 
-                <!-- Column 3: Contact Details -->
+                <!-- Column 3: Office Details -->
                 <div style="padding: 0.5rem 1.5rem 1.5rem">
                   <div
                     style="
@@ -2306,9 +2312,8 @@
                   display: flex;
                   align-items: center;
                   justify-content: space-between;
-                  padding: 0 1.5rem;
-                  margin-top: -1.25rem;
-                  margin-bottom: -0.5rem;
+                  padding: 0.875rem 1.5rem 0;
+                  margin-bottom: 0;
                 "
               >
                 <div
@@ -2325,17 +2330,15 @@
                 </div>
               </div>
 
-              <div
-                style="display: grid; grid-template-columns: 1fr; gap: 0.5rem"
-              >
+              <div class="contacts-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0">
                 <!-- Primary Contact -->
-                <div style="padding: 0.5rem 1.5rem 1.5rem">
+                <div style="padding: 0.75rem 1.5rem 1.25rem">
                   <div
                     style="
                       display: flex;
                       align-items: center;
                       gap: 0.625rem;
-                      margin-bottom: 1.25rem;
+                      margin-bottom: 0.875rem;
                       color: var(--foreground);
                     "
                   >
@@ -2365,8 +2368,8 @@
                       padding-left: 1rem;
                       margin-left: 0.9rem;
                       display: grid;
-                      grid-template-columns: 1fr 1fr 1fr 1fr;
-                      gap: 1rem;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 0.875rem;
                     "
                   >
                     <div class="info-field">
@@ -2438,13 +2441,13 @@
                 </div>
 
                 <!-- Secondary Contact -->
-                <div style="padding: 0.5rem 1.5rem 1.5rem">
+                <div style="padding: 0.75rem 1.5rem 1.25rem">
                   <div
                     style="
                       display: flex;
                       align-items: center;
                       gap: 0.625rem;
-                      margin-bottom: 1.25rem;
+                      margin-bottom: 0.875rem;
                       color: var(--foreground);
                     "
                   >
@@ -2474,8 +2477,8 @@
                       padding-left: 1rem;
                       margin-left: 0.9rem;
                       display: grid;
-                      grid-template-columns: 1fr 1fr 1fr 1fr;
-                      gap: 1rem;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 0.875rem;
                     "
                   >
                     <div class="info-field">
@@ -2547,13 +2550,13 @@
                 </div>
 
                 <!-- Tertiary Contact -->
-                <div style="padding: 0.5rem 1.5rem 1.5rem">
+                <div style="padding: 0.75rem 1.5rem 1.25rem">
                   <div
                     style="
                       display: flex;
                       align-items: center;
                       gap: 0.625rem;
-                      margin-bottom: 1.25rem;
+                      margin-bottom: 0.875rem;
                       color: var(--foreground);
                     "
                   >
@@ -2583,8 +2586,8 @@
                       padding-left: 1rem;
                       margin-left: 0.9rem;
                       display: grid;
-                      grid-template-columns: 1fr 1fr 1fr 1fr;
-                      gap: 1rem;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 0.875rem;
                     "
                   >
                     <div class="info-field">

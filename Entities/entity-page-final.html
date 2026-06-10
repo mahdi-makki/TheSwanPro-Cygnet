@@ -571,6 +571,31 @@
         cursor: pointer !important;
       }
 
+      /* ── Responsive grids ── */
+      @media (max-width: 1024px) {
+        .general-info-grid {
+          grid-template-columns: 1fr 1fr !important;
+        }
+        .contacts-grid {
+          grid-template-columns: 1fr !important;
+        }
+        .contacts-grid > div {
+          border-left: none !important;
+          border-top: 1px solid var(--border);
+        }
+        .contacts-grid > div:first-child {
+          border-top: none !important;
+        }
+      }
+      @media (max-width: 768px) {
+        .general-info-grid {
+          grid-template-columns: 1fr !important;
+        }
+        .contacts-grid {
+          grid-template-columns: 1fr !important;
+        }
+      }
+
       /* ── Row action trigger ── */
       .row-action-trigger {
         cursor: default !important;
@@ -587,401 +612,6 @@
   </head>
 
   <body>
-    <!-- ─── Sidebar ─────────────────────────────────────────────────────── -->
-    <aside
-      class="sidebar bg-transparent z-100"
-      data-side="left"
-      aria-hidden="false"
-    >
-      <nav aria-label="Sidebar navigation">
-        <header class="px-4 py-4">
-          <img class="w-35" src="../assets/cygnus_logo.svg" alt="Cygnus Logo" />
-        </header>
-
-        <section
-          class="scrollbar main-links [&_a]:bg-transparent [&_a]:font-normal [&_a]:py-3 [&_a:hover]:bg-[var(--secondary)] [&_summary:hover]:bg-[var(--secondary)] [&_summary]:py-2.5"
-        >
-          <!-- Main Navigation -->
-          <div role="group" aria-labelledby="group-nav">
-            <h3 id="group-nav">Main Navigation</h3>
-            <ul>
-              <li>
-                <a href="dashboard.html">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                    <polyline points="9 22 9 12 15 12 15 22" />
-                  </svg>
-                  <span>Home</span>
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="M13 5h8" />
-                    <path d="M13 12h8" />
-                    <path d="M13 19h8" />
-                    <path d="m3 17 2 2 4-4" />
-                    <rect x="3" y="4" width="6" height="6" rx="1" />
-                  </svg>
-                  <span>Tasks</span>
-                  <span
-                    class="badge-destructive ml-auto text-[11px] px- py-0.5 font-bold"
-                    >3</span
-                  >
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-                    <line x1="16" x2="16" y1="2" y2="6" />
-                    <line x1="8" x2="8" y1="2" y2="6" />
-                    <line x1="3" x2="21" y1="10" y2="10" />
-                  </svg>
-                  <span>Calendar</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Commercial -->
-          <div role="group" aria-labelledby="group-commercial">
-            <h3 id="group-commercial">Commercial</h3>
-            <ul>
-              <li>
-                <details id="submenu-agreements">
-                  <summary aria-controls="submenu-agreements-content">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="M17 6.1H3" />
-                      <path d="M21 12.1H3" />
-                      <path d="M15.1 18H3" />
-                    </svg>
-                    Agreements
-                  </summary>
-                  <ul id="submenu-agreements-content">
-                    <li>
-                      <a href="#"><span>All Agreements</span></a>
-                    </li>
-                    <li>
-                      <a href="#"><span>New Agreement</span></a>
-                    </li>
-                  </ul>
-                </details>
-              </li>
-              <li>
-                <details id="submenu-entities">
-                  <summary aria-controls="submenu-entities-content">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
-                      <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
-                      <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
-                      <path d="M10 6h4" />
-                      <path d="M10 10h4" />
-                      <path d="M10 14h4" />
-                      <path d="M10 18h4" />
-                    </svg>
-                    Entities
-                  </summary>
-                  <ul id="submenu-entities-content">
-                    <li>
-                      <a href="entities.html"><span>All Entities</span></a>
-                    </li>
-                    <li>
-                      <a href="#"><span>New Entity</span></a>
-                    </li>
-                  </ul>
-                </details>
-              </li>
-              <li>
-                <details id="submenu-portfolio">
-                  <summary aria-controls="submenu-portfolio-content">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                      <rect width="20" height="14" x="2" y="6" rx="2" />
-                    </svg>
-                    Portfolio
-                  </summary>
-                  <ul id="submenu-portfolio-content">
-                    <li>
-                      <a href="#"><span>Upload</span></a>
-                    </li>
-                    <li>
-                      <a href="#"><span>All Policies</span></a>
-                    </li>
-                  </ul>
-                </details>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Operations -->
-          <div role="group" aria-labelledby="group-operations">
-            <h3 id="group-operations">Operations</h3>
-            <ul>
-              <li>
-                <details id="submenu-operations">
-                  <summary aria-controls="submenu-operations-content">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path
-                        d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
-                      />
-                      <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
-                      <path d="m9 14 2 2 4-4" />
-                    </svg>
-                    Claims
-                  </summary>
-                  <ul id="submenu-operations-content">
-                    <li>
-                      <a href="#"><span>All Claims</span></a>
-                    </li>
-                    <li>
-                      <a href="#"><span>New Claim</span></a>
-                    </li>
-                  </ul>
-                </details>
-              </li>
-              <li>
-                <details id="submenu-travel">
-                  <summary aria-controls="submenu-travel-content">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path
-                        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
-                      />
-                      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-                    </svg>
-                    Policy Certificates
-                  </summary>
-                  <ul id="submenu-travel-content">
-                    <li>
-                      <a href="travel_certificate.html"
-                        ><span>All Certificates</span></a
-                      >
-                    </li>
-                    <li>
-                      <a href="#"><span>New Certificate</span></a>
-                    </li>
-                  </ul>
-                </details>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Finance -->
-          <div role="group" aria-labelledby="group-finance">
-            <h3 id="group-finance">Finance</h3>
-            <ul>
-              <li>
-                <a href="#">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <rect width="20" height="14" x="2" y="5" rx="2" />
-                    <line x1="2" x2="22" y1="10" y2="10" />
-                  </svg>
-                  <span>Credit Control</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Administration -->
-          <div role="group" aria-labelledby="group-administration">
-            <h3 id="group-administration">Administration</h3>
-            <ul>
-              <li>
-                <a href="#">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                  </svg>
-                  <span>User Management</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </section>
-
-        <footer>
-          <div id="demo-dropdown-menu" class="dropdown-menu">
-            <button
-              type="button"
-              id="demo-dropdown-menu-trigger"
-              aria-haspopup="menu"
-              aria-controls="demo-dropdown-menu-menu"
-              aria-expanded="false"
-              class="w-full flex items-center gap-3 rounded-lg px-2 py-2 text-left cursor-pointer hover:bg-gray-50"
-            >
-              <div
-                class="w-9 h-9 rounded-lg shrink-0 bg-gray-200 text-gray-700 flex items-center justify-center text-sm font-semibold"
-              >
-                ZM
-              </div>
-              <div class="flex flex-col min-w-0">
-                <span class="font-medium text-sm truncate">Zain Makki</span>
-                <span class="text-xs text-gray-500 truncate">@sima_admin</span>
-              </div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="ml-auto h-4 w-4"
-              >
-                <path d="m7 15 5 5 5-5" />
-                <path d="m7 9 5-5 5 5" />
-              </svg>
-            </button>
-            <div
-              id="demo-dropdown-menu-popover"
-              data-popover
-              aria-hidden="true"
-              class="min-w-56"
-              data-side="top"
-            >
-              <div
-                role="menu"
-                id="demo-dropdown-menu-menu"
-                aria-labelledby="demo-dropdown-menu-trigger"
-              >
-                <div role="group" aria-labelledby="account-options">
-                  <div role="heading" id="account-options">My Account</div>
-                  <a href="#"><div role="menuitem">Profile</div></a>
-                  <div role="menuitem">Settings</div>
-                </div>
-                <hr role="separator" />
-                <div role="menuitem">GitHub</div>
-                <div role="menuitem" aria-disabled="true">API Documents</div>
-                <hr role="separator" />
-                <a href="login.html">
-                  <div role="menuitem" class="text-red-500 hover:!bg-red-50">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="stroke-red-500"
-                    >
-                      <path d="m16 17 5-5-5-5" />
-                      <path d="M21 12H9" />
-                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                    </svg>
-                    Logout
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
-        </footer>
-      </nav>
-    </aside>
 
     <!-- ─── Main ──────────────────────────────────────────────────────────── -->
     <main>
@@ -1429,7 +1059,10 @@
               </div>
 
               <!-- Three Columns -->
-              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr">
+              <div
+                class="general-info-grid"
+                style="display: grid; grid-template-columns: 1fr 1fr 1fr"
+              >
                 <!-- Column 1: Company Details -->
                 <div style="padding: 0.5rem 1.5rem 1.5rem">
                   <div
@@ -1760,149 +1393,6 @@
                         style="display: none"
                       />
                     </div>
-                  </div>
-                </div>
-
-                <!-- Column 2: Legal & Financial -->
-                <div style="padding: 0.5rem 1.5rem 1.5rem">
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      gap: 0.625rem;
-                      margin-bottom: 1.25rem;
-                      color: var(--foreground);
-                    "
-                  >
-                    <span class="contact-icon-wrap"
-                      ><svg
-                        class="contact-detail-icon"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <path
-                          d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
-                        />
-                        <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-                        <path d="M10 9H8" />
-                        <path d="M16 13H8" />
-                        <path d="M16 17H8" /></svg
-                    ></span>
-                    <span style="font-size: 0.875rem; font-weight: 600"
-                      >Legal &amp; Financial</span
-                    >
-                  </div>
-                  <div
-                    style="
-                      border-left: 2px solid var(--border);
-                      padding-left: 1rem;
-                      margin-left: 0.9rem;
-                      display: flex;
-                      flex-direction: column;
-                      gap: 1rem;
-                    "
-                  >
-                    <div class="info-field">
-                      <span class="info-label">CR Number</span>
-                      <span
-                        class="info-value field-display"
-                        id="input-license-display"
-                        >SA-IC-2019-4471</span
-                      >
-                      <input
-                        class="input edit-input field-input"
-                        type="text"
-                        id="input-license"
-                        value="SA-IC-2019-4471"
-                        style="display: none"
-                        readonly
-                      />
-                    </div>
-                    <div class="info-field">
-                      <span class="info-label">Registration Date</span>
-                      <span
-                        class="info-value field-display"
-                        id="input-reg-date-display"
-                        >14 Jan 2019</span
-                      >
-                      <div class="relative reg-date-wrap" style="display: none">
-                        <input
-                          class="input edit-input"
-                          type="text"
-                          id="input-reg-date"
-                          value="14 Jan 2019"
-                          placeholder="Pick a date…"
-                          readonly
-                          onclick="openRegDateCal(event)"
-                        />
-                        <div
-                          id="reg-date-icon"
-                          class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground"
-                          style="display: none"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="15"
-                            height="15"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          >
-                            <rect
-                              width="18"
-                              height="18"
-                              x="3"
-                              y="4"
-                              rx="2"
-                              ry="2"
-                            />
-                            <line x1="16" x2="16" y1="2" y2="6" />
-                            <line x1="8" x2="8" y1="2" y2="6" />
-                            <line x1="3" x2="21" y1="10" y2="10" />
-                          </svg>
-                        </div>
-                        <div
-                          id="reg-date-cal-wrap"
-                          style="
-                            display: none;
-                            position: absolute;
-                            top: 100%;
-                            left: 0;
-                            z-index: 10;
-                            margin-top: 4px;
-                          "
-                          onclick="event.stopPropagation()"
-                        >
-                          <div id="reg-date-cal"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="info-field">
-                      <span class="info-label">Tax ID</span>
-                      <span
-                        class="info-value field-display"
-                        id="input-tax-id-display"
-                        >300-542-8810</span
-                      >
-                      <input
-                        class="input edit-input field-input"
-                        type="tel"
-                        id="input-tax-id"
-                        value="300-542-8810"
-                        style="display: none"
-                        readonly
-                      />
-                    </div>
                     <div class="info-field">
                       <span class="info-label">Currency</span>
                       <span id="currency-display" class="info-value"
@@ -2170,7 +1660,166 @@
                   </div>
                 </div>
 
-                <!-- Column 3: Contact Details -->
+                <!-- Column 2: Legal & Financial -->
+                <div style="padding: 0.5rem 1.5rem 1.5rem">
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 0.625rem;
+                      margin-bottom: 1.25rem;
+                      color: var(--foreground);
+                    "
+                  >
+                    <span class="contact-icon-wrap"
+                      ><svg
+                        class="contact-detail-icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                        />
+                        <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                        <path d="M10 9H8" />
+                        <path d="M16 13H8" />
+                        <path d="M16 17H8" /></svg
+                    ></span>
+                    <span style="font-size: 0.875rem; font-weight: 600"
+                      >Legal &amp; Financial</span
+                    >
+                  </div>
+                  <div
+                    style="
+                      border-left: 2px solid var(--border);
+                      padding-left: 1rem;
+                      margin-left: 0.9rem;
+                      display: flex;
+                      flex-direction: column;
+                      gap: 1rem;
+                    "
+                  >
+                    <div class="info-field">
+                      <span class="info-label">CR Number</span>
+                      <span
+                        class="info-value field-display"
+                        id="input-license-display"
+                        >SA-IC-2019-4471</span
+                      >
+                      <input
+                        class="input edit-input field-input"
+                        type="text"
+                        id="input-license"
+                        value="SA-IC-2019-4471"
+                        style="display: none"
+                        readonly
+                      />
+                    </div>
+                    <div class="info-field">
+                      <span class="info-label">Registration Date</span>
+                      <span
+                        class="info-value field-display"
+                        id="input-reg-date-display"
+                        >14 Jan 2019</span
+                      >
+                      <div class="relative reg-date-wrap" style="display: none">
+                        <input
+                          class="input edit-input"
+                          type="text"
+                          id="input-reg-date"
+                          value="14 Jan 2019"
+                          placeholder="Pick a date…"
+                          readonly
+                          onclick="openRegDateCal(event)"
+                        />
+                        <div
+                          id="reg-date-icon"
+                          class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground"
+                          style="display: none"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="15"
+                            height="15"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <rect
+                              width="18"
+                              height="18"
+                              x="3"
+                              y="4"
+                              rx="2"
+                              ry="2"
+                            />
+                            <line x1="16" x2="16" y1="2" y2="6" />
+                            <line x1="8" x2="8" y1="2" y2="6" />
+                            <line x1="3" x2="21" y1="10" y2="10" />
+                          </svg>
+                        </div>
+                        <div
+                          id="reg-date-cal-wrap"
+                          style="
+                            display: none;
+                            position: absolute;
+                            top: 100%;
+                            left: 0;
+                            z-index: 10;
+                            margin-top: 4px;
+                          "
+                          onclick="event.stopPropagation()"
+                        >
+                          <div id="reg-date-cal"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="info-field">
+                      <span class="info-label">Tax ID</span>
+                      <span
+                        class="info-value field-display"
+                        id="input-tax-id-display"
+                        >300-542-8810</span
+                      >
+                      <input
+                        class="input edit-input field-input"
+                        type="tel"
+                        id="input-tax-id"
+                        value="300-542-8810"
+                        style="display: none"
+                        readonly
+                      />
+                    </div>
+                    <div class="info-field">
+                      <span class="info-label">VAT Number</span>
+                      <span
+                        class="info-value field-display"
+                        id="input-vat-display"
+                        >310122393500003</span
+                      >
+                      <input
+                        class="input edit-input field-input"
+                        type="text"
+                        id="input-vat"
+                        value="310122393500003"
+                        style="display: none"
+                        readonly
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Column 3: Office Details -->
                 <div style="padding: 0.5rem 1.5rem 1.5rem">
                   <div
                     style="
@@ -2306,9 +1955,8 @@
                   display: flex;
                   align-items: center;
                   justify-content: space-between;
-                  padding: 0 1.5rem;
-                  margin-top: -1.25rem;
-                  margin-bottom: -0.5rem;
+                  padding: 0.875rem 1.5rem 0;
+                  margin-bottom: 0;
                 "
               >
                 <div
@@ -2326,16 +1974,21 @@
               </div>
 
               <div
-                style="display: grid; grid-template-columns: 1fr; gap: 0.5rem"
+                class="contacts-grid"
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 1fr 1fr;
+                  gap: 0;
+                "
               >
                 <!-- Primary Contact -->
-                <div style="padding: 0.5rem 1.5rem 1.5rem">
+                <div style="padding: 0.75rem 1.5rem 1.25rem">
                   <div
                     style="
                       display: flex;
                       align-items: center;
                       gap: 0.625rem;
-                      margin-bottom: 1.25rem;
+                      margin-bottom: 0.875rem;
                       color: var(--foreground);
                     "
                   >
@@ -2365,8 +2018,8 @@
                       padding-left: 1rem;
                       margin-left: 0.9rem;
                       display: grid;
-                      grid-template-columns: 1fr 1fr 1fr 1fr;
-                      gap: 1rem;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 0.875rem;
                     "
                   >
                     <div class="info-field">
@@ -2438,13 +2091,13 @@
                 </div>
 
                 <!-- Secondary Contact -->
-                <div style="padding: 0.5rem 1.5rem 1.5rem">
+                <div style="padding: 0.75rem 1.5rem 1.25rem">
                   <div
                     style="
                       display: flex;
                       align-items: center;
                       gap: 0.625rem;
-                      margin-bottom: 1.25rem;
+                      margin-bottom: 0.875rem;
                       color: var(--foreground);
                     "
                   >
@@ -2474,8 +2127,8 @@
                       padding-left: 1rem;
                       margin-left: 0.9rem;
                       display: grid;
-                      grid-template-columns: 1fr 1fr 1fr 1fr;
-                      gap: 1rem;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 0.875rem;
                     "
                   >
                     <div class="info-field">
@@ -2547,13 +2200,13 @@
                 </div>
 
                 <!-- Tertiary Contact -->
-                <div style="padding: 0.5rem 1.5rem 1.5rem">
+                <div style="padding: 0.75rem 1.5rem 1.25rem">
                   <div
                     style="
                       display: flex;
                       align-items: center;
                       gap: 0.625rem;
-                      margin-bottom: 1.25rem;
+                      margin-bottom: 0.875rem;
                       color: var(--foreground);
                     "
                   >
@@ -2583,8 +2236,8 @@
                       padding-left: 1rem;
                       margin-left: 0.9rem;
                       display: grid;
-                      grid-template-columns: 1fr 1fr 1fr 1fr;
-                      gap: 1rem;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 0.875rem;
                     "
                   >
                     <div class="info-field">
