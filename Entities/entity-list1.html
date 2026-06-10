@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TheSwanPro - Entities</title>
+    <title>Cygnus - Entities</title>
     <link rel="icon" type="image/svg+xml" href="../assets/cygnus_icon.svg" />
 
     <!-- Tailwind CSS (REQUIRED for Basecoat component layouts) -->
@@ -262,7 +262,7 @@
                 </details>
               </li>
               <li>
-                <details id="submenu-entities" open>
+                <details id="submenu-entities">
                   <summary aria-controls="submenu-entities-content">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -287,9 +287,7 @@
                   </summary>
                   <ul id="submenu-entities-content">
                     <li>
-                      <a href="entities.html" aria-current="page"
-                        ><span>All Entities</span></a
-                      >
+                      <a href="entities.html" aria-current="page"><span>All Entities</span></a>
                     </li>
                     <li>
                       <a href="#"><span>New Entity</span></a>
@@ -298,8 +296,8 @@
                 </details>
               </li>
               <li>
-                <details id="submenu-travel">
-                  <summary aria-controls="submenu-travel-content">
+                <details id="submenu-portfolio">
+                  <summary aria-controls="submenu-portfolio-content">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -311,21 +309,17 @@
                       stroke-linecap="round"
                       stroke-linejoin="round"
                     >
-                      <path
-                        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
-                      />
-                      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                      <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                      <rect width="20" height="14" x="2" y="6" rx="2" />
                     </svg>
-                    Policy Certificates
+                    Portfolio
                   </summary>
-                  <ul id="submenu-travel-content">
+                  <ul id="submenu-portfolio-content">
                     <li>
-                      <a href="travel_certificate.html"
-                        ><span>All Certificates</span></a
-                      >
+                      <a href="#"><span>Upload</span></a>
                     </li>
                     <li>
-                      <a href="#"><span>New Certificate</span></a>
+                      <a href="#"><span>All Policies</span></a>
                     </li>
                   </ul>
                 </details>
@@ -369,12 +363,45 @@
                   </ul>
                 </details>
               </li>
+              <li>
+                <details id="submenu-travel">
+                  <summary aria-controls="submenu-travel-content">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                      />
+                      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                    </svg>
+                    Policy Certificates
+                  </summary>
+                  <ul id="submenu-travel-content">
+                    <li>
+                      <a href="travel_certificate.html"
+                        ><span>All Certificates</span></a
+                      >
+                    </li>
+                    <li>
+                      <a href="#"><span>New Certificate</span></a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
             </ul>
           </div>
 
-          <!-- Reports -->
-          <div role="group" aria-labelledby="group-reports">
-            <h3 id="group-reports">Reports</h3>
+          <!-- Finance -->
+          <div role="group" aria-labelledby="group-finance">
+            <h3 id="group-finance">Finance</h3>
             <ul>
               <li>
                 <a href="#">
@@ -389,18 +416,19 @@
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   >
-                    <path d="M12 16v5" />
-                    <path d="M16 14v7" />
-                    <path d="M20 10v11" />
-                    <path
-                      d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15"
-                    />
-                    <path d="M4 18v3" />
-                    <path d="M8 14v7" />
+                    <rect width="20" height="14" x="2" y="5" rx="2" />
+                    <line x1="2" x2="22" y1="10" y2="10" />
                   </svg>
-                  <span>Technical</span>
+                  <span>Credit Control</span>
                 </a>
               </li>
+            </ul>
+          </div>
+
+          <!-- Administration -->
+          <div role="group" aria-labelledby="group-administration">
+            <h3 id="group-administration">Administration</h3>
+            <ul>
               <li>
                 <a href="#">
                   <svg
@@ -414,12 +442,12 @@
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   >
-                    <line x1="12" x2="12" y1="2" y2="22" />
-                    <path
-                      d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
-                    />
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                   </svg>
-                  <span>Financial</span>
+                  <span>User Management</span>
                 </a>
               </li>
             </ul>

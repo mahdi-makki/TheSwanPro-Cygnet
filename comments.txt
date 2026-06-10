@@ -1,8 +1,2 @@
-(sidebar) contracts = commercial
-contracts
-    1. agrrements
-    2. entities
-    3. Policy Certificates
-(sidebar) Claims = Operations (section title)
-
-filter by ###
+(sidebar)
+remove the last 3 cards form entity list page
